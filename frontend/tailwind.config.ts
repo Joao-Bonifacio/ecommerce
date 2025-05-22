@@ -6,8 +6,13 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    fontFamily: {
-      sans: 'var(--font-inter)',
+    extend: {
+      fontFamily: {
+        sans: 'var(--font-inter)',
+      },
+      gridTemplateRows: {
+        app: 'min-content max-content',
+      },
     },
   },
   plugins: [],
