@@ -9,8 +9,10 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Ecommerce',
-  description: 'Ecommerce app built with Next.js and TypeScript',
+  title: {
+    template: '%s | Ecommerce',
+    default: 'Ecommerce',
+  },
 }
 
 export default function RootLayout({
