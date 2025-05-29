@@ -98,3 +98,4 @@ setup.sh
 tmp/
 *storybook.log
 notes.md
+storybook-static
