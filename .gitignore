@@ -1,4 +1,7 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# compiled output
+dist/
+build/
+.next/
 
 # dependencies
 node_modules/
@@ -10,30 +13,66 @@ node_modules/
 !.yarn/releases
 !.yarn/versions
 
-# testing
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
 /coverage
+/.nyc_output
 
 # next.js
-.next/
+/.next/
 /out/
 
 # production
-build/
+/build
 
-# misc
-.DS_Store
-*.pem
-notes.md
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
-# env files (can opt-in for committing if needed)
-.env*
-!.env.exemple
+# dotenv environment variable files
+.env
+.env.test
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# temp directory
+.temp
+.tmp
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # vercel
 .vercel
@@ -41,3 +80,21 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Databases
+data/
+migrations/
+*.db*
+databases/
+
+# Documentation
+documentation/
+.storybook/
+stories/
+
+# Misc
+*.pem
+setup.sh
+tmp/
+*storybook.log
+notes.md
