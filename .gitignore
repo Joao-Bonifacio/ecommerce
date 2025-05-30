@@ -99,3 +99,6 @@ tmp/
 *storybook.log
 notes.md
 storybook-static
+
+memory-bank/
+.clinerules
