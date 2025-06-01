@@ -1,7 +1,5 @@
-import { getProduct } from '@/app/api/products'
+import { getProduct, getFeaturedProducts } from '@/app/api/products'
 import AddToCartButton from '@/components/add-to-cart-button'
-import { api } from '@/app/api/api-wrapper'
-import type { Product } from '@/app/api/validation/types/product'
 import { Metadata } from 'next'
 import Image from 'next/image'
 
@@ -21,9 +19,11 @@ export async function generateMetadata({
   } satisfies Metadata
 }
 
-export async function generateStaticParams() {
-  const response = await api('/products/featured')
-  const products: Product[] = await response.json()
+export async function generateStaticParams(): Promise<
+  { slug: string }[] | null
+> {
+  const products = await getFeaturedProducts()
+  if (!products) return null
 
   return products.map((product) => ({
     slug: product.slug,
@@ -54,19 +54,23 @@ export default async function ProductPage({ params }: ProductProps) {
 
         <div className="mt-8 flex items-center gap-3">
           <span className="inline-block rounded-full bg-violet-500 px-5 py-2.5 font-semibold">
-            {product.price.toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'USD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            })}
+            {typeof product.price === 'number'
+              ? product.price.toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                })
+              : 'N/A'}
           </span>
           <span className="text-sm text-zinc-400">
             In 12x of
-            {(product.price / 12).toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            })}
+            {typeof product.price === 'number'
+              ? (product.price / 12).toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })
+              : 'N/A'}
           </span>
         </div>
 

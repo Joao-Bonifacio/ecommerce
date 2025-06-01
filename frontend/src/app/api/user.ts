@@ -46,7 +46,7 @@ export const signIn = async (data: FormData): Promise<unknown> => {
     },
     body: JSON.stringify(upload),
   }).then((data) => data.json())
-  if (!access_token) throw new Error('Failed to sugn-up')
+  if (!access_token) throw new Error('Failed to sugn-in')
 
   const cookie = await cookies()
   cookie.set('access_token', access_token)

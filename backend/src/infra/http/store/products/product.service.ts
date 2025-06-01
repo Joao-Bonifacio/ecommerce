@@ -32,7 +32,7 @@ export class ProductService {
   }
 
   async findProductBySlug(slug: string): Promise<Product | null> {
-    const product = await this.product.findProductById(slug)
+    const product = await this.product.findProductBySlug(slug)
     return product
   }
 

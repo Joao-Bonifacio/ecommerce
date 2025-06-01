@@ -1,4 +1,4 @@
-import { getFeaturedProducts } from '@/utils/products'
+import { getFeaturedProducts } from '@/app/api/products'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -8,7 +8,10 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-  const [highLightedProduct, ...otherProducts] = await getFeaturedProducts()
+  const products = await getFeaturedProducts()
+  if (!products) return null
+  const [highLightedProduct, ...otherProducts] = products
+  console.log(otherProducts)
 
   return (
     <div className="grid max-h-[860px] grid-cols-9 grid-rows-6 gap-6">

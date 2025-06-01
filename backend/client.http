@@ -1,6 +1,8 @@
 @baseUrl = http://localhost:8080/v1
 @access_token = {{signin.response.body.access_token}}
-@randomProduct = {{upload_product.response.body}}
+@lastProductId = {{upload_product.response.body.id}}
+@lastProductTitle = {{upload_product.response.body.title}}
+@lastProductSlug = {{upload_product.response.body.slug}}
 
 # @name signup
 POST {{baseUrl}}/session/sign-up
@@ -39,7 +41,7 @@ Content-Type: multipart/form-data; boundary=BOUNDARY
 --BOUNDARY
 Content-Disposition: form-data; name="title"
 
-Product Test
+tst
 --BOUNDARY
 Content-Disposition: form-data; name="description"
 
@@ -62,13 +64,13 @@ Content-Type: image/jpeg
 ###
 
 # @name feature_product
-PATCH {{baseUrl}}/products/featured/{{randomProduct.id}}
+PATCH {{baseUrl}}/products/featured/{{lastProductId}}
 Authorization: Bearer {{access_token}}
 
 ###
 
 # @name get_product_by_slug
-GET {{baseUrl}}/products/{{randomProduct.slug}}
+GET {{baseUrl}}/products/slug/{{lastProductSlug}}
 
 ###
 
@@ -78,4 +80,4 @@ GET {{baseUrl}}/products/featured
 ###
 
 # @name search_products
-GET {{baseUrl}}/search/q={{randomProduct.title}}
+GET {{baseUrl}}/products/search?q={{lastProductTitle}}

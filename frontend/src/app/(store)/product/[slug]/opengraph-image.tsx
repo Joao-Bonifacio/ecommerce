@@ -17,7 +17,7 @@ export default async function OgImage({
   params: { slug: string }
 }) {
   const product = await getProduct(params.slug)
-  // temporary
+  if (!product) return null
   const productImageUrl = new URL(product.image, env.APP_URL).toString()
 
   return new ImageResponse(
