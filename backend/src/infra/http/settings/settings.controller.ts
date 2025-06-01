@@ -1,5 +1,5 @@
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import { UserStorage } from '@/infra/databases/prisma/transactions/user.transaction'
+import { UserStorage } from '@/infra/db/prisma/transactions/user.transaction'
 import {
   Body,
   Controller,

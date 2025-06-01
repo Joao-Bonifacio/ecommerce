@@ -1,9 +1,9 @@
-import { ProductStorage } from '@/infra/databases/prisma/transactions/product.transaction'
+import { ProductStorage } from '@/infra/db/prisma/transactions/product.transaction'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import type { UploadProductBody } from './product.dto'
-import { S3Storage } from '@/infra/databases/image/s3.service'
+import { S3Storage } from '@/infra/db/image/s3.service'
 import type { Product } from '@/prisma/generated/mongo'
-import { UserStorage } from '@/infra/databases/prisma/transactions/user.transaction'
+import { UserStorage } from '@/infra/db/prisma/transactions/user.transaction'
 
 @Injectable()
 export class ProductService {
@@ -14,7 +14,12 @@ export class ProductService {
   ) {}
 
   generateSlug = (owner: string, title: string): string =>
-    `${owner}-${title.toLowerCase().replace(/\s+/g, '_')}`
+    `${owner}-${title
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/\s+/g, '_')
+      .replace(/[^\w-]/g, '')}`
 
   async productList(): Promise<Product[] | null> {
     const products = await this.product.listProduct()

@@ -6,7 +6,7 @@ import {
   HttpStatus,
   Post,
 } from '@nestjs/common'
-import { UserStorage } from '@/infra/databases/prisma/transactions/user.transaction'
+import { UserStorage } from '@/infra/db/prisma/transactions/user.transaction'
 import { Public } from '@/infra/auth/public'
 import { compare, hash } from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt'
