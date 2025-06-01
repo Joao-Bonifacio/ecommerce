@@ -1,0 +1,81 @@
+@baseUrl = http://localhost:8080/v1
+@access_token = {{signin.response.body.access_token}}
+@randomProduct = {{upload_product.response.body}}
+
+# @name signup
+POST {{baseUrl}}/session/sign-up
+Content-Type: application/json
+
+{
+  "name": "John Dee",
+  "email": "test@test.com",
+  "nickname": "john_dee",
+  "password": "@Passw0rd"
+}
+
+###
+
+# @name signin
+POST {{baseUrl}}/session/sign-in
+Content-Type: application/json
+
+{
+  "nickname": "john_dee",
+  "password": "@Passw0rd"
+}
+
+###
+
+# @name get_all_products
+GET {{baseUrl}}/products
+
+###
+
+# @name upload_product
+POST {{baseUrl}}/products
+Authorization: Bearer {{access_token}}
+Content-Type: multipart/form-data; boundary=BOUNDARY
+
+--BOUNDARY
+Content-Disposition: form-data; name="title"
+
+Product Test
+--BOUNDARY
+Content-Disposition: form-data; name="description"
+
+Test product description.
+--BOUNDARY
+Content-Disposition: form-data; name="price"
+
+99.99
+--BOUNDARY
+Content-Disposition: form-data; name="slug"
+
+product-test
+--BOUNDARY
+Content-Disposition: form-data; name="file"; filename="sample.jpeg"
+Content-Type: image/jpeg
+
+< ./test/image/sample.jpeg
+--BOUNDARY--
+
+###
+
+# @name feature_product
+PATCH {{baseUrl}}/products/featured/{{randomProduct.id}}
+Authorization: Bearer {{access_token}}
+
+###
+
+# @name get_product_by_slug
+GET {{baseUrl}}/products/{{randomProduct.slug}}
+
+###
+
+# @name get_featured_products
+GET {{baseUrl}}/products/featured
+
+###
+
+# @name search_products
+GET {{baseUrl}}/search/q={{randomProduct.title}}

@@ -1,0 +1,31 @@
+generator client_mongo {
+  provider = "prisma-client-js"
+  output   = "./generated/mongo"
+}
+
+datasource mongo {
+  provider = "mongodb"
+  url      = env("MONGODB_URL")
+}
+
+model Product {
+  id          String   @id @default(uuid()) @map("_id")
+  owner       String
+  title       String
+  slug        String   @unique
+  price       Float
+  sales       Int
+  image       String
+  description String
+  featured    Boolean
+  ratings     Rating[]
+
+  @@map("products")
+}
+
+type Rating {
+  id          String @default(uuid()) @map("_id")
+  title       String
+  description String
+  stars       Int
+}

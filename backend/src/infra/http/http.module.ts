@@ -1,7 +1,14 @@
 import { EnvModule } from '@/env/env.module'
 import { Module } from '@nestjs/common'
+import { DatabaseModule } from '../databases/database.module'
+import { SessionController } from './session/session.controller'
+import { ProductController } from './store/products/product.controller'
+import { ProductService } from './store/products/product.service'
+import { SettingsController } from './settings/settings.controller'
 
 @Module({
-  imports: [EnvModule],
+  imports: [EnvModule, DatabaseModule],
+  controllers: [SessionController, ProductController, SettingsController],
+  providers: [ProductService],
 })
 export class HttpModule {}

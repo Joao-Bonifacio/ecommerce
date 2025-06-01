@@ -21,6 +21,7 @@ import { LoggerMiddleware } from '@/logs/logger.middleware'
     ]),
     SentryModule.forRoot(),
     AuthModule,
+    HttpModule,
   ],
   controllers: [],
   providers: [

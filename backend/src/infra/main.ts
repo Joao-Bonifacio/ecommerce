@@ -6,6 +6,7 @@ import session from 'express-session'
 import cookieParser from 'cookie-parser'
 import compression from 'compression'
 import './instrument'
+import { ValidationPipe } from '@nestjs/common'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -27,10 +28,17 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   )
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
   app.use(helmet())
   app.use(cookieParser())
   app.use(compression())
 
-  await app.listen(port)
+  await app.listen(port | 8080)
 }
 bootstrap()

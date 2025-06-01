@@ -84,6 +84,7 @@ next-env.d.ts
 # Databases
 data/
 migrations/
+generated/
 *.db*
 databases/
 
