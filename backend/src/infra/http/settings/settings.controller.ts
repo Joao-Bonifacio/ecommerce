@@ -39,6 +39,6 @@ export class SettingsController {
     @CurrentUser() user: { sub: string },
     @Body() body: { password: string },
   ): Promise<void> {
-    return this.user.updatePassword(user.sub, body.password)
+    await this.user.updatePassword(user.sub, body.password)
   }
 }

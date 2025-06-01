@@ -77,6 +77,10 @@ export class SessionController {
     }
 
     const access_token = await this.jwt.signAsync({ sub: user.id })
+    if (!access_token) throw new HttpException(
+      { message: 'Invalid Credentials' },
+      HttpStatus.UNAUTHORIZED,
+    )
     return { access_token }
   }
 }
