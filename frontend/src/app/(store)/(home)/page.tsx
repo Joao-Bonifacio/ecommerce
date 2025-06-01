@@ -2,6 +2,7 @@ import { getFeaturedProducts } from '@/app/api/products'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Card, CardContent } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -10,65 +11,81 @@ export const metadata: Metadata = {
 export default async function Home() {
   const products = await getFeaturedProducts()
   if (!products) return null
-  const [highLightedProduct, ...otherProducts] = products
-  console.log(otherProducts)
+
+  const [highlightedProduct, ...otherProducts] = products
 
   return (
-    <div className="grid max-h-[860px] grid-cols-9 grid-rows-6 gap-6">
+    <>
       <Link
-        href={`/product/${highLightedProduct.slug}`}
-        className="col-span-6 row-span-6 rounded-lg bg-zinc-900 overflow-hidden flex justify-center items-end group relative"
+        href={`/product/${highlightedProduct.slug}`}
+        className="block group"
       >
-        <Image
-          src={highLightedProduct.image}
-          className="group-hover:scale-105 transition-transform duration-500"
-          width={920}
-          height={920}
-          quality={100}
-          alt=""
-        />
+        <Card className="overflow-hidden rounded-2xl bg-background shadow-lg hover:shadow-xl transition">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="w-full sm:w-1/2 aspect-[4/3] relative">
+              <Image
+                src={highlightedProduct.image}
+                alt={highlightedProduct.description}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105 rounded-t-2xl sm:rounded-l-2xl sm:rounded-tr-none"
+              />
+            </div>
 
-        <div className="absolute bottom-28 right-28 h-12 flex items-center gap-2 max-w-[280px] rounded-full border-2 border-zinc-500 bg-black/60 p-1 pl-5">
-          <span className="text-sm truncate">{highLightedProduct.title}</span>
-          <span className="flex h-full items-center justify-center rounded-full bg-violet-500 px-4 font-semibold">
-            {highLightedProduct.price.toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'USD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            })}
-          </span>
-        </div>
+            <CardContent className="flex-1 !p-6 text-center sm:text-left">
+              <h2 className="!text-4xl font-semibold !p-2">
+                {highlightedProduct.title}
+              </h2>
+
+              <p className="text-sm text-muted-foreground line-clamp-3 !px-2 !py-4">
+                {highlightedProduct.description}
+              </p>
+
+              <span className="inline-block bg-violet-500 text-white px-4 py-2 rounded-full text-md font-semibold mt-2 !p-5">
+                {highlightedProduct.price.toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            </CardContent>
+          </div>
+        </Card>
       </Link>
 
-      {otherProducts.map((product) => (
-        <Link
-          key={product.id}
-          href={`/product/${product.slug}`}
-          className="col-span-3 row-span-3 rounded-lg bg-zinc-900 overflow-hidden flex justify-center items-end group relative"
-        >
-          <Image
-            src={product.image}
-            className="group-hover:scale-105 transition-transform duration-500"
-            width={400}
-            height={400}
-            quality={100}
-            alt=""
-          />
-
-          <div className="absolute bottom-28 right-28 h-12 flex items-center gap-2 max-w-[280px] rounded-full border-2 border-zinc-500 bg-black/60 p-1 pl-5">
-            <span className="text-sm truncate">{product.title}</span>
-            <span className="flex h-full items-center justify-center rounded-full bg-violet-500 px-4 font-semibold">
-              {product.price.toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })}
-            </span>
-          </div>
-        </Link>
-      ))}
-    </div>
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+        {otherProducts.map((product) => (
+          <Link
+            key={product.id}
+            href={`/product/${product.slug}`}
+            className="group"
+          >
+            <Card className="relative rounded-2xl overflow-hidden bg-background shadow-md hover:shadow-lg transition hover:cursor-pointer">
+              <div className="aspect-square relative">
+                <Image
+                  src={product.image}
+                  alt={product.description}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <CardContent className="p-4 flex flex-col gap-2">
+                <div className="flex justify-between">
+                  <h4 className="text-base truncate !p-2 !m-1.5 font-bold">
+                    {product.title}
+                  </h4>
+                  <span className="bg-violet-500 text-white !p-4.5 !mx-4 !mb-5 rounded-full text-sm font-semibold">
+                    {product.price.toLocaleString('en-US', {
+                      style: 'currency',
+                      currency: 'USD',
+                      maximumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </>
   )
 }

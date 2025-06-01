@@ -38,6 +38,7 @@ export default async function ProductPage({ params }: ProductProps) {
     <div className="relative grid max-h-[860px] grid-cols-3">
       <div className="col-span-2 overflow-hidden">
         <Image
+          className="rounded-r-xl"
           src={product.image}
           alt={product.description}
           width={1000}
@@ -47,24 +48,25 @@ export default async function ProductPage({ params }: ProductProps) {
       </div>
 
       <div className="flex flex-col justify-center px-12">
-        <h1 className="text-3xl font-bold leading-tight">{product.title}</h1>
-        <p className="mt-2 leading-relaxed text-zinc-400">
+        <h1 className="!text-4xl font-bold leading-tight !py-2 !mb-5">
+          {product.title}
+        </h1>
+        <p className="mt-2 leading-relaxed text-zinc-400 !text-lg !p-y2 !mb-5">
           {product.description}
         </p>
 
-        <div className="mt-8 flex items-center gap-3">
-          <span className="inline-block rounded-full bg-violet-500 px-5 py-2.5 font-semibold">
+        <div className="mt-8 flex items-center gap-3 !text-md">
+          <span className="inline-block rounded-full bg-violet-500 !p-3 font-semibold">
             {typeof product.price === 'number'
               ? product.price.toLocaleString('en-US', {
                   style: 'currency',
                   currency: 'USD',
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 0,
+                  maximumFractionDigits: 2,
                 })
               : 'N/A'}
           </span>
-          <span className="text-sm text-zinc-400">
-            In 12x of
+          <span className="text-zinc-400 !text-lg">
+            In 12x of{' '}
             {typeof product.price === 'number'
               ? (product.price / 12).toLocaleString('en-US', {
                   style: 'currency',
@@ -74,20 +76,10 @@ export default async function ProductPage({ params }: ProductProps) {
           </span>
         </div>
 
-        <div className="mt-8 space-y-4">
-          <span className="block font-semibold">Sizes</span>
-          <div className="felx gap-2">
-            <button
-              type="button"
-              className="flex h-9 w-14 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-sm font-semibold"
-            >
-              ...
-            </button>
-          </div>
-        </div>
-
         <AddToCartButton productId={product.id} />
       </div>
+
+      <div className="h-5 w-full" />
     </div>
   )
 }

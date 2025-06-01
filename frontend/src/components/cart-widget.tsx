@@ -1,14 +1,14 @@
 'use client'
 import { useCart } from '@/context/cart-context'
-import { ShoppingBag } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 
 export default function CartWidget() {
   const { items } = useCart()
 
   return (
     <div className="flex items-center gap-2">
-      <ShoppingBag className="h-4 w-4" />
-      <span className="text-sm">Cart ({items.length})</span>
+      <ShoppingCart className="h-5 w-5" />
+      <span className="text-md">Cart ({items.length})</span>
     </div>
   )
 }
