@@ -1,4 +1,4 @@
-import { api } from '@/data/api'
+import { api } from '@/app/api/api-wrapper'
 import { type Product } from '@/data/types/product'
 
 export async function getFeaturedProducts(): Promise<Product[]> {

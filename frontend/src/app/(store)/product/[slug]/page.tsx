@@ -1,6 +1,7 @@
+import { getProduct } from '@/app/api/products'
 import AddToCartButton from '@/components/add-to-cart-button'
-import { api } from '@/data/api'
-import { type Product } from '@/data/types/product'
+import { api } from '@/app/api/api-wrapper'
+import type { Product } from '@/app/api/validation/types/product'
 import { Metadata } from 'next'
 import Image from 'next/image'
 
@@ -14,6 +15,7 @@ export async function generateMetadata({
   params,
 }: ProductProps): Promise<Metadata> {
   const product = await getProduct(params.slug)
+  if (!product) return {} satisfies Metadata
   return {
     title: product.title,
   } satisfies Metadata
@@ -28,26 +30,16 @@ export async function generateStaticParams() {
   }))
 }
 
-async function getProduct(slug: string): Promise<Product> {
-  const response = await api(`/products/${slug}`, {
-    next: {
-      revalidate: 60 * 60, // 1 hour
-    },
-  })
-  const product = await response.json()
-
-  return product
-}
-
 export default async function ProductPage({ params }: ProductProps) {
   const product = await getProduct(params.slug)
+  if (!product) return null
 
   return (
     <div className="relative grid max-h-[860px] grid-cols-3">
       <div className="col-span-2 overflow-hidden">
         <Image
           src={product.image}
-          alt=""
+          alt={product.description}
           width={1000}
           height={1000}
           quality={100}
