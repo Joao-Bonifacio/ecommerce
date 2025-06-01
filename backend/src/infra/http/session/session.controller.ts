@@ -5,12 +5,15 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  UsePipes,
 } from '@nestjs/common'
 import { UserStorage } from '@/infra/db/prisma/transactions/user.transaction'
 import { Public } from '@/infra/auth/public'
 import { compare, hash } from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt'
 import type { SignupBody, LoginBody } from './user.dto'
+import { zSigninDTO, zSignupDTO } from './user.dto'
+import { ZodValidatorPipe } from '@/infra/pipes/zod-validation.pipe'
 
 @Controller('session')
 export class SessionController {
@@ -20,10 +23,9 @@ export class SessionController {
   ) {}
 
   @Public()
-  @Post('sign-up')
+  @UsePipes(new ZodValidatorPipe(zSignupDTO))
   async create(@Body() body: SignupBody) {
     const { name, email, nickname, password } = body
-    // make transactions | promise.all
     const nicknameAlreadyExists = await this.user.find(nickname)
     const emailAlreadyExists = await this.user.find(email)
     const hashedPassword = await hash(password, 8)
@@ -52,6 +54,7 @@ export class SessionController {
   }
 
   @Public()
+  @UsePipes(new ZodValidatorPipe(zSigninDTO))
   @Post('sign-in')
   async match(@Body() body: LoginBody) {
     const { email, nickname, password } = body

@@ -13,7 +13,7 @@ export const zLoginByNickDTO = z.object({
   password: z.string().min(8).max(20),
 })
 
-export const zLoginDTO = z
+export const zSigninDTO = z
   .object({
     email: z.string().email().optional(),
     nickname: z.string().min(3).max(20).optional(),
@@ -24,4 +24,4 @@ export const zLoginDTO = z
     path: ['email'],
   })
 
-export type LoginBody = z.infer<typeof zLoginDTO>
+export type LoginBody = z.infer<typeof zSigninDTO>
