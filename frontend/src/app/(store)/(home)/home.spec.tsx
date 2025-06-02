@@ -1,7 +1,7 @@
 import { expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import Home from './page'
-import * as productApi from '@/app/api/products'
+import * as productApi from '@/app/api/product'
 import { Product } from '@/app/api/validation/types/product'
 
 vi.mock('@/app/api/products')

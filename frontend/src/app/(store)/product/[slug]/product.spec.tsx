@@ -4,7 +4,7 @@ import ProductPage, {
   generateStaticParams,
   generateMetadata,
 } from './page'
-import * as productApi from '@/app/api/products'
+import * as productApi from '@/app/api/product'
 import { Product } from '@/app/api/validation/types/product'
 
 vi.mock('@/components/add-to-cart-button', () => ({

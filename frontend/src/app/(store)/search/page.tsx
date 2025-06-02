@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import CurrentSearch from './current-search'
-import { searchProducts } from '@/app/api/products'
+import { searchProducts } from '@/app/api/product'
 
 interface SearchProps {
   searchParams: {

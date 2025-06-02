@@ -1,4 +1,4 @@
-import { getProduct, getFeaturedProducts } from '@/app/api/products'
+import { getProduct, getFeaturedProducts } from '@/app/api/product'
 import AddToCartButton from '@/components/add-to-cart-button'
 import Metadata from 'next'
 import Image from 'next/image'

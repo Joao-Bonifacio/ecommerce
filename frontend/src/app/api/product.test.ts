@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getFeaturedProducts, getProduct, searchProducts } from '@/app/api/products'
+import { getFeaturedProducts, getProduct, searchProducts } from '@/app/api/product'
 
 const sampleSlug = 'john_dee-product_test'
 const searchTerm = 'product'

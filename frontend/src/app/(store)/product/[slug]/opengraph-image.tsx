@@ -1,7 +1,7 @@
 import { env } from '@/env'
 import colors from 'tailwindcss/colors'
 import { ImageResponse } from 'next/og'
-import { getProduct } from '@/app/api/products'
+import { getProduct } from '@/app/api/product'
 
 export const alt = 'About Acme'
 export const size = {

@@ -1,7 +1,7 @@
 import { expect, vi, Mock, MockInstance } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import Search from './page'
-import * as productsAPI from '@/app/api/products'
+import * as productsAPI from '@/app/api/product'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 const mockPush = vi.fn()
@@ -11,7 +11,7 @@ vi.mock('next/navigation', () => ({
   useSearchParams: vi.fn(),
 }))
 
-vi.mock('@/app/api/products', () => ({
+vi.mock('@/app/api/product', () => ({
   searchProducts: vi.fn(),
 }))
 
@@ -41,7 +41,7 @@ describe('Search Page', () => {
       get: () => 'celular',
     })
 
-    vi.mocked(productsAPI.searchProducts).mockResolvedValueOnce([
+    ;(productsAPI.searchProducts as Mock).mockResolvedValueOnce([
       {
         id: crypto.randomUUID(),
         owner: 'owner1',
