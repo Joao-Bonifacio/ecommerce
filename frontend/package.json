@@ -12,9 +12,9 @@
     "test:storybook": "test-storybook",
     "test:e2e": "dotenv -e .env.test -- cypress run",
     "test:cov": "dotenv -e .env.test -- vitest run --coverage --no-file-parallelism",
-    "test:all": "npm run test && test-storybook && npm run test:e2e",
+    "test:all": "npm run test:storybook && npm run test:unit && npm run test:integration && npm run test:e2e",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "storybook:build": "storybook build"
   },
   "dependencies": {
     "@t3-oss/env-nextjs": "^0.13.6",
