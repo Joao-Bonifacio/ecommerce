@@ -6,6 +6,13 @@ import path from 'path'
 
 export default defineConfig({
   test: {
+    deps: {
+      optimizer: {
+        web: {
+          include: ['<dependências específicas>'],
+        },
+      },
+    },
     environment: 'jsdom',
     globals: true,
     fileParallelism: false,
