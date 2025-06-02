@@ -11,12 +11,12 @@ describe('SessionController', () => {
 
   beforeEach(() => {
     jwtService = {
-      signAsync: vi.fn()
+      signAsync: vi.fn(),
     } as any
 
     userStorage = {
       find: vi.fn(),
-      create: vi.fn()
+      create: vi.fn(),
     } as any
 
     controller = new SessionController(jwtService, userStorage)
@@ -28,7 +28,7 @@ describe('SessionController', () => {
         name: 'John',
         email: 'john@example.com',
         nickname: 'johnny',
-        password: '123456'
+        password: '123456',
       }
 
       vi.spyOn(userStorage, 'find')
@@ -43,7 +43,7 @@ describe('SessionController', () => {
         password: 'hashed-password',
         level: 'BRONZE',
         role: 'CUSTUMER',
-        avatar: null
+        avatar: null,
       })
       vi.spyOn(jwtService, 'signAsync').mockResolvedValueOnce('access-token')
 
@@ -52,7 +52,7 @@ describe('SessionController', () => {
       expect(result).toEqual({ access_token: 'access-token' })
     })
 
-    it('should return a erro if email already exists', async () => {
+    it('should return an error if email already exists', async () => {
       vi.spyOn(userStorage, 'find')
         .mockResolvedValueOnce(null)
         .mockResolvedValueOnce({
@@ -63,7 +63,7 @@ describe('SessionController', () => {
           password: 'hashed-password',
           level: 'BRONZE',
           role: 'CUSTUMER',
-          avatar: null
+          avatar: null,
         })
 
       await expect(() =>
@@ -71,17 +71,17 @@ describe('SessionController', () => {
           name: 'Test',
           email: 'used@example.com',
           nickname: 'newnick',
-          password: '123'
-        })
+          password: '123',
+        }),
       ).rejects.toThrowError(
         new HttpException(
           { message: 'Email already in use' },
-          HttpStatus.BAD_REQUEST
-        )
+          HttpStatus.BAD_REQUEST,
+        ),
       )
     })
 
-    it('should return a erro if nickname already exists', async () => {
+    it('should return an error if nickname already exists', async () => {
       vi.spyOn(userStorage, 'find')
         .mockResolvedValueOnce({
           id: 'existing-user-id',
@@ -91,7 +91,7 @@ describe('SessionController', () => {
           password: 'hashed-password',
           level: 'BRONZE',
           role: 'CUSTUMER',
-          avatar: null
+          avatar: null,
         })
         .mockResolvedValueOnce(null)
 
@@ -100,22 +100,20 @@ describe('SessionController', () => {
           name: 'Test',
           email: 'new@example.com',
           nickname: 'usednick',
-          password: '@Passw0rd'
-        })
+          password: '@Passw0rd',
+        }),
       ).rejects.toThrowError(
         new HttpException(
           { message: 'Nickname already in use' },
-          HttpStatus.BAD_REQUEST
-        )
+          HttpStatus.BAD_REQUEST,
+        ),
       )
     })
   })
 
   describe('sign-in', () => {
     it('should sign-in with email and return jwt token', async () => {
-      const email = 'new@example.com'
       const password = '@Passw0rd'
-      const hashed = await hash(password, 8)
 
       vi.spyOn(userStorage, 'find')
         .mockResolvedValueOnce({
@@ -126,63 +124,72 @@ describe('SessionController', () => {
           password: 'hashed-password',
           level: 'BRONZE',
           role: 'CUSTUMER',
-          avatar: null
+          avatar: null,
         })
         .mockResolvedValueOnce(null)
+
       vi.spyOn(jwtService, 'signAsync').mockResolvedValueOnce('login-token')
 
       const result = await controller.match({
         email: 'john@example.com',
         password,
-        nickname: undefined
+        nickname: undefined,
       })
 
       expect(result).toEqual({ access_token: 'login-token' })
     })
 
-    it('should return erro if user dont exists', async () => {
-      vi.spyOn(userStorage, 'find').mockResolvedValueOnce(null)
-
-      await expect(() =>
-        controller.match({
-          email: 'unknown@example.com',
-          password: '123',
-          nickname: undefined
-        })
-      ).rejects.toThrowError(
-        new HttpException(
-          { message: 'Invalid Credentials' },
-          HttpStatus.UNAUTHORIZED
-        )
-      )
-    })
-
-    it('should return error if password its wrong', async () => {
-      const correctHash = await hash('correct', 8)
-      const mockUser = { id: 'user-id', password: correctHash }
-
+    it('should return error if password is wrong (no match)', async () => {
       vi.spyOn(userStorage, 'find').mockResolvedValueOnce({
-          id: 'existing-user-id',
-          name: 'Existing User',
-          email: 'existing@example.com',
-          nickname: 'usednick',
-          password: 'hashed-password',
-          level: 'BRONZE',
-          role: 'CUSTUMER',
-          avatar: null
-        })
+        id: 'existing-user-id',
+        name: 'Existing User',
+        email: 'existing@example.com',
+        nickname: 'usednick',
+        password: 'hashed-password',
+        level: 'BRONZE',
+        role: 'CUSTUMER',
+        avatar: null,
+      })
 
       await expect(() =>
         controller.match({
           email: 'john@example.com',
           password: 'wrong-password',
-          nickname: undefined
-        })
+          nickname: undefined,
+        }),
       ).rejects.toThrowError(
         new HttpException(
           { message: 'Invalid Credentials' },
-          HttpStatus.UNAUTHORIZED
-        )
+          HttpStatus.UNAUTHORIZED,
+        ),
+      )
+    })
+
+    it('should return error if password is wrong (even with correct hash simulation)', async () => {
+      const correctHash = await hash('correct', 8)
+
+      vi.spyOn(userStorage, 'find').mockResolvedValueOnce({
+        id: 'existing-user-id',
+        name: 'Existing User',
+        email: 'existing@example.com',
+        nickname: 'usednick',
+        password: correctHash,
+        level: 'BRONZE',
+        role: 'CUSTUMER',
+        avatar: null,
+      })
+
+      await expect(() =>
+        controller.match({
+          email: 'john@example.com',
+          password: 'wrong-password',
+          nickname: undefined,
+        }),
+      ).rejects.toThrowError(
+        new HttpException(
+          { message: 'Invalid Credentials' },
+          HttpStatus.UNAUTHORIZED,
+        ),
       )
     })
   })

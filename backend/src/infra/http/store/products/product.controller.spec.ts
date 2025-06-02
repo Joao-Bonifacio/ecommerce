@@ -59,7 +59,12 @@ describe('ProductController', () => {
     try {
       await controller.seachProducts('')
     } catch (e) {
-      if (typeof e === 'object' && e !== null && 'getStatus' in e && typeof (e as any).getStatus === 'function') {
+      if (
+        typeof e === 'object' &&
+        e !== null &&
+        'getStatus' in e &&
+        typeof (e as any).getStatus === 'function'
+      ) {
         expect((e as any).getStatus()).toBe(400)
       } else {
         throw e
@@ -68,8 +73,17 @@ describe('ProductController', () => {
   })
 
   it('should upload product', async () => {
-    const file = { originalname: 'img.jpg', mimetype: 'image/jpeg', buffer: Buffer.from('') } as any
-    const body = { title: 'New Product', description: 'desc', price: 10, fileName: 'img.jpg' }
+    const file = {
+      originalname: 'img.jpg',
+      mimetype: 'image/jpeg',
+      buffer: Buffer.from(''),
+    } as any
+    const body = {
+      title: 'New Product',
+      description: 'desc',
+      price: 10,
+      fileName: 'img.jpg',
+    }
     const result = await controller.uploadProduct({ sub: '123' }, body, file)
     expect(result).toEqual(mockProducts[0])
     expect(service.uploadProduct).toHaveBeenCalled()

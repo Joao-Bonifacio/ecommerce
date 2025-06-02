@@ -1,5 +1,5 @@
 import { ProductService } from './product.service'
-import { HttpException, HttpStatus } from '@nestjs/common'
+import { HttpException } from '@nestjs/common'
 
 const mockUserStorage = {
   findById: vi.fn(),
@@ -85,7 +85,11 @@ describe('ProductService', () => {
 
   it('should return null if user not found during upload', async () => {
     mockUserStorage.findById.mockResolvedValue(null)
-    const result = await service.uploadProduct('id', { title: '', description: '', price: 0, fileName: '' }, {} as any)
+    const result = await service.uploadProduct(
+      'id',
+      { title: '', description: '', price: 0, fileName: '' },
+      {} as any,
+    )
     expect(result).toBeNull()
   })
 
@@ -95,7 +99,9 @@ describe('ProductService', () => {
   })
 
   it('should remove a product', async () => {
-    mockProductStorage.findProductById.mockResolvedValue({ image: 'https://bucket.com/image.jpg' })
+    mockProductStorage.findProductById.mockResolvedValue({
+      image: 'https://bucket.com/image.jpg',
+    })
     await service.removeProduct('id')
     expect(mockS3Storage.delete).toHaveBeenCalledWith('image.jpg')
     expect(mockProductStorage.removeProduct).toHaveBeenCalledWith('id')
@@ -103,6 +109,8 @@ describe('ProductService', () => {
 
   it('should throw if product not found when removing', async () => {
     mockProductStorage.findProductById.mockResolvedValue(null)
-    await expect(service.removeProduct('invalid-id')).rejects.toThrow(HttpException)
+    await expect(service.removeProduct('invalid-id')).rejects.toThrow(
+      HttpException,
+    )
   })
 })

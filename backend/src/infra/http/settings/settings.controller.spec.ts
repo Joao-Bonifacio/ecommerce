@@ -17,7 +17,10 @@ describe('SettingsController', () => {
     const password = 'newSecurePassword123'
     await controller.updatePassword(mockUser, { password })
 
-    expect(userStorageMock.updatePassword).toHaveBeenCalledWith(mockUser.sub, password)
+    expect(userStorageMock.updatePassword).toHaveBeenCalledWith(
+      mockUser.sub,
+      password,
+    )
     expect(userStorageMock.updatePassword).toHaveBeenCalledTimes(1)
   })
 
@@ -46,4 +49,3 @@ function createUserStorageMock() {
     updateAvatar: vi.fn().mockResolvedValue(undefined),
   } as unknown as Mocked<UserStorage>
 }
-
