@@ -1,6 +1,6 @@
 import { getProduct, getFeaturedProducts } from '@/app/api/products'
 import AddToCartButton from '@/components/add-to-cart-button'
-import { Metadata } from 'next'
+import Metadata from 'next'
 import Image from 'next/image'
 
 interface ProductProps {

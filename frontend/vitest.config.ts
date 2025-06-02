@@ -9,14 +9,14 @@ export default defineConfig({
     deps: {
       optimizer: {
         web: {
-          include: ['<dependências específicas>'],
+          include: ['./.storybook/vitest.setup.ts'],
         },
       },
     },
     environment: 'jsdom',
     globals: true,
     fileParallelism: false,
-    setupFiles: ['vitest.setup.ts'],
+    setupFiles: ['./.storybook/vitest.setup.ts'],
     globalSetup: ['vitest.global.setup.ts'],
     include: ['src/**/*.{spec,test}.{ts,tsx}'],
     testTimeout: 10000,

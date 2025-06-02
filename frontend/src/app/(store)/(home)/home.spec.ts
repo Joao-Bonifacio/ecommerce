@@ -1,30 +1,77 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { expect, vi } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
 import Home from './page'
-import { getFeaturedProducts } from '@/utils/products'
-import { mockProducts } from '@/__test__/mocks/products'
+import * as productApi from '@/app/api/products'
+import { Product } from '@/app/api/validation/types/product'
 
-vi.mock('@/utils/products', () => ({
-  getFeaturedProducts: vi.fn(),
-}))
+vi.mock('@/app/api/products')
 
-describe('Home page', () => {
+describe('Home Page', () => {
+  const mockProducts: Product[] = [
+    {
+      id: crypto.randomUUID(),
+      slug: 'highlighted-product',
+      title: 'Highlighted Product',
+      description: 'This is a highlighted product.',
+      price: 199.99,
+      image: '/highlighted.jpg',
+      owner: '',
+      sales: 0,
+      featured: false,
+      ratings: []
+    },
+    {
+      id: crypto.randomUUID(),
+      slug: 'second-product',
+      title: 'Second Product',
+      description: 'Another product',
+      price: 99.99,
+      image: '/second.jpg',
+      owner: '',
+      sales: 0,
+      featured: false,
+      ratings: []
+    },
+    {
+      id: crypto.randomUUID(),
+      slug: 'third-product',
+      title: 'Third Product',
+      description: 'Yet another product',
+      price: 59.99,
+      image: '/third.jpg',
+      owner: '',
+      sales: 0,
+      featured: false,
+      ratings: []
+    },
+  ]
+
   beforeEach(() => {
-    vi.mocked(
-      getFeaturedProducts as ReturnType<typeof vi.fn>,
-    ).mockResolvedValue(mockProducts)
+    vi.resetAllMocks()
   })
 
-  it('should render features products', async () => {
+  it('should renders the highlighted product and other products', async () => {
+    vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue(mockProducts)
+
     render(await Home())
 
-    expect(screen.getByText('Highlight Product')).toBeInTheDocument()
-    expect(screen.getByText('$999')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Highlighted Product')).toBeInTheDocument()
+      expect(screen.getByText('This is a highlighted product.')).toBeInTheDocument()
+      expect(screen.getByText('$199.99')).toBeInTheDocument()
+    })
 
     expect(screen.getByText('Second Product')).toBeInTheDocument()
-    expect(screen.getByText('$499')).toBeInTheDocument()
+    expect(screen.getByText('$99.99')).toBeInTheDocument()
 
     expect(screen.getByText('Third Product')).toBeInTheDocument()
-    expect(screen.getByText('$299')).toBeInTheDocument()
+    expect(screen.getByText('$59.99')).toBeInTheDocument()
+  })
+
+  it('should returns null when no products are returned', async () => {
+    vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue(null)
+
+    const { container } = render(await Home())
+    expect(container.firstChild).toBeNull()
   })
 })

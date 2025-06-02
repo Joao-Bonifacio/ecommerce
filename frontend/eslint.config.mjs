@@ -11,6 +11,9 @@ const compat = new FlatCompat({
 
 const eslintConfig = [{
   ignores: ['**/*.mjs'],
+  ...compat.config({
+    extends: ['eslint:recommended', 'next'],
+  }),
 }, ...compat.extends(
   'next',
   'next/core-web-vitals',
