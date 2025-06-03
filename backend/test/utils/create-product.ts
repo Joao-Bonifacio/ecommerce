@@ -11,7 +11,7 @@ export async function createProduct(app: INestApplication, token: string) {
     .set('Authorization', `Bearer ${token}`)
     .field('title', await faker.book.title())
     .field('description', await faker.lorem.text())
-    .field('price', '99.99')
+    .field('price', 99.99)
     .field('slug', await faker.lorem.slug())
     .attach('file', imagePath)
   return response

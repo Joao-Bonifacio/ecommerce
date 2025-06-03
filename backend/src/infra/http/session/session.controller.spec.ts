@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt'
 import { UserStorage } from '@/infra/db/prisma/transactions/user.transaction'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { hash } from 'bcryptjs'
+import { Level, Role } from '@/prisma/generated/postgres'
 
 describe('SessionController', () => {
   let controller: SessionController
@@ -22,7 +23,7 @@ describe('SessionController', () => {
     controller = new SessionController(jwtService, userStorage)
   })
 
-  describe('signup', () => {
+  describe('sign-up', () => {
     it('should sign-up and return jwt token', async () => {
       const body = {
         name: 'John',
@@ -41,15 +42,26 @@ describe('SessionController', () => {
         email: 'john@example.com',
         nickname: 'johnny',
         password: 'hashed-password',
-        level: 'BRONZE',
-        role: 'CUSTUMER',
+        level: Level.BRONZE,
+        role: Role.CUSTUMER,
         avatar: null,
       })
       vi.spyOn(jwtService, 'signAsync').mockResolvedValueOnce('access-token')
 
       const result = await controller.create(body)
 
-      expect(result).toEqual({ access_token: 'access-token' })
+      expect(result).toEqual({
+        access_token: 'access-token',
+        user: {
+          id: 'user-id',
+          name: 'John',
+          email: 'john@example.com',
+          nickname: 'johnny',
+          level: 'BRONZE',
+          role: 'CUSTUMER',
+          avatar: null,
+        },
+      })
     })
 
     it('should return an error if email already exists', async () => {
@@ -61,8 +73,8 @@ describe('SessionController', () => {
           email: 'used@example.com',
           nickname: 'existingnick',
           password: 'hashed-password',
-          level: 'BRONZE',
-          role: 'CUSTUMER',
+          level: Level.BRONZE,
+          role: Role.CUSTUMER,
           avatar: null,
         })
 
@@ -89,8 +101,8 @@ describe('SessionController', () => {
           email: 'existing@example.com',
           nickname: 'usednick',
           password: 'hashed-password',
-          level: 'BRONZE',
-          role: 'CUSTUMER',
+          level: Level.BRONZE,
+          role: Role.CUSTUMER,
           avatar: null,
         })
         .mockResolvedValueOnce(null)
@@ -112,20 +124,23 @@ describe('SessionController', () => {
   })
 
   describe('sign-in', () => {
-    it('should sign-in with email and return jwt token', async () => {
+    it('should sign-in with email and return jwt token and user', async () => {
       const password = '@Passw0rd'
+      const hashed = await hash(password, 8)
+
+      const existingUser = {
+        id: 'existing-user-id',
+        name: 'Existing User',
+        email: 'existing@example.com',
+        nickname: 'usednick',
+        password: hashed,
+        level: Level.BRONZE,
+        role: Role.CUSTUMER,
+        avatar: null,
+      }
 
       vi.spyOn(userStorage, 'find')
-        .mockResolvedValueOnce({
-          id: 'existing-user-id',
-          name: 'Existing User',
-          email: 'existing@example.com',
-          nickname: 'usednick',
-          password: 'hashed-password',
-          level: 'BRONZE',
-          role: 'CUSTUMER',
-          avatar: null,
-        })
+        .mockResolvedValueOnce(existingUser)
         .mockResolvedValueOnce(null)
 
       vi.spyOn(jwtService, 'signAsync').mockResolvedValueOnce('login-token')
@@ -136,7 +151,18 @@ describe('SessionController', () => {
         nickname: undefined,
       })
 
-      expect(result).toEqual({ access_token: 'login-token' })
+      expect(result).toEqual({
+        access_token: 'login-token',
+        user: {
+          id: 'existing-user-id',
+          name: 'Existing User',
+          email: 'existing@example.com',
+          nickname: 'usednick',
+          level: Level.BRONZE,
+          role: Role.CUSTUMER,
+          avatar: null,
+        },
+      })
     })
 
     it('should return error if password is wrong (no match)', async () => {
@@ -146,8 +172,8 @@ describe('SessionController', () => {
         email: 'existing@example.com',
         nickname: 'usednick',
         password: 'hashed-password',
-        level: 'BRONZE',
-        role: 'CUSTUMER',
+        level: Level.BRONZE,
+        role: Role.CUSTUMER,
         avatar: null,
       })
 
@@ -174,8 +200,8 @@ describe('SessionController', () => {
         email: 'existing@example.com',
         nickname: 'usednick',
         password: correctHash,
-        level: 'BRONZE',
-        role: 'CUSTUMER',
+        level: Level.BRONZE,
+        role: Role.CUSTUMER,
         avatar: null,
       })
 

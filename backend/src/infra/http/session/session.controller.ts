@@ -2,6 +2,9 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Post,
@@ -14,6 +17,7 @@ import { JwtService } from '@nestjs/jwt'
 import type { SignupBody, LoginBody } from './user.dto'
 import { zSigninDTO, zSignupDTO } from './user.dto'
 import { ZodValidatorPipe } from '@/infra/pipes/zod-validation.pipe'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
 
 @Controller('session')
 export class SessionController {
@@ -22,8 +26,14 @@ export class SessionController {
     private user: UserStorage,
   ) {}
 
+  @Get('current')
+  async getUser(@CurrentUser() user: { sub: string }) {
+    return this.user.findById(user.sub)
+  }
+
   @Public()
   @UsePipes(new ZodValidatorPipe(zSignupDTO))
+  @Post('sign-up')
   async create(@Body() body: SignupBody) {
     const { name, email, nickname, password } = body
     const nicknameAlreadyExists = await this.user.find(nickname)
@@ -50,7 +60,7 @@ export class SessionController {
     })
 
     const access_token = await this.jwt.signAsync({ sub: user.id })
-    return { access_token }
+    return { access_token, user: { ...user, password: undefined } }
   }
 
   @Public()
@@ -82,6 +92,12 @@ export class SessionController {
         { message: 'Invalid Credentials' },
         HttpStatus.UNAUTHORIZED,
       )
-    return { access_token }
+    return { access_token, user: { ...user, password: undefined } }
+  }
+
+  @Delete()
+  @HttpCode(204)
+  async removeUser(@CurrentUser() user: { sub: string }) {
+    return this.user.delete(user.sub)
   }
 }

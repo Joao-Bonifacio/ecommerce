@@ -2,7 +2,7 @@ import { describe, expect, it, beforeAll, afterAll } from 'vitest'
 import { createTestApp } from './setup'
 import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
-import { createTestUserAndGetToken } from '../utils/user-signin'
+import { loginTestUser } from '../utils/user-auth'
 import { createProduct } from '../utils/create-product'
 describe('Product Controller', () => {
   let app: INestApplication
@@ -11,10 +11,13 @@ describe('Product Controller', () => {
 
   beforeAll(async () => {
     app = await createTestApp()
-    token = await createTestUserAndGetToken(app)
-    const product = await createProduct(app, token)
+    const response = await loginTestUser(app, {
+      nickname: 'john_dee',
+      password: '@Passw0rd',
+    })
+    const product = await createProduct(app, response.body.access_token)
     productId = product.body.id
-    console.log('productId:', productId)
+    token = response.body.access_token
   })
 
   afterAll(async () => {
@@ -54,15 +57,23 @@ describe('Product Controller', () => {
 
     expect(response.status).toBe(201)
     expect(response.body).toHaveProperty('id')
-    expect(response.body.title).toBeDefined()
+    expect(response.body).toHaveProperty('title')
 
     await request(app.getHttpServer())
-      .delete(`/v1/products/${response.body.id}`)
+      .delete(`/v1/products/remove/${response.body.id}`)
       .set('Authorization', `Bearer ${token}`)
   })
   it('should be able to feature a product', async () => {
-    const response = await createProduct(app, token)
-    expect(response.status).toBe(201)
+    const { body } = await createProduct(app, token)
+    const response = await request(app.getHttpServer())
+      .patch(`/v1/products/featured/${body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(response.status).toBe(204)
+
+    await request(app.getHttpServer())
+      .delete(`/v1/products/remove/${body.id}`)
+      .set('Authorization', `Bearer ${token}`)
   })
 
   it('should be able to remove a product', async () => {
