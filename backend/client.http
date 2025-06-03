@@ -81,3 +81,8 @@ GET {{baseUrl}}/products/featured
 
 # @name search_products
 GET {{baseUrl}}/products/search?q={{lastProductTitle}}
+
+###
+
+# @name search_products
+DELETE {{baseUrl}}/products/remove/{{lastProductTitle}}
