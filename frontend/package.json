@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix",
+    "test": "dotenv -e .env.test -- vitest run",
+    "test:watch": "dotenv -e .env.test -- vitest",
     "test:unit": "dotenv -e .env.test -- vitest run --exclude src/**/*.test.ts",
     "test:integration": "dotenv -e .env.test -- vitest run --exclude src/**/*.spec.ts*",
     "test:storybook": "test-storybook",
