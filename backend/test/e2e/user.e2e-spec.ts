@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 
-import { createTestApp } from './setup'
+import { createTestApp } from '../e2e/setup'
 import { createTestUser, loginTestUser } from '../utils/user-auth'
 import { faker } from '@faker-js/faker'
 
@@ -83,7 +83,6 @@ describe('User Controller', () => {
       .delete('/v1/session')
       .set('Authorization', `Bearer ${tempToken}`)
 
-    console.log(deleteResponse.body)
     expect(deleteResponse.status).toBe(204)
   })
 })

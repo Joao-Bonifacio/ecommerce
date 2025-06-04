@@ -11,23 +11,27 @@ const __dirname = path.dirname(__filename)
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
+  allConfig: js.configs.all,
 })
 
 export default [
   {
-    ignores: ['**/*.d.ts', '**/node_modules/', '**/*.js']
+    ignores: ['**/*.d.ts', '**/node_modules/', '**/*.js'],
   },
-  ...compat.extends('plugin:@typescript-eslint/recommended', 'prettier', "@rocketseat/eslint-config/node"),
+  ...compat.extends(
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+    '@rocketseat/eslint-config/node',
+  ),
   {
     plugins: {
-      '@typescript-eslint': typescriptEslint
+      '@typescript-eslint': typescriptEslint,
     },
 
     languageOptions: {
       globals: {
         ...globals.node,
-        ...globals.vitest
+        ...globals.vitest,
       },
 
       parser: tsParser,
@@ -35,8 +39,8 @@ export default [
       sourceType: 'commonjs',
 
       parserOptions: {
-        source: 'module'
-      }
+        source: 'module',
+      },
     },
 
     rules: {
@@ -48,7 +52,7 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/camelcase': 'off'
-    }
-  }
+      '@typescript-eslint/camelcase': 'off',
+    },
+  },
 ]
