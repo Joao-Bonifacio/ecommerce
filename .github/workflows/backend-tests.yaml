@@ -1,0 +1,67 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+  pull_request:
+    paths:
+      - 'backend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: backend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('backend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build backend
+      run: npm run build
+
+    - name: Wait for Redis to be ready
+      run: |
+        for i in {1..30}; do
+          if redis-cli -h localhost ping | grep PONG; then
+            echo "Redis is up"
+            break
+          fi
+          echo "Waiting for Redis..."
+          sleep 2
+        done
+
+    - name: Run all tests
+      env:
+        REDIS_HOST: localhost
+        REDIS_PORT: 6379
+      run: npm run test:all
