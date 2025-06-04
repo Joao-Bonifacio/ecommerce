@@ -22,30 +22,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      mongo:
-        image: mongo:6
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd "mongo --eval 'db.adminCommand(\"ping\")'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: admin
-          POSTGRES_PASSWORD: admin123
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U admin"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     defaults:
       run:
         working-directory: backend
@@ -75,7 +51,7 @@ jobs:
 
     - name: Start MinIO
       run: |
-        docker run -d --name minio -p 9000:9000 -e MINIO_ROOT_USER=admin -e MINIO_ROOT_PASSWORD=password123 minio/minio server /data
+        docker run -d --name minio -p 9000:9000 -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin123 minio/minio server /data
     - name: Wait for MinIO
       run: |
         until curl -s http://localhost:9000/minio/health/live; do
@@ -103,9 +79,10 @@ jobs:
     - name: Run all tests
       env:
         REDIS_HOST: localhost
+        REDIS_DB: 1
         REDIS_PORT: 6379
-        MONGODB_URL: mongodb://localhost:27017
-        POSTGRES_URL: postgres://admin:admin123@localhost:5432/testdb
+        MONGODB_URL: mongodb+srv://jhowmkd:6j1ohzXwch0NfWsx@ecommerce-test.3yis1vx.mongodb.net/?retryWrites=true&w=majority&appName=ecommerce-test
+        POSTGRES_URL: postgresql://ecomerce_owner:npg_5QbKjfDXzMu0@ep-red-recipe-a5gxg2lg-pooler.us-east-2.aws.neon.tech/ecomerce?sslmode=require
         MINIO_ENDPOINT: http://localhost:9000
         MINIO_ACCESS_KEY: admin
         MINIO_SECRET_KEY: password123
