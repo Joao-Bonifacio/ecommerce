@@ -1,12 +1,15 @@
-import { expect, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import Home from './page'
 import * as productApi from '@/app/api/product'
-import { Product } from '@/app/api/validation/types/product'
+import Home from './page' // ou './page' se no mesmo nível
+import { vi, describe, it, beforeEach, expect } from 'vitest'
+import type { Product } from '@/app/api/validation/types/product'
 
-vi.mock('@/app/api/products')
+// Mock correto da função da API
+vi.mock('@/app/api/product', () => ({
+  getFeaturedProducts: vi.fn(),
+}))
 
-describe('Home Page', () => {
+describe('Home - Integration', () => {
   const mockProducts: Product[] = [
     {
       id: crypto.randomUUID(),
@@ -18,7 +21,7 @@ describe('Home Page', () => {
       owner: '',
       sales: 0,
       featured: false,
-      ratings: []
+      ratings: [],
     },
     {
       id: crypto.randomUUID(),
@@ -30,7 +33,7 @@ describe('Home Page', () => {
       owner: '',
       sales: 0,
       featured: false,
-      ratings: []
+      ratings: [],
     },
     {
       id: crypto.randomUUID(),
@@ -42,7 +45,7 @@ describe('Home Page', () => {
       owner: '',
       sales: 0,
       featured: false,
-      ratings: []
+      ratings: [],
     },
   ]
 
@@ -50,7 +53,7 @@ describe('Home Page', () => {
     vi.resetAllMocks()
   })
 
-  it('should renders the highlighted product and other products', async () => {
+  it('renders highlighted product and others', async () => {
     vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue(mockProducts)
 
     render(await Home())
@@ -63,12 +66,11 @@ describe('Home Page', () => {
 
     expect(screen.getByText('Second Product')).toBeInTheDocument()
     expect(screen.getByText('$99.99')).toBeInTheDocument()
-
     expect(screen.getByText('Third Product')).toBeInTheDocument()
     expect(screen.getByText('$59.99')).toBeInTheDocument()
   })
 
-  it('should returns null when no products are returned', async () => {
+  it('renders nothing if no products', async () => {
     vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue(null)
 
     const { container } = render(await Home())

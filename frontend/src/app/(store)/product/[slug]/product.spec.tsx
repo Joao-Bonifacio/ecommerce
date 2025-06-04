@@ -1,99 +1,90 @@
-import { expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import ProductPage, {
-  generateStaticParams,
-  generateMetadata,
-} from './page'
 import * as productApi from '@/app/api/product'
-import { Product } from '@/app/api/validation/types/product'
+import ProductPage, { generateMetadata, generateStaticParams } from './page'
 
 vi.mock('@/components/add-to-cart-button', () => ({
-  __esModule: true,
-  default: ({ productId }: { productId: string }) => (
-    <button>Add to Cart ({productId})</button>
-  ),
+  default: () => <button>Add to cart mock</button>,
 }))
-vi.mock('@/app/api/products')
 
-describe('Product Page', () => {
-  const mockProduct: Product = {
-    id: crypto.randomUUID(),
-    slug: 'product-slug',
+describe('ProductPage', () => {
+  const mockProduct = {
+    id: 'prod-123',
+    slug: 'mock-product',
     title: 'Mock Product',
-    description: 'Mock Description',
+    description: 'This is a mock product',
     price: 120,
     image: '/mock.jpg',
-    owner: '',
+    owner: 'user-1',
     sales: 0,
     featured: false,
     ratings: [],
   }
 
-  const mockProducts: Product[] = [
-    { ...mockProduct },
-    {
-      ...mockProduct,
-      id: crypto.randomUUID(),
-      slug: 'other-product',
-      title: 'Other Product',
-    },
-  ]
-
   beforeEach(() => {
     vi.resetAllMocks()
   })
 
-  it('should render product details', async () => {
-    vi.spyOn(productApi, 'getProduct').mockResolvedValue(mockProduct)
+  describe('generateMetadata', () => {
+    it('returns metadata with title when product found', async () => {
+      vi.spyOn(productApi, 'getProduct').mockResolvedValue(mockProduct)
 
-    render(await ProductPage({ params: { slug: 'product-slug' } }))
+      const metadata = await generateMetadata({ params: { slug: mockProduct.slug } })
 
-    await waitFor(() => {
-      expect(screen.getByText('Mock Product')).toBeInTheDocument()
-      expect(screen.getByText('Mock Description')).toBeInTheDocument()
-      expect(screen.getByText('$120.00')).toBeInTheDocument()
-      expect(screen.getByText('In 12x of $10.00')).toBeInTheDocument()
-      expect(screen.getByText(/Add to Cart/)).toBeInTheDocument()
+      expect(metadata.title).toBe(mockProduct.title)
+    })
+
+    it('returns empty object when product not found', async () => {
+      vi.spyOn(productApi, 'getProduct').mockResolvedValue(null)
+
+      const metadata = await generateMetadata({ params: { slug: 'not-found' } })
+
+      expect(metadata).toEqual({})
     })
   })
 
-  it('should return null if product not found', async () => {
-    vi.spyOn(productApi, 'getProduct').mockResolvedValue(null)
+  describe('generateStaticParams', () => {
+    it('returns list of product slugs', async () => {
+      const products = [mockProduct]
+      vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue(products)
 
-    const { container } = render(
-      await ProductPage({ params: { slug: 'nonexistent-slug' } })
-    )
-    expect(container.firstChild).toBeNull()
+      const params = await generateStaticParams()
+
+      expect(params).toEqual([{ slug: mockProduct.slug }])
+    })
+
+    it('returns null when no products', async () => {
+      vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue(null)
+
+      const params = await generateStaticParams()
+
+      expect(params).toBeNull()
+    })
   })
 
-  it('generateStaticParams should return product slugs', async () => {
-    vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue(mockProducts)
+  describe('ProductPage component', () => {
+    it('renders product details when product found', async () => {
+      vi.spyOn(productApi, 'getProduct').mockResolvedValue(mockProduct)
 
-    const result = await generateStaticParams()
-    expect(result).toEqual([
-      { slug: 'product-slug' },
-      { slug: 'other-product' },
-    ])
-  })
+      const { container } = render(await ProductPage({ params: { slug: mockProduct.slug } }))
 
-  it('generateStaticParams should return null when no products', async () => {
-    vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue(null)
+      await waitFor(() => {
+        expect(screen.getByRole('heading', { name: /mock product/i })).toBeInTheDocument()
+        expect(screen.getByText(/this is a mock product/i)).toBeInTheDocument()
+        expect(screen.getByText('$120.00')).toBeInTheDocument()
+        expect(screen.getByText(/in 12x of \$10.00/i)).toBeInTheDocument()
+        expect(screen.getByText(/add to cart mock/i)).toBeInTheDocument()
+      })
 
-    const result = await generateStaticParams()
-    expect(result).toBeNull()
-  })
+      expect(container).toMatchSnapshot()
+    })
 
-  it('generateMetadata should return title if product found', async () => {
-    vi.spyOn(productApi, 'getProduct').mockResolvedValue(mockProduct)
+    it('returns null when product not found', async () => {
+      vi.spyOn(productApi, 'getProduct').mockResolvedValue(null)
 
-    const metadata = await generateMetadata({ params: { slug: 'product-slug' } })
-    expect(metadata).toEqual({ title: 'Mock Product' })
-  })
+      const { container } = render(await ProductPage({ params: { slug: 'not-found' } }))
 
-  it('generateMetadata should return empty object if product not found', async () => {
-    vi.spyOn(productApi, 'getProduct').mockResolvedValue(null)
-
-    const metadata = await generateMetadata({ params: { slug: 'invalid' } })
-    expect(metadata).toEqual({})
+      expect(container.firstChild).toBeNull()
+    })
   })
 })
