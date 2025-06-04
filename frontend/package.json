@@ -16,7 +16,8 @@
     "test:cov": "dotenv -e .env.test -- vitest run --coverage --no-file-parallelism",
     "test:all": "npm run test:storybook && npm run test:unit && npm run test:integration && npm run test:e2e",
     "storybook": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "storybook:build": "storybook build",
+    "api:fake": "node src/__test__/api/server.js && json-server --watch src/__test__/api/db.json --port 8080 &"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
@@ -25,6 +26,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.511.0",
+    "multer": "^2.0.1",
     "next": "15.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -66,6 +68,7 @@
     "eslint-config-next": "15.3.3",
     "eslint-plugin-storybook": "^9.0.4",
     "jsdom": "^26.1.0",
+    "json-server": "^1.0.0-beta.3",
     "playwright": "^1.52.0",
     "storybook": "^9.0.4",
     "supertest": "^7.1.1",

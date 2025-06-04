@@ -23,7 +23,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '22.16.0'
 
     - name: Cache node modules
       uses: actions/cache@v3
@@ -39,5 +39,21 @@ jobs:
     - name: Build frontend
       run: npm run build
 
+    - name: Start json-server
+      run: npm run api:fake
+    
+    - name: Wait for json-server to start
+      run: |
+        for i in {1..10}; do
+          if curl -s http://localhost:3001/products; then
+            echo "json-server is up"
+            break
+          fi
+          echo "Waiting for json-server..."
+          sleep 2
+        done
+
     - name: Run all tests
+      env:
+        REACT_APP_API_URL: http://localhost:3001
       run: npm run test:all

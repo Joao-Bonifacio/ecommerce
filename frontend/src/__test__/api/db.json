@@ -1,0 +1,104 @@
+{
+  "users": [
+    {
+      "id": "uuid-1",
+      "name": "John Dee",
+      "email": "test@test.com",
+      "nickname": "john_dee",
+      "password": "@Passw0rd",
+      "access_token": "fake-jwt-token"
+    }
+  ],
+  "products": [
+    {
+      "id": "uuid-1",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test1",
+      "featured": true,
+      "owner": 1
+    },
+    {
+      "id": "uuid-2",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test2",
+      "featured": true,
+      "owner": 1
+    },
+    {
+      "id": "uuid-3",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test3",
+      "featured": true,
+      "owner": 1
+    },
+    {
+      "id": "uuid-4",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test4",
+      "featured": true,
+      "owner": 1
+    },
+    {
+      "id": "uuid-5",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test5",
+      "featured": false,
+      "owner": 1
+    },
+    {
+      "id": "uuid-6",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test6",
+      "featured": false,
+      "owner": 1
+    },
+    {
+      "id": "uuid-7",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test7",
+      "featured": false,
+      "owner": 1
+    },
+    {
+      "id": "uuid-8",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test8",
+      "featured": false,
+      "owner": 1
+    },
+    {
+      "id": "uuid-9",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test9",
+      "featured": false,
+      "owner": 1
+    },
+    {
+      "id": "uuid-10",
+      "title": "testing 4",
+      "description": "Test product description.",
+      "price": 99.99,
+      "slug": "product-test10",
+      "featured": false,
+      "owner": 1
+    }
+  ]
+}

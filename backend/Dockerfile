@@ -5,10 +5,8 @@ WORKDIR /usr/src/api
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npx prisma generate --schema=prisma/mongo.schema.prisma; \
-    npx prisma generate --schema=prisma/postgres.schema.prisma; \
-    npx prisma migrate prod --schema=prisma/postgres.schema.prisma; \
-    npx prisma db push --schema=prisma/mongo.schema.prisma; \
+RUN npm run db:mongo; \
+    npm run db:postgres-prod; \
     npm run build 
 
 EXPOSE 8080
