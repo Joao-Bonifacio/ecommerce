@@ -4,6 +4,7 @@ import type { UploadProductBody } from './product.dto'
 import { S3Storage } from '@/infra/db/image/s3.service'
 import type { Product } from '@/prisma/generated/mongo'
 import { UserStorage } from '@/infra/db/prisma/transactions/user.transaction'
+import { CacheStorage } from '@/infra/db/cache/cache.service'
 
 @Injectable()
 export class ProductService {
@@ -11,6 +12,7 @@ export class ProductService {
     private user: UserStorage,
     private product: ProductStorage,
     private s3: S3Storage,
+    private cache: CacheStorage,
   ) {}
 
   generateSlug = (owner: string, title: string): string =>
@@ -32,12 +34,29 @@ export class ProductService {
   }
 
   async findProductBySlug(slug: string): Promise<Product | null> {
+    const key = `product:${slug}`
+    const cached = await this.cache.get(key)
+    if (cached) return JSON.parse(cached)
+
     const product = await this.product.findProductBySlug(slug)
+    if (product) {
+      await this.cache.setex(key, 60 * 5, JSON.stringify(product)) // TTL 5 minutes
+    }
     return product
   }
 
   async findFeaturedProducts(): Promise<Product[] | null> {
+    const cached = await this.cache.get('featured-products')
+    if (cached) return JSON.parse(cached)
+
     const products = await this.product.findFeaturedProducts()
+    if (products) {
+      await this.cache.setex(
+        'featured-products',
+        60 * 5,
+        JSON.stringify(products),
+      ) // TTL 5 minutes
+    }
     return products
   }
 

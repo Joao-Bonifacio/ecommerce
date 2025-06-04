@@ -7,6 +7,7 @@ import {
   PrismaServiceMongo,
   PrismaServicePostgres,
 } from './prisma/prisma.service'
+import { CacheStorage } from './cache/cache.service'
 
 @Module({
   imports: [EnvModule],
@@ -16,7 +17,8 @@ import {
     UserStorage,
     ProductStorage,
     S3Storage,
+    CacheStorage,
   ],
-  exports: [UserStorage, ProductStorage, S3Storage],
+  exports: [UserStorage, ProductStorage, S3Storage, CacheStorage],
 })
 export class DatabaseModule {}
