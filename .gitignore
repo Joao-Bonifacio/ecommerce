@@ -94,7 +94,7 @@ documentation/
 stories/
 
 # Infra
-#*-configmap.yaml
+*-configmap.yaml
 
 # Misc
 *.pem
