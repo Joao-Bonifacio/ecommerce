@@ -1,0 +1,6 @@
+proxy:
+  type: LoadBalancer
+  annotations:
+    metallb.universe.tf/address-pool: kind-pool
+gateway:
+  enabled: true

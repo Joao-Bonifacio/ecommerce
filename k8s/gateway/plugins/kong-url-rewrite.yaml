@@ -1,0 +1,8 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: minio-url-rewrite
+plugin: kong-plugin-url-rewrite
+config:
+  url: http://minio-s3:9000
+  strip_path: true

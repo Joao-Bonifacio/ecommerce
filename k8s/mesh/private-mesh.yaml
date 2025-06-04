@@ -1,0 +1,71 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: redis
+spec:
+  hosts:
+  - redis-service.default.svc.cluster.local
+  tcp:
+  - route:
+    - destination:
+        host: redis-service.default.svc.cluster.local
+        port:
+          number: 6379
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: redis
+spec:
+  host: redis-service.default.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: postgres
+spec:
+  hosts:
+  - postgres.default.svc.cluster.local
+  tcp:
+  - route:
+    - destination:
+        host: postgres.default.svc.cluster.local
+        port:
+          number: 5432
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: postgres
+spec:
+  host: postgres.default.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: mongodb
+spec:
+  hosts:
+  - mongodb.default.svc.cluster.local
+  tcp:
+  - route:
+    - destination:
+        host: mongodb.default.svc.cluster.local
+        port:
+          number: 27017
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: mongodb
+spec:
+  host: mongodb.default.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
