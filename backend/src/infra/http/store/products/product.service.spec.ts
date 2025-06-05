@@ -27,10 +27,13 @@ let service: ProductService
 const mockCacheStorage = {
   get: vi.fn(),
   set: vi.fn(),
+  setex: vi.fn(),
   del: vi.fn(),
 }
 
 beforeEach(() => {
+  mockCacheStorage.get.mockResolvedValue(JSON.stringify({ id: 'cached-3' }))
+  mockCacheStorage.get.mockResolvedValue(JSON.stringify([{ id: 'cached-4' }]))
   vi.clearAllMocks()
   service = new ProductService(
     mockUserStorage as any,
@@ -55,7 +58,7 @@ describe('ProductService', () => {
 
   describe('findProductBySlug', () => {
     it('should return product from cache', async () => {
-      mockCacheStorage.get.mockResolvedValue({ id: 'cached-3' })
+      mockCacheStorage.get.mockResolvedValue(JSON.stringify({ id: 'cached-3' }))
 
       const result = await service.findProductBySlug('slug-3')
       expect(result).toEqual({ id: 'cached-3' })
@@ -73,17 +76,19 @@ describe('ProductService', () => {
       expect(mockProductStorage.findProductBySlug).toHaveBeenCalledWith(
         'slug-3',
       )
-      expect(mockCacheStorage.set).toHaveBeenCalledWith(
+      expect(mockCacheStorage.setex).toHaveBeenCalledWith(
         'product:slug-3',
-        { id: '3' },
         60 * 5,
+        JSON.stringify({ id: '3' }),
       )
     })
   })
 
   describe('findFeaturedProducts', () => {
     it('should return featured products from cache', async () => {
-      mockCacheStorage.get.mockResolvedValue([{ id: 'cached-4' }])
+      mockCacheStorage.get.mockResolvedValue(
+        JSON.stringify([{ id: 'cached-4' }]),
+      )
 
       const result = await service.findFeaturedProducts()
       expect(result).toEqual([{ id: 'cached-4' }])
@@ -99,10 +104,10 @@ describe('ProductService', () => {
       expect(result).toEqual([{ id: '4' }])
       expect(mockCacheStorage.get).toHaveBeenCalledWith('featured-products')
       expect(mockProductStorage.findFeaturedProducts).toHaveBeenCalled()
-      expect(mockCacheStorage.set).toHaveBeenCalledWith(
+      expect(mockCacheStorage.setex).toHaveBeenCalledWith(
         'featured-products',
-        [{ id: '4' }],
         60 * 5,
+        JSON.stringify([{ id: '4' }]),
       )
     })
   })

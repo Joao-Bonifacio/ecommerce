@@ -20,13 +20,16 @@
     "test:debug": "vitest --inspect-brk --inspect --logHeapUsage --threads=false",
     "test:e2e": "dotenv -e .env.test -- vitest run --exclude='**/*test.ts' --exclude='**/*.spec.ts*'",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org myself-z09 --project node-nestjs ./out && sentry-cli sourcemaps upload --org myself-z09 --project node-nestjs ./out",
-    "db:postgres-dev": "prisma generate --schema=prisma/postgres.schema.prisma; prisma migrate dev --schema=prisma/postgres.schema.prisma",
-    "db:postgres-prod": "prisma generate --schema=prisma/postgres.schema.prisma; prisma migrate prod --schema=prisma/postgres.schema.prisma",
+    "db:postgres": "prisma generate --schema=prisma/postgres.schema.prisma; prisma migrate dev --schema=prisma/postgres.schema.prisma",
+    "db:postgres-test": "dotenv -e .env.test -- prisma generate --schema=prisma/postgres.schema.prisma; prisma migrate dev --schema=prisma/postgres.schema.prisma",
+    "db:postgres-prod": "prisma generate --schema=prisma/postgres.schema.prisma; prisma migrate deploy --schema=prisma/postgres.schema.prisma",
     "db:mongo": "prisma generate --schema=prisma/mongo.schema.prisma; prisma db push --schema=prisma/mongo.schema.prisma",
-    "db:seed": "prisma db seed"
+    "db:mongo-test": "dotenv -e .env.test -- prisma generate --schema=prisma/mongo.schema.prisma; prisma db push --schema=prisma/mongo.schema.prisma",
+    "db:seed": "prisma db seed",
+    "db:seed-test": "dotenv -e .env.test -- prisma db seed"
   },
   "prisma": {
-    "seed": "ts-node --transpile-only prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.821.0",
@@ -74,7 +77,7 @@
     "@types/express-session": "^1.18.1",
     "@types/jest": "^29.5.14",
     "@types/multer": "^1.4.12",
-    "@types/node": "^22.10.7",
+    "@types/node": "^22.15.29",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.2",
     "@vitest/coverage-v8": "^3.1.4",
@@ -92,7 +95,8 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.20.0",
     "unplugin-swc": "^1.5.3",
     "vite-tsconfig-paths": "^5.1.4",

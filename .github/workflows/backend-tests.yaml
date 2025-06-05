@@ -51,7 +51,20 @@ jobs:
 
     - name: Start MinIO
       run: |
-        docker run -d --name minio -p 9000:9000 -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin123 minio/minio server /data
+        docker run -d --name minio -p 9000:9000 -e MINIO_ROOT_USER=${MINIO_ROOT_USER} -e MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD} minio/minio server /data
+  
+    - name: Install MinIO Client
+      run: |
+        wget https://dl.min.io/client/mc/release/linux-amd64/mc
+        chmod +x mc
+        sudo mv mc /usr/local/bin/
+
+    - name: Setup MinIO bucket
+      run: |
+        mc alias set local http://localhost:9000 ${{ env.MINIO_ROOT_USER }} ${{ env.MINIO_ROOT_PASSWORD }}
+        mc mb --ignore-existing local/ecommerce-test
+        mc anonymous set download local/ecommerce-test
+
     - name: Wait for MinIO
       run: |
         until curl -s http://localhost:9000/minio/health/live; do
@@ -83,7 +96,8 @@ jobs:
         REDIS_PORT: ${{ secrets.REDIS_PORT }}
         MONGODB_URL: ${{ secrets.MONGODB_URL }}
         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-        MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
-        MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-        MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+        S3_BUCKET_NAME: ecommerce-test
+        S3_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+        S3_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+        S3_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
       run: npm run test:all

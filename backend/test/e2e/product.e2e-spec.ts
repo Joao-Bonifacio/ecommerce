@@ -2,8 +2,10 @@ import { describe, expect, it, beforeAll, afterAll } from 'vitest'
 import { createTestApp } from './setup'
 import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
-import { loginTestUser } from '../utils/user-auth'
+import { createTestUser } from '../utils/user-auth'
 import { createProduct } from '../utils/create-product'
+import { faker } from '@faker-js/faker'
+// import { seed } from '@/prisma/seed'
 describe('Product Controller', () => {
   let app: INestApplication
   let token: string
@@ -11,39 +13,49 @@ describe('Product Controller', () => {
 
   beforeAll(async () => {
     app = await createTestApp()
-    const response = await loginTestUser(app, {
-      nickname: 'john_dee',
-      password: '@Passw0rd',
+    // await seed()
+    const user = await createTestUser(app, {
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      nickname: faker.internet.username(),
+      password: faker.internet.password(),
     })
-    const product = await createProduct(app, response.body.access_token)
+    token = user.body.access_token
+
+    const product = await createProduct(app, user.body.access_token)
     productId = product.body.id
-    token = response.body.access_token
   })
 
   afterAll(async () => {
-    await request(app.getHttpServer()).delete(`/v1/products/${productId}`)
+    await request(app.getHttpServer())
+      .delete(`/v1/products/${productId}`)
+      .set('Authorization', `Bearer ${token}`)
     await app.close()
   })
 
   it('should be able to list products', async () => {
     const response = await request(app.getHttpServer()).get('/v1/products')
-
-    expect(response.status).toBe(200)
-    expect(response.body).toBeInstanceOf(Array)
-  })
-
-  it('should be able to search products', async () => {
-    const response = await request(app.getHttpServer()).get(
-      '/v1/products/search?q=product',
-    )
-
     expect(response.status).toBe(200)
     expect(response.body).toBeInstanceOf(Array)
     expect(response.body.length).toBeGreaterThan(0)
   })
 
+  it('should be able to search products', async () => {
+    const { body } = await request(app.getHttpServer()).get(
+      '/v1/products/featured',
+    )
+    const query = body[0]!.slug.split('-')[1]
+    const response = await request(app.getHttpServer()).get(
+      `/v1/products/search?q=${query}`,
+    )
+
+    expect(response.status).toBe(200)
+    expect(response.body).toBeInstanceOf(Array)
+  })
+
   it('should be able to get product by slug', async () => {
-    const slug = 'john_dee-tst'
+    const { body } = await createProduct(app, token)
+    const slug = body.slug
     const response = await request(app.getHttpServer()).get(
       `/v1/products/slug/${slug}`,
     )

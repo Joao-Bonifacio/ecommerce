@@ -3,10 +3,10 @@ import { faker } from '@faker-js/faker'
 
 const prisma = new PrismaClient()
 
-async function main() {
+export async function seed() {
   await prisma.product.deleteMany()
 
-  const productsCount = 30
+  const productsCount = 15
 
   for (let i = 0; i < productsCount; i++) {
     const product = await prisma.product.create({
@@ -28,10 +28,6 @@ async function main() {
         })),
       },
     })
-    console.log(`Product created: ${product.id}`)
+    console.log(`Product created: ${product.title}`)
   }
 }
-
-main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect())

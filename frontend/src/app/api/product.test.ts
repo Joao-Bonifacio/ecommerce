@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import { getFeaturedProducts, getProduct, searchProducts } from '@/app/api/product'
 
-const sampleSlug = 'john_dee-product_test'
-const searchTerm = 'product'
 describe('Product API Integration', () => {
   it('should return product by slug', async () => {
-    const product = await getProduct(sampleSlug)
+    const products = await getFeaturedProducts()
+    const { slug } = products![0]
+    const product = await getProduct(slug)
     
     expect(product).toBeDefined()
-    expect(product).toHaveProperty('slug', sampleSlug)
+    expect(product).toHaveProperty('slug', slug)
     expect(product).toHaveProperty('title')
   })
   it('should return featured products list', async () => {
@@ -23,7 +23,9 @@ describe('Product API Integration', () => {
   })
 
   it('should return products by search query', async () => {
-    const results = await searchProducts(searchTerm)
+    const products = await getFeaturedProducts()
+    const slug = products![0].slug.split('-')[0]
+    const results = await searchProducts(slug)
     expect(results).toBeDefined()
     expect(Array.isArray(results)).toBe(true)
     expect(results?.length).toBeGreaterThan(0)

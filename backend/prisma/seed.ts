@@ -1,29 +1,24 @@
-import { exec } from 'child_process'
 import path from 'path'
 
+const filename =
+  typeof __filename !== 'undefined' ? __filename : process.argv[1]
+const __dirname = path.dirname(filename)
+
 async function runSeedScript(scriptName: string) {
-  return new Promise<void>((resolve, reject) => {
-    const scriptPath = path.join(__dirname, 'seeds', scriptName)
-    const cmd = `ts-node --transpile-only ${scriptPath}`
-    exec(cmd, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error on seed ${scriptName}:`, stderr)
-        reject(error)
-        return
-      }
-      console.log(stdout)
-      resolve()
-    })
-  })
+  const { seed } = await import(path.join(__dirname, 'seeds', scriptName))
+  await seed()
 }
 
-async function main() {
+export async function seed() {
+  console.log('-----------------> Products <-----------------')
   await runSeedScript('mongo.seed.ts')
+  console.log('-------------------> Users <-------------------')
   await runSeedScript('postgres.seed.ts')
-  console.log('All seeds finnished correctly!')
+  console.log('----------------------------------------------')
+  console.log('All seeds finished correctly!')
 }
 
-main().catch((e) => {
+seed().catch((e) => {
   console.error(e)
   process.exit(1)
 })

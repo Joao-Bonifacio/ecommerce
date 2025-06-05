@@ -49,6 +49,8 @@ describe('User API Integration', () => {
       name: 'John Doe',
       email: 'john@example.com',
       nickname: 'john_doe',
+      level: 'BRONZE',
+      role: 'CUSTUMER'
     }
 
     global.fetch = vi.fn().mockResolvedValueOnce({

@@ -4,10 +4,10 @@ import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
-async function main() {
+export async function seed() {
   await prisma.user.deleteMany()
 
-  const usersCount = 5
+  const usersCount = 2
 
   for (let i = 0; i < usersCount; i++) {
     const password = await bcrypt.hash('@Paww0rd', 8)
@@ -31,7 +31,3 @@ async function main() {
     console.log(`User created: ${user.nickname}`)
   }
 }
-
-main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect())
