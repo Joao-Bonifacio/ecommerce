@@ -28,7 +28,7 @@ describe('Search Page', () => {
       get: () => null,
     })
 
-    render(await Search({ searchParams: { q: 'produto' } }))
+    render(await Search({ searchParams: Promise.resolve({ q: 'produto' }) }))
 
     expect(true).toBe(true)
   })
@@ -40,7 +40,6 @@ describe('Search Page', () => {
     ;(useSearchParams as unknown as MockInstance).mockReturnValue({
       get: () => 'celular',
     })
-
     ;(productsAPI.searchProducts as Mock).mockResolvedValueOnce([
       {
         id: crypto.randomUUID(),
@@ -68,7 +67,7 @@ describe('Search Page', () => {
       },
     ])
 
-    render(await Search({ searchParams: { q: 'produto' } }))
+    render(await Search({ searchParams: Promise.resolve({ q: 'produto' }) }))
 
     expect(screen.getByText('Produto 1')).toBeInTheDocument()
     expect(screen.getByText('Produto 2')).toBeInTheDocument()

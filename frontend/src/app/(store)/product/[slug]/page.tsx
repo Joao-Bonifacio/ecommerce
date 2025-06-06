@@ -3,21 +3,18 @@ import AddToCartButton from '@/components/add-to-cart-button'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 
-interface ProductProps {
-  params: {
-    slug: string
-  }
-}
-
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const product = await getProduct(params.slug)
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const product = await getProduct(slug)
   if (!product) return {}
-  return {
-    title: product.title,
-  }
+  return { title: product.title }
 }
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+export async function generateStaticParams() {
   const products = await getFeaturedProducts()
   if (!products) return []
   return products.map((product) => ({
@@ -25,8 +22,13 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   }))
 }
 
-export default async function ProductPage({ params }: ProductProps) {
-  const product = await getProduct(params.slug)
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const product = await getProduct(slug)
   if (!product) return null
 
   return (

@@ -59,7 +59,9 @@ describe('Home - Integration', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Highlighted Product')).toBeInTheDocument()
-      expect(screen.getByText('This is a highlighted product.')).toBeInTheDocument()
+      expect(
+        screen.getByText('This is a highlighted product.'),
+      ).toBeInTheDocument()
       expect(screen.getByText('$199.99')).toBeInTheDocument()
     })
 

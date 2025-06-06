@@ -1,5 +1,5 @@
 import { api } from '@/app/api/api-wrapper'
-import { type Product } from '@/data/types/product'
+import { type Product } from '@/app/api/validation/types/product'
 
 export async function getFeaturedProducts(): Promise<Product[]> {
   const response = await api('/products/featured', {

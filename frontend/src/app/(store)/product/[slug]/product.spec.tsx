@@ -17,7 +17,9 @@ describe('ProductPage', () => {
     it('returns metadata with title when product found', async () => {
       vi.spyOn(productApi, 'getProduct').mockResolvedValue(mockProduct)
 
-      const metadata = await generateMetadata({ params: { slug: mockProduct.slug } })
+      const metadata = await generateMetadata({
+        params: Promise.resolve({ slug: mockProduct.slug }),
+      })
 
       expect(metadata.title).toBe(mockProduct.title)
     })
@@ -25,7 +27,9 @@ describe('ProductPage', () => {
     it('returns empty object when product not found', async () => {
       vi.spyOn(productApi, 'getProduct').mockResolvedValue(null)
 
-      const metadata = await generateMetadata({ params: { slug: 'not-found' } })
+      const metadata = await generateMetadata({
+        params: Promise.resolve({ slug: 'not-found' }),
+      })
 
       expect(metadata).toEqual({})
     })
@@ -54,10 +58,16 @@ describe('ProductPage', () => {
     it('renders product details when product found', async () => {
       vi.spyOn(productApi, 'getProduct').mockResolvedValue(mockProduct)
 
-      const { container } = render(await ProductPage({ params: { slug: mockProduct.slug } }))
+      const { container } = render(
+        await ProductPage({
+          params: Promise.resolve({ slug: mockProduct.slug }),
+        }),
+      )
 
       await waitFor(() => {
-        expect(screen.getByRole('heading', { name: /mock product/i })).toBeInTheDocument()
+        expect(
+          screen.getByRole('heading', { name: /mock product/i }),
+        ).toBeInTheDocument()
         expect(screen.getByText(/this is a mock product/i)).toBeInTheDocument()
         expect(screen.getByText('$120.00')).toBeInTheDocument()
         expect(screen.getByText(/in 12x of \$10.00/i)).toBeInTheDocument()
@@ -70,7 +80,11 @@ describe('ProductPage', () => {
     it('returns null when product not found', async () => {
       vi.spyOn(productApi, 'getProduct').mockResolvedValue(null)
 
-      const { container } = render(await ProductPage({ params: { slug: 'not-found' } }))
+      const { container } = render(
+        await ProductPage({
+          params: Promise.resolve({ slug: 'not-found' }),
+        }),
+      )
 
       expect(container.firstChild).toBeNull()
     })

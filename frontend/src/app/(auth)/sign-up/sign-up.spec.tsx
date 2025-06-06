@@ -18,6 +18,8 @@ describe('SignUpPage - UI', () => {
 
   it('renders the register button', () => {
     render(<SignUpPage />)
-    expect(screen.getByRole('button', { name: /register/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /register/i }),
+    ).toBeInTheDocument()
   })
 })

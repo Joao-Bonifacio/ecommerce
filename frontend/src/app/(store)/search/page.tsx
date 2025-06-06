@@ -6,9 +6,9 @@ import CurrentSearch from './current-search'
 import { searchProducts } from '@/app/api/product'
 
 interface SearchProps {
-  searchParams: {
+  searchParams: Promise<{
     q: string
-  }
+  }>
 }
 
 export default async function Search({ searchParams }: SearchProps) {

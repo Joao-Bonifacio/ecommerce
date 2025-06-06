@@ -1,12 +1,16 @@
 import { describe, it, expect } from 'vitest'
-import { getFeaturedProducts, getProduct, searchProducts } from '@/app/api/product'
+import {
+  getFeaturedProducts,
+  getProduct,
+  searchProducts,
+} from '@/app/api/product'
 
 describe('Product API Integration', () => {
   it('should return product by slug', async () => {
     const products = await getFeaturedProducts()
     const { slug } = products![0]
     const product = await getProduct(slug)
-    
+
     expect(product).toBeDefined()
     expect(product).toHaveProperty('slug', slug)
     expect(product).toHaveProperty('title')
