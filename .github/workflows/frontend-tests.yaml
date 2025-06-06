@@ -17,44 +17,33 @@ jobs:
         working-directory: frontend
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '22.16.0'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.16.0'
 
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: frontend/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run frontend
-      run: npm run dev
+      - name: Build frontend
+        run: npm run build
 
-    - name: Start json-server
-      run: npm run api:fake
-    
-    - name: Wait for json-server to start
-      run: |
-        for i in {1..10}; do
-          if curl -s http://localhost:3001/products; then
-            echo "json-server is up"
-            break
-          fi
-          echo "Waiting for json-server..."
-          sleep 2
-        done
+      - name: Start Fake API
+        run: npm run api:fake
 
-    - name: Run all tests
-      env:
-        NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
-        APP_URL: http://localhost:3000
-      run: npm run test:all
+      - name: Run all tests
+        env:
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8080
+          APP_URL: http://localhost:3000
+        run: npm run test:all

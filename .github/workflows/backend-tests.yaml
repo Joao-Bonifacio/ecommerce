@@ -47,7 +47,7 @@ jobs:
       run: npm ci
 
     - name: Run backend
-      run: npm run dev
+      run: npm run build
 
     - name: Start MinIO
       run: |
@@ -62,8 +62,8 @@ jobs:
     - name: Setup MinIO bucket
       run: |
         mc alias set local http://localhost:9000 ${{ env.MINIO_ROOT_USER }} ${{ env.MINIO_ROOT_PASSWORD }}
-        mc mb --ignore-existing local/ecommerce-test
-        mc anonymous set download local/ecommerce-test
+        mc mb --ignore-existing local/ecommerce
+        mc anonymous set download local/ecommerce
 
     - name: Wait for MinIO
       run: |

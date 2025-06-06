@@ -1,0 +1,164 @@
+{
+    "uuid": "a2b14d7f-56fb-4829-b27b-69c3a389bec0",
+    "lastMigration": 33,
+    "name": "Mockoon data",
+    "endpointPrefix": "v1",
+    "latency": 0,
+    "port": 8080,
+    "hostname": "",
+    "folders": [],
+    "routes": [
+        {
+            "uuid": "c0b351be-5b4d-4322-9bed-fc5f6b05a011",
+            "type": "http",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "products/slug/:slug",
+            "responses": [
+                {
+                    "uuid": "5a8d321b-4647-43eb-a816-7634918b5dff",
+                    "body": "{\n  \"id\": \"{{ faker 'string.uuid' }}\",\n  \"slug\": \"{{ urlParam 'slug' }}\",\n  \"title\": \"{{ faker 'commerce.productName' }}\",\n  \"description\": \"{{ faker 'commerce.productDescription' }}\",\n  \"price\": {{ faker 'commerce.price' }},\n  \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n  \"featured\": {{ faker 'datatype.boolean' }},\n  \"image\": \"/image/sample.jpeg\",\n  \"ratings\": [\n    {{# repeat 3 }}\n    {\n      \"id\": \"{{ faker 'string.uuid' }}\",\n      \"title\": \"{{ faker 'lorem.words' 3 }}\",\n      \"description\": \"{{ faker 'lorem.sentence' }}\"\n    }{{# unless @last }},{{/unless}}\n    {{/ repeat }}\n  ]\n}\n",
+                    "latency": 0,
+                    "statusCode": 200,
+                    "label": "",
+                    "headers": [],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": true,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "streamingMode": null,
+            "streamingInterval": 0
+        },
+        {
+            "uuid": "d4df2b82-7e3f-4c90-b51a-99d5803d1138",
+            "type": "http",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "products/search",
+            "responses": [
+                {
+                    "uuid": "ee94f73e-9f90-4171-a6a4-e7f71e574389",
+                    "body": "[\n  {{# repeat (queryParam 'total' '5') }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"featured\": {{ faker 'datatype.boolean' }},\n    \"image\": \"/image/sample.jpeg\",\n    \"ratings\": [\n      {{# repeat 3 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\"\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
+                    "latency": 0,
+                    "statusCode": 200,
+                    "label": "",
+                    "headers": [],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": true,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "streamingMode": null,
+            "streamingInterval": 0
+        },
+        {
+            "uuid": "a4601fbd-1fbf-45a7-b540-a50a00327863",
+            "type": "http",
+            "documentation": "",
+            "method": "get",
+            "endpoint": "products/featured",
+            "responses": [
+                {
+                    "uuid": "3f0ed480-46df-45b9-a307-bea724770e11",
+                    "body": "[\n  {{# repeat 5 }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"image\": \"/image/sample.jpeg\",\n    \"featured\": true,\n    \"ratings\": [\n      {{# repeat 3 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\"\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
+                    "latency": 0,
+                    "statusCode": 200,
+                    "label": "",
+                    "headers": [],
+                    "bodyType": "INLINE",
+                    "filePath": "",
+                    "databucketID": "",
+                    "sendFileAsBody": false,
+                    "rules": [],
+                    "rulesOperator": "OR",
+                    "disableTemplating": false,
+                    "fallbackTo404": false,
+                    "default": true,
+                    "crudKey": "id",
+                    "callbacks": []
+                }
+            ],
+            "responseMode": null,
+            "streamingMode": null,
+            "streamingInterval": 0
+        }
+    ],
+    "rootChildren": [
+        {
+            "type": "route",
+            "uuid": "a4601fbd-1fbf-45a7-b540-a50a00327863"
+        },
+        {
+            "type": "route",
+            "uuid": "d4df2b82-7e3f-4c90-b51a-99d5803d1138"
+        },
+        {
+            "type": "route",
+            "uuid": "c0b351be-5b4d-4322-9bed-fc5f6b05a011"
+        }
+    ],
+    "proxyMode": false,
+    "proxyHost": "",
+    "proxyRemovePrefix": false,
+    "tlsOptions": {
+        "enabled": false,
+        "type": "CERT",
+        "pfxPath": "",
+        "certPath": "",
+        "keyPath": "",
+        "caPath": "",
+        "passphrase": ""
+    },
+    "cors": true,
+    "headers": [
+        {
+            "key": "Content-Type",
+            "value": "application/json"
+        },
+        {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+        },
+        {
+            "key": "Access-Control-Allow-Methods",
+            "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+        },
+        {
+            "key": "Access-Control-Allow-Headers",
+            "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+        }
+    ],
+    "proxyReqHeaders": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ],
+    "proxyResHeaders": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ],
+    "data": [],
+    "callbacks": []
+}
