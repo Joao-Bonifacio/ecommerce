@@ -1,5 +1,5 @@
 import { S3Storage } from './s3.service'
-import { EnvService } from '@/env/env.service'
+import { EnvService } from '@/core/env/env.service'
 import { describe, it, expect, beforeAll } from 'vitest'
 
 describe('S3Storage Integration', () => {

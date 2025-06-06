@@ -2,7 +2,7 @@ import { config } from 'dotenv'
 import { execSync } from 'node:child_process'
 import { Redis } from 'ioredis'
 import crypto from 'node:crypto'
-import { envSchema } from '@/env/env'
+import { envSchema } from '@/core/env/env'
 import {
   PrismaServicePostgres,
   PrismaServiceMongo,

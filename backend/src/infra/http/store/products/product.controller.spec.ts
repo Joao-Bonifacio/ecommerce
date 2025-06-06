@@ -1,11 +1,6 @@
-// tests/product.controller.spec.ts
+import { mockProducts } from '@/test/mocks/product.mock'
 import { ProductController } from './product.controller'
 import { ProductService } from './product.service'
-
-const mockProducts = [
-  { id: crypto.randomUUID(), title: 'Product 1' },
-  { id: crypto.randomUUID(), title: 'Product 2' },
-] as any
 
 describe('ProductController', () => {
   let controller: ProductController

@@ -2,25 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import * as productApi from '@/app/api/product'
 import ProductPage, { generateMetadata, generateStaticParams } from './page'
+import { mockProduct } from '@/__test__/mocks/product.mock'
 
 vi.mock('@/components/add-to-cart-button', () => ({
   default: () => <button>Add to cart mock</button>,
 }))
 
 describe('ProductPage', () => {
-  const mockProduct = {
-    id: 'prod-123',
-    slug: 'mock-product',
-    title: 'Mock Product',
-    description: 'This is a mock product',
-    price: 120,
-    image: '/mock.jpg',
-    owner: 'user-1',
-    sales: 0,
-    featured: false,
-    ratings: [],
-  }
-
   beforeEach(() => {
     vi.resetAllMocks()
   })

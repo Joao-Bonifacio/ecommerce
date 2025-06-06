@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi, Mock } from 'vitest'
 import { signIn, signUp } from '@/app/api/user'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { mockUser } from '@/__test__/mocks/user.mock'
 
 vi.mock('next/headers', () => ({
   cookies: vi.fn(),
@@ -43,15 +44,6 @@ describe('User API Integration', () => {
     form.set('nickname', 'john_doe')
     form.set('password', '@Passw0rd')
     form.set('confirm-password', '@Passw0rd')
-
-    const mockUser = {
-      id: '123',
-      name: 'John Doe',
-      email: 'john@example.com',
-      nickname: 'john_doe',
-      level: 'BRONZE',
-      role: 'CUSTUMER'
-    }
 
     global.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,

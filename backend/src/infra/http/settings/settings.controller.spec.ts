@@ -1,5 +1,5 @@
 import { SettingsController } from './settings.controller'
-import { UserStorage } from '@/infra/db/prisma/transactions/user.transaction'
+import { UserStorage } from '@/infra/db/prisma/transactions/user.storage'
 import type { Mocked } from 'vitest'
 
 describe('SettingsController', () => {

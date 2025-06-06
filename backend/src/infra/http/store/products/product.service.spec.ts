@@ -1,35 +1,13 @@
 import { ProductService } from './product.service'
 import { HttpException } from '@nestjs/common'
-
-const mockUserStorage = {
-  findById: vi.fn(),
-}
-
-const mockProductStorage = {
-  listProduct: vi.fn(),
-  findProductsByOwner: vi.fn(),
-  findProductBySlug: vi.fn(),
-  findFeaturedProducts: vi.fn(),
-  searchproducts: vi.fn(),
-  uploadProduct: vi.fn(),
-  featureProduct: vi.fn(),
-  findProductById: vi.fn(),
-  removeProduct: vi.fn(),
-}
-
-const mockS3Storage = {
-  upload: vi.fn(),
-  delete: vi.fn(),
-}
+import {
+  mockCacheStorage,
+  mockProductStorage,
+  mockS3Storage,
+  mockUserStorage,
+} from '@/test/mocks/product.mock'
 
 let service: ProductService
-
-const mockCacheStorage = {
-  get: vi.fn(),
-  set: vi.fn(),
-  setex: vi.fn(),
-  del: vi.fn(),
-}
 
 beforeEach(() => {
   mockCacheStorage.get.mockResolvedValue(JSON.stringify({ id: 'cached-3' }))

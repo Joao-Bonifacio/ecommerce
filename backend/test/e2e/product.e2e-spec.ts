@@ -5,7 +5,6 @@ import { INestApplication } from '@nestjs/common'
 import { createTestUser } from '../utils/user-auth'
 import { createProduct } from '../utils/create-product'
 import { faker } from '@faker-js/faker'
-// import { seed } from '@/prisma/seed'
 describe('Product Controller', () => {
   let app: INestApplication
   let token: string
@@ -13,7 +12,6 @@ describe('Product Controller', () => {
 
   beforeAll(async () => {
     app = await createTestApp()
-    // await seed()
     const user = await createTestUser(app, {
       name: faker.person.fullName(),
       email: faker.internet.email(),

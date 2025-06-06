@@ -19,7 +19,7 @@ export class AuthGateway implements OnGatewayConnection {
       const payload: { sub: string } = await this.jwtService.verifyAsync(
         token as string,
       )
-      client.user = payload.sub // Associa o usuário ao cliente
+      client.user = payload.sub
       console.log(`Client connected: ${client.id}, User: ${payload.sub}`)
     } catch (error) {
       console.log('Invalid token:', (error as Error).message)

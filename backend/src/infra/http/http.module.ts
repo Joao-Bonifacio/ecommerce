@@ -1,4 +1,4 @@
-import { EnvModule } from '@/env/env.module'
+import { EnvModule } from '@/core/env/env.module'
 import { Module } from '@nestjs/common'
 import { DatabaseModule } from '../db/database.module'
 import { SessionController } from './session/session.controller'

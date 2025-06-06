@@ -1,4 +1,4 @@
-import { EnvService } from '@/env/env.service'
+import { EnvService } from '@/core/env/env.service'
 
 export const mockEnv = {
   get(key: string) {

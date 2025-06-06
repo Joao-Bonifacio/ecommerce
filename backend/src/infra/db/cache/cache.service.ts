@@ -1,4 +1,4 @@
-import { EnvService } from '@/env/env.service'
+import { EnvService } from '@/core/env/env.service'
 import { Injectable, OnModuleDestroy } from '@nestjs/common'
 import { Redis } from 'ioredis'
 

@@ -1,10 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import * as productApi from '@/app/api/product'
-import Home from './page' // ou './page' se no mesmo nível
+import Home from './page'
 import { vi, describe, it, beforeEach, expect } from 'vitest'
 import type { Product } from '@/app/api/validation/types/product'
 
-// Mock correto da função da API
 vi.mock('@/app/api/product', () => ({
   getFeaturedProducts: vi.fn(),
 }))

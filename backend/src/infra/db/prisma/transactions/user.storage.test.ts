@@ -1,8 +1,8 @@
 import { describe, it, beforeAll, afterAll, expect, vi } from 'vitest'
 import { PrismaServicePostgres } from '../prisma.service'
-import { UserStorage } from './user.transaction'
+import { UserStorage } from './user.storage'
 import { S3Storage } from '../../image/s3.service'
-import type { SignupBody } from '../../../http/session/user.dto'
+import type { SignupBody, LoginBody } from '../../../http/session/user.dto'
 import { mockEnv } from '@/test/mocks/env.mock'
 
 describe('UserStorage Integration Tests', () => {
@@ -21,7 +21,11 @@ describe('UserStorage Integration Tests', () => {
       return { url: 'https://fake-s3-url.com/avatar.png' }
     })
 
-    userStorage = new UserStorage(prisma, s3)
+    const jwtService = {
+      signAsync: vi.fn().mockResolvedValue('fake-jwt-token'),
+    } as any
+
+    userStorage = new UserStorage(jwtService, prisma, s3)
 
     await prisma.user.deleteMany()
   })
@@ -38,18 +42,37 @@ describe('UserStorage Integration Tests', () => {
     name: 'name',
   }
 
-  it('should create a user', async () => {
-    const user = await userStorage.create(userData)
-    createdUserId = user.id
+  it('should create a user and return UserFetched', async () => {
+    const result = await userStorage.create(userData)
 
-    expect(user).toHaveProperty('id')
-    expect(user.email).toBe(userData.email)
+    expect(result).toHaveProperty('access_token')
+    expect(result).toHaveProperty('user')
+
+    if ('error' in result) {
+      throw new Error('Expected successful user creation, got error')
+    }
+
+    createdUserId = result.user.id
+    expect(result.user.email).toBe(userData.email)
   })
 
-  it('should find user by email', async () => {
-    const userByEmail = await userStorage.find(userData.email)
+  it('should find user by email and return UserFetched', async () => {
+    const loginData: LoginBody = {
+      email: userData.email,
+      password: userData.password,
+      nickname: undefined,
+    }
 
-    expect(userByEmail).not.toBeNull()
+    const result = await userStorage.find(loginData)
+
+    expect(result).toHaveProperty('access_token')
+    expect(result).toHaveProperty('user')
+
+    if ('error' in result) {
+      throw new Error('Expected successful user find, got error')
+    }
+
+    expect(result.user.email).toBe(userData.email)
   })
 
   it('should find user by id', async () => {

@@ -21,3 +21,16 @@ export const mockProducts = [
     price: 299,
   },
 ]
+
+export const mockProduct = {
+  id: 'prod-123',
+  slug: 'mock-product',
+  title: 'Mock Product',
+  description: 'This is a mock product',
+  price: 120,
+  image: '/mock.jpg',
+  owner: 'user-1',
+  sales: 0,
+  featured: false,
+  ratings: [],
+}

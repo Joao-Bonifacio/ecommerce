@@ -1,9 +1,9 @@
-import { ProductStorage } from '@/infra/db/prisma/transactions/product.transaction'
+import { ProductStorage } from '@/infra/db/prisma/transactions/product.storage'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import type { UploadProductBody } from './product.dto'
 import { S3Storage } from '@/infra/db/image/s3.service'
 import type { Product } from '@/prisma/generated/mongo'
-import { UserStorage } from '@/infra/db/prisma/transactions/user.transaction'
+import { UserStorage } from '@/infra/db/prisma/transactions/user.storage'
 import { CacheStorage } from '@/infra/db/cache/cache.service'
 
 @Injectable()

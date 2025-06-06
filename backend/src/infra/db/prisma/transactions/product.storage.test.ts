@@ -1,6 +1,6 @@
 import { describe, it, beforeAll, afterAll, expect } from 'vitest'
 import { PrismaServiceMongo } from '../prisma.service'
-import { ProductStorage } from './product.transaction'
+import { ProductStorage } from './product.storage'
 
 describe('ProductStorage Integration Tests', () => {
   let prisma: PrismaServiceMongo
@@ -13,12 +13,10 @@ describe('ProductStorage Integration Tests', () => {
 
     productStorage = new ProductStorage(prisma)
 
-    // Opcional: limpar dados antes de rodar testes
     await prisma.product.deleteMany()
   })
 
   afterAll(async () => {
-    // Limpar dados após testes, se quiser
     await prisma.product.deleteMany()
     await prisma.$disconnect()
   })
@@ -46,7 +44,7 @@ describe('ProductStorage Integration Tests', () => {
         'Another Product',
         'Desc',
         200,
-        'test-product-slug', // mesmo slug do produto anterior
+        'test-product-slug',
         'http://image.url/img2.jpg',
       ),
     ).rejects.toThrow('Slug already exists')

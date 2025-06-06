@@ -1,11 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { envSchema } from '@/env/env'
+import { envSchema } from '@/core/env/env'
 import { APP_FILTER, RouterModule } from '@nestjs/core'
 import { HttpModule } from './http/http.module'
 import { AuthModule } from './auth/auth.module'
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup'
-import { LoggerMiddleware } from '@/logs/logger.middleware'
+import { LoggerMiddleware } from '@/core/log/logger.middleware'
 
 @Module({
   imports: [

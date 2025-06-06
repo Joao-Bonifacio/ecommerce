@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
+import { faker } from '@faker-js/faker'
 
 import { createTestApp } from '../e2e/setup'
 import { createTestUser, loginTestUser } from '../utils/user-auth'
-import { faker } from '@faker-js/faker'
 
 describe('User Controller', () => {
   let app: INestApplication
@@ -14,11 +14,11 @@ describe('User Controller', () => {
 
   beforeAll(async () => {
     app = await createTestApp()
-    password = await faker.internet.password()
+    password = faker.internet.password()
     const response = await createTestUser(app, {
-      name: await faker.person.fullName(),
-      email: await faker.internet.email(),
-      nickname: await faker.internet.username(),
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      nickname: faker.internet.username(),
       password,
     })
     nickname = response.body.user.nickname
@@ -35,10 +35,10 @@ describe('User Controller', () => {
 
   it('should be able to sign-up a user', async () => {
     const response = await createTestUser(app, {
-      name: await faker.person.fullName(),
-      email: await faker.internet.email(),
-      nickname: await faker.internet.username(),
-      password: await faker.internet.password(),
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      nickname: faker.internet.username(),
+      password: faker.internet.password(),
     })
 
     expect(response.status).toBe(201)
@@ -46,7 +46,7 @@ describe('User Controller', () => {
     expect(response.body).toHaveProperty('user')
 
     await request(app.getHttpServer())
-      .delete(`/v1/session/${response.body.user.id}`)
+      .delete('/v1/session')
       .set('Authorization', `Bearer ${response.body.access_token}`)
   })
 
@@ -71,10 +71,10 @@ describe('User Controller', () => {
 
   it('should be able to delete a user', async () => {
     const response = await createTestUser(app, {
-      name: await faker.person.fullName(),
-      email: await faker.internet.email(),
-      nickname: await faker.internet.username(),
-      password: await faker.internet.password(),
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      nickname: faker.internet.username(),
+      password: faker.internet.password(),
     })
 
     const tempToken = response.body.access_token
