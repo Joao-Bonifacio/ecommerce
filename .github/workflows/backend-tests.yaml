@@ -96,7 +96,7 @@ jobs:
         REDIS_PORT: ${{ secrets.REDIS_PORT }}
         MONGODB_URL: ${{ secrets.MONGODB_URL }}
         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-        S3_BUCKET_NAME: ecommerce-test
+        S3_BUCKET_NAME: ecommerce
         S3_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
         S3_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
         S3_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
