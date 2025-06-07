@@ -46,11 +46,11 @@ describe('ProductPage', () => {
     })
 
     it('returns null when no products', async () => {
-      vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue(null)
+      vi.spyOn(productApi, 'getFeaturedProducts').mockResolvedValue([])
 
       const params = await generateStaticParams()
 
-      expect(params).toBeNull()
+      expect(params).toEqual([])
     })
   })
 

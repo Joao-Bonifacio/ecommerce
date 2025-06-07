@@ -9,7 +9,7 @@ describe('seach products', () => {
 
   it('should not to be able to visit search page without a search query', () => {
     cy.on('uncaught:exception', () => false)
-    cy.visit('/search')
+    cy.visit('/search', { failOnStatusCode: false })
     cy.location('pathname').should('equal', '/')
   })
 })

@@ -90,7 +90,6 @@ databases/
 
 # Documentation
 documentation/
-.storybook/
 stories/
 
 # Infra

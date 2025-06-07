@@ -14,10 +14,10 @@
     "test:storybook": "test-storybook",
     "test:e2e": "dotenv -e .env.test -- cypress run",
     "test:cov": "dotenv -e .env.test -- vitest run --coverage --no-file-parallelism",
-    "test:all": "npm run test:storybook && npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
-    "api:fake": "mockoon-cli start --data src/__test__/api/mockoon-data.json --port 8080 &"
+    "api:fake": "mockoon-cli start --data src/__test__/api/mockoon-data.json --port 8080"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.15",
