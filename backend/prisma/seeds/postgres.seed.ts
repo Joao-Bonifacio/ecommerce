@@ -28,6 +28,6 @@ export async function seed() {
         avatar: faker.image.avatar(),
       },
     })
-    console.log(`User created: ${user.nickname}`)
+    console.log(`User created => ${user.nickname}`)
   }
 }

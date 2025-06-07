@@ -15,7 +15,7 @@ export async function seed() {
   console.log('-------------------> Users <-------------------')
   await runSeedScript('postgres.seed.ts')
   console.log('----------------------------------------------')
-  console.log('All seeds finished correctly!')
+  console.log('OK: All seeds finished correctly')
 }
 
 seed().catch((e) => {

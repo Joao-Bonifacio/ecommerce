@@ -19,14 +19,14 @@
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --inspect --logHeapUsage --threads=false",
     "test:e2e": "dotenv -e .env.test -- vitest run --exclude='**/*test.ts' --exclude='**/*.spec.ts*'",
+    "test:all": "npm run test:unit; npm run test:integration; npm run test:e2e",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org myself-z09 --project node-nestjs ./out && sentry-cli sourcemaps upload --org myself-z09 --project node-nestjs ./out",
-    "db:postgres": "prisma generate --schema=prisma/postgres.schema.prisma; prisma migrate dev --schema=prisma/postgres.schema.prisma",
+    "db:postgres": "prisma migrate reset --force --schema=prisma/postgres.schema.prisma; prisma generate --schema=prisma/postgres.schema.prisma; prisma migrate dev --schema=prisma/postgres.schema.prisma --name test",
     "db:postgres-test": "dotenv -e .env.test -- prisma generate --schema=prisma/postgres.schema.prisma; prisma migrate dev --schema=prisma/postgres.schema.prisma",
     "db:postgres-prod": "prisma generate --schema=prisma/postgres.schema.prisma; prisma migrate deploy --schema=prisma/postgres.schema.prisma",
     "db:mongo": "prisma generate --schema=prisma/mongo.schema.prisma; prisma db push --schema=prisma/mongo.schema.prisma",
     "db:mongo-test": "dotenv -e .env.test -- prisma generate --schema=prisma/mongo.schema.prisma; prisma db push --schema=prisma/mongo.schema.prisma",
-    "db:seed": "prisma db seed",
-    "db:seed-test": "dotenv -e .env.test -- prisma db seed"
+    "db:seed": "prisma db seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

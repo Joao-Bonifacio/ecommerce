@@ -87,7 +87,7 @@ export async function seed() {
       },
     })
 
-    console.log(`Product created: ${product.title}`)
+    console.log(`Product created => ${product.title}`)
   }
 
   await prisma.$disconnect()

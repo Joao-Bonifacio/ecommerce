@@ -21,6 +21,19 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      minio:
+        image: jhowlord/minio-ci:latest
+        ports:
+          - 9000:9000
+        env:
+          MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+        options: >-
+          jhowlord/minio-ci /data
+          --health-cmd "curl -f http://localhost:9000/minio/health/ready || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
 
     defaults:
       run:
@@ -46,78 +59,52 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Run backend
-      env:
-        REDIS_HOST: ${{ secrets.REDIS_HOST }}
-        REDIS_DB: ${{ secrets.REDIS_DB }}
-        REDIS_PORT: ${{ secrets.REDIS_PORT }}
-        MONGODB_URL: ${{ secrets.MONGODB_URL }}
-        POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-        S3_BUCKET_NAME: ecommerce
-        S3_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
-        S3_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-        S3_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-      run: npm run build
-
-    - name: Start MinIO
-      run: |
-        docker run -d --name minio -p 9000:9000 -e MINIO_ROOT_USER=${MINIO_ROOT_USER} -e MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD} minio/minio server /data
-  
-    - name: Install MinIO Client
-      run: |
-        wget https://dl.min.io/client/mc/release/linux-amd64/mc
-        chmod +x mc
-        sudo mv mc /usr/local/bin/
-
-    - name: Setup MinIO bucket
-      run: |
-        mc alias set local http://localhost:9000 ${{ env.MINIO_ROOT_USER }} ${{ env.MINIO_ROOT_PASSWORD }}
-        mc mb --ignore-existing local/ecommerce
-        mc anonymous set download local/ecommerce
-
-    - name: Wait for MinIO
-      run: |
-        until curl -s http://localhost:9000/minio/health/live; do
-          echo "Waiting for MinIO..."
-          sleep 3
-        done
-
     - name: Setup databases
       env:
-        REDIS_HOST: ${{ secrets.REDIS_HOST }}
-        REDIS_DB: ${{ secrets.REDIS_DB }}
-        REDIS_PORT: ${{ secrets.REDIS_PORT }}
         MONGODB_URL: ${{ secrets.MONGODB_URL }}
         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         S3_BUCKET_NAME: ecommerce
-        S3_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+        S3_ENDPOINT: http://localhost:9000
         S3_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
         S3_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
       run: |
         npm run db:mongo
-        npm run db:postgres-prod
+        npm run db:postgres
         npm run db:seed
-
-    - name: Wait for Redis to be ready
-      run: |
-        for i in {1..30}; do
-          if redis-cli -h localhost ping | grep PONG; then
-            echo "Redis is up"
-            break
-          fi
-          echo "Waiting for Redis..."
-          sleep 2
-        done
-
-    - name: Run all tests
+    
+    - name: Build backend
+      run: npm run build
+    
+    - name: Run Dev Server
       env:
-        REDIS_HOST: ${{ secrets.REDIS_HOST }}
-        REDIS_DB: ${{ secrets.REDIS_DB }}
-        REDIS_PORT: ${{ secrets.REDIS_PORT }}
+        APP_ENDPOINT: '*'
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+        JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+        JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+        REDIS_HOST: localhost
+        REDIS_DB: 0
+        REDIS_PORT: 6379
         MONGODB_URL: ${{ secrets.MONGODB_URL }}
         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         S3_BUCKET_NAME: ecommerce
-        S3_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
+        S3_ENDPOINT: http://localhost:9000
+        S3_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+        S3_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      run: npm run dev &
+
+    - name: Run all tests
+      env:
+        APP_ENDPOINT: '*'
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+        JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+        JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+        REDIS_HOST: localhost
+        REDIS_DB: 0
+        REDIS_PORT: 6379
+        MONGODB_URL: ${{ secrets.MONGODB_URL }}
+        POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+        S3_BUCKET_NAME: ecommerce
+        S3_ENDPOINT: http://localhost:9000
         S3_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
         S3_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
       run: npm run test:all
