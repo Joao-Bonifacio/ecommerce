@@ -38,6 +38,9 @@ jobs:
 
       - name: Start Fake API
         run: npm run api:fake
+      
+      - name: Start Storybook
+        run: npm run storybook
 
       - name: Build frontend
         env:
