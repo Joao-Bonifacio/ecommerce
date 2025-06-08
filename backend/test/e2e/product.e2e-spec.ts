@@ -39,10 +39,8 @@ describe('Product Controller', () => {
   })
 
   it('should be able to search products', async () => {
-    const { body } = await request(app.getHttpServer()).get(
-      '/v1/products/featured',
-    )
-    const query = body[0]!.slug.split('-')[1]
+    const { body } = await createProduct(app, token)
+    const query = body.slug.split('-')[1]
     const response = await request(app.getHttpServer()).get(
       `/v1/products/search?q=${query}`,
     )

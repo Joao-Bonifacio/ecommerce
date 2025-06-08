@@ -70,14 +70,14 @@ describe('User Controller', () => {
   })
 
   it('should be able to delete a user', async () => {
-    const response = await createTestUser(app, {
+    const { body } = await createTestUser(app, {
       name: faker.person.fullName(),
       email: faker.internet.email(),
       nickname: faker.internet.username(),
       password: faker.internet.password(),
     })
 
-    const tempToken = response.body.access_token
+    const tempToken = body.access_token
 
     const deleteResponse = await request(app.getHttpServer())
       .delete('/v1/session')
