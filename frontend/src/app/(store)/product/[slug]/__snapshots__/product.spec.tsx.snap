@@ -1,0 +1,62 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ProductPage > ProductPage component > renders product details when product found 1`] = `
+<div>
+  <div
+    class="relative grid max-h-[860px] grid-cols-3"
+  >
+    <div
+      class="col-span-2 overflow-hidden"
+    >
+      <img
+        alt="This is a mock product"
+        class="rounded-r-xl"
+        data-nimg="1"
+        decoding="async"
+        height="1000"
+        loading="lazy"
+        src="/_next/image?url=%2Fmock.jpg&w=2048&q=100"
+        srcset="/_next/image?url=%2Fmock.jpg&w=1080&q=100 1x, /_next/image?url=%2Fmock.jpg&w=2048&q=100 2x"
+        style="color: transparent;"
+        width="1000"
+      />
+    </div>
+    <div
+      class="flex flex-col justify-center px-12"
+    >
+      <h1
+        class="!text-4xl font-bold leading-tight !py-2 !mb-5"
+      >
+        Mock Product
+      </h1>
+      <p
+        class="mt-2 leading-relaxed text-zinc-400 !text-lg !p-y2 !mb-5"
+      >
+        This is a mock product
+      </p>
+      <div
+        class="mt-8 flex items-center gap-3 !text-md"
+      >
+        <span
+          class="inline-block rounded-full bg-violet-500 !p-3 font-semibold"
+        >
+          $120.00
+        </span>
+        <span
+          class="text-zinc-400 !text-lg"
+        >
+          In 12x of
+           
+          $10.00
+        </span>
+      </div>
+      <button>
+        Add to cart mock
+      </button>
+    </div>
+    <div
+      class="h-5 w-full"
+    />
+  </div>
+</div>
+`;

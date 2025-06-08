@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minio-config
+data:
+  MINIO_SERVER_URL: "http://kong-proxy/s3"
+  MINIO_BROWSER_REDIRECT_URL: "http://kong-proxy/s3"

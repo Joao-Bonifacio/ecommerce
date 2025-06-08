@@ -21,7 +21,7 @@ export const zSigninDTO = z
   })
   .refine((data) => data.email || data.nickname, {
     message: 'You shold send email or nickname',
-    path: ['email'],
+    path: ['email', 'nickname'],
   })
 
 export type LoginBody = z.infer<typeof zSigninDTO>

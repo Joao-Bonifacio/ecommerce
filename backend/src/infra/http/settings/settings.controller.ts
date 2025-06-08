@@ -1,5 +1,5 @@
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import { UserStorage } from '@/infra/db/prisma/transactions/user.transaction'
+import { UserStorage } from '@/infra/db/prisma/transactions/user.storage'
 import {
   Body,
   Controller,
@@ -39,6 +39,6 @@ export class SettingsController {
     @CurrentUser() user: { sub: string },
     @Body() body: { password: string },
   ): Promise<void> {
-    return this.user.updatePassword(user.sub, body.password)
+    await this.user.updatePassword(user.sub, body.password)
   }
 }

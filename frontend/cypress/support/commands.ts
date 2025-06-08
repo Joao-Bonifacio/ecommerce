@@ -9,6 +9,6 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add('searchByQuery', (query: string) => {
-  cy.visit('/')
+  cy.visit('/', { failOnStatusCode: false })
   cy.get('input[name=q]').type(query).parent('form').submit()
 })

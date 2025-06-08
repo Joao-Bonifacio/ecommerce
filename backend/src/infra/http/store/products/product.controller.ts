@@ -4,6 +4,7 @@ import {
   Delete,
   FileTypeValidator,
   Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   MaxFileSizeValidator,
@@ -61,6 +62,7 @@ export class ProductController {
   }
 
   @Post()
+  @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
   uploadProduct(
     @CurrentUser() user: { sub: string },
@@ -79,11 +81,13 @@ export class ProductController {
   }
 
   @Patch('featured/:id')
+  @HttpCode(204)
   featureProduct(@Param('id') id: string): Promise<void> {
     return this.product.featureProduct(id)
   }
 
-  @Delete()
+  @Delete('remove/:id')
+  @HttpCode(204)
   removeProduct(@Param('id') id: string): Promise<void> {
     return this.product.removeProduct(id)
   }

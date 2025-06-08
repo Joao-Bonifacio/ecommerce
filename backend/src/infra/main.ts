@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { EnvService } from '../env/env.service'
+import { EnvService } from '../core/env/env.service'
 import helmet from 'helmet'
 import session from 'express-session'
 import cookieParser from 'cookie-parser'

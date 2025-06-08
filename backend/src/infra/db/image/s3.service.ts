@@ -1,4 +1,4 @@
-import { EnvService } from '@/env/env.service'
+import { EnvService } from '@/core/env/env.service'
 import {
   DeleteObjectCommand,
   PutObjectCommand,

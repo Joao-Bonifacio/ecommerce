@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: konga-config
+data:
+  DB_ADAPTER: "postgres"
+  DB_HOST: "postgres.default.svc.cluster.local"
+  DB_PORT: "5432"
+  DB_USER: "admin"
+  DB_PASSWORD: "admin123"
+  DB_DATABASE: "kong"

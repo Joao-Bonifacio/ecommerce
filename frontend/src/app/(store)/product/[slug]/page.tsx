@@ -1,37 +1,34 @@
-import { getProduct, getFeaturedProducts } from '@/app/api/products'
+import { getProduct, getFeaturedProducts } from '@/app/api/product'
 import AddToCartButton from '@/components/add-to-cart-button'
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Image from 'next/image'
-
-interface ProductProps {
-  params: {
-    slug: string
-  }
-}
 
 export async function generateMetadata({
   params,
-}: ProductProps): Promise<Metadata> {
-  const product = await getProduct(params.slug)
-  if (!product) return {} satisfies Metadata
-  return {
-    title: product.title,
-  } satisfies Metadata
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const product = await getProduct(slug)
+  if (!product) return {}
+  return { title: product.title }
 }
 
-export async function generateStaticParams(): Promise<
-  { slug: string }[] | null
-> {
+export async function generateStaticParams() {
   const products = await getFeaturedProducts()
-  if (!products) return null
-
+  if (!products) return []
   return products.map((product) => ({
     slug: product.slug,
   }))
 }
 
-export default async function ProductPage({ params }: ProductProps) {
-  const product = await getProduct(params.slug)
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const product = await getProduct(slug)
   if (!product) return null
 
   return (

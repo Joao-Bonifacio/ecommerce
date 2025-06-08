@@ -18,7 +18,8 @@
         "name": "next"
       }
     ],
-    "types": ["vitest/globals"],
+    "types": ["vitest/globals", "cypress"],
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@/utils/": ["./utils/*"]

@@ -90,8 +90,10 @@ databases/
 
 # Documentation
 documentation/
-.storybook/
 stories/
+
+# Infra
+*-configmap.yaml
 
 # Misc
 *.pem
@@ -103,3 +105,4 @@ storybook-static
 
 memory-bank/
 .clinerules
+.scannerwork/

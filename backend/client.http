@@ -81,3 +81,13 @@ GET {{baseUrl}}/products/featured
 
 # @name search_products
 GET {{baseUrl}}/products/search?q={{lastProductTitle}}
+
+###
+
+# @name remove_product
+DELETE {{baseUrl}}/products/remove/{{lastProductTitle}}
+Authorization: Bearer {{access_token}}
+
+# @name remove_user
+DELETE {{baseUrl}}/session
+Authorization: Bearer {{access_token}}
