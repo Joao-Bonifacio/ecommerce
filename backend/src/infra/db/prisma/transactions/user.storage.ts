@@ -55,7 +55,7 @@ export class UserStorage {
     }
 
     const user = userTransaction as User
-    const access_token = await this.jwt.signAsync({ sub: user.id })
+    const access_token = await this.jwt.signAsync({ sub: user.id, nickname: user.nickname })
 
     return { access_token, user }
   }
@@ -70,7 +70,7 @@ export class UserStorage {
     const passwordMatch = await compare(password, user.password)
     if (!passwordMatch) return { error: true, badUser: true }
 
-    const access_token = await this.jwt.signAsync({ sub: user.id })
+    const access_token = await this.jwt.signAsync({ sub: user.id, nickname: user.nickname })
     return { access_token, user }
   }
 

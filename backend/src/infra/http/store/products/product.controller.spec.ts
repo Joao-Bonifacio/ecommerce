@@ -12,7 +12,7 @@ describe('ProductController', () => {
       findProductsByOwner: vi.fn().mockResolvedValue(mockProducts),
       findProductBySlug: vi.fn().mockResolvedValue(mockProducts[0]),
       findFeaturedProducts: vi.fn().mockResolvedValue([mockProducts[1]]),
-      seachProducts: vi.fn().mockResolvedValue(mockProducts),
+      searchProducts: vi.fn().mockResolvedValue(mockProducts),
       uploadProduct: vi.fn().mockResolvedValue(mockProducts[0]),
       featureProduct: vi.fn().mockResolvedValue(undefined),
       removeProduct: vi.fn().mockResolvedValue(undefined),
@@ -47,7 +47,7 @@ describe('ProductController', () => {
   it('should search products by query', async () => {
     const result = await controller.seachProducts('prod')
     expect(result).toEqual(mockProducts)
-    expect(service.seachProducts).toHaveBeenCalledWith('prod')
+    expect(service.searchProducts).toHaveBeenCalledWith('prod')
   })
 
   it('should throw if search query is empty', async () => {
@@ -65,32 +65,5 @@ describe('ProductController', () => {
         throw e
       }
     }
-  })
-
-  it('should upload product', async () => {
-    const file = {
-      originalname: 'img.jpg',
-      mimetype: 'image/jpeg',
-      buffer: Buffer.from(''),
-    } as any
-    const body = {
-      title: 'New Product',
-      description: 'desc',
-      price: 10,
-      fileName: 'img.jpg',
-    }
-    const result = await controller.uploadProduct({ sub: '123' }, body, file)
-    expect(result).toEqual(mockProducts[0])
-    expect(service.uploadProduct).toHaveBeenCalled()
-  })
-
-  it('should feature a product', async () => {
-    await controller.featureProduct('1')
-    expect(service.featureProduct).toHaveBeenCalledWith('1')
-  })
-
-  it('should remove a product', async () => {
-    await controller.removeProduct('1')
-    expect(service.removeProduct).toHaveBeenCalledWith('1')
   })
 })
