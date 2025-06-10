@@ -55,7 +55,10 @@ export class UserStorage {
     }
 
     const user = userTransaction as User
-    const access_token = await this.jwt.signAsync({ sub: user.id, nickname: user.nickname })
+    const access_token = await this.jwt.signAsync({
+      sub: user.id,
+      nickname: user.nickname,
+    })
 
     return { access_token, user }
   }
@@ -70,7 +73,10 @@ export class UserStorage {
     const passwordMatch = await compare(password, user.password)
     if (!passwordMatch) return { error: true, badUser: true }
 
-    const access_token = await this.jwt.signAsync({ sub: user.id, nickname: user.nickname })
+    const access_token = await this.jwt.signAsync({
+      sub: user.id,
+      nickname: user.nickname,
+    })
     return { access_token, user }
   }
 
@@ -78,6 +84,10 @@ export class UserStorage {
     return await this.prisma.user.findUnique({
       where: { id },
     })
+  }
+
+  async findByNick(nickname: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { nickname } })
   }
 
   async updateAvatar(

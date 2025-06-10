@@ -10,7 +10,7 @@ export class ProductController {
   constructor(private product: ProductService) {}
 
   @Get()
-  productList(): Promise<Product[] | []> {
+  productList(): Promise<Product[] | null> {
     return this.product.productList()
   }
 

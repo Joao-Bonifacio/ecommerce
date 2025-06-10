@@ -7,7 +7,7 @@ export async function createProduct(app: INestApplication, token: string) {
   const imagePath = path.resolve(__dirname, '../image/sample.jpeg')
 
   const response = await request(app.getHttpServer())
-    .post('/v1/products')
+    .post('/v1/seller/upload')
     .set('Authorization', `Bearer ${token}`)
     .field('title', await faker.book.title())
     .field('description', await faker.lorem.text())

@@ -26,7 +26,7 @@ describe('SellerService', () => {
     } as Express.Multer.File
 
     mockS3Storage.upload.mockResolvedValue({ url: 'https://image.jpg' })
-    mockUserStorage.findById.mockResolvedValue({ nickname: 'john_dee' })
+    mockUserStorage.findByNick.mockResolvedValue({ nickname: 'john_dee' })
     mockProductStorage.uploadProduct.mockResolvedValue({ id: '6' })
 
     const result = await service.uploadProduct(
@@ -38,13 +38,16 @@ describe('SellerService', () => {
   })
 
   it('should return null if user not found during upload', async () => {
-    mockUserStorage.findById.mockResolvedValue(null)
+    mockUserStorage.findByNick.mockResolvedValue(null)
     const result = await service.uploadProduct(
       'id',
       { title: '', description: '', price: 0 },
       {} as any,
     )
-    expect(result).toBeNull()
+    expect(result).toStrictEqual({
+      badNickname: true,
+      error: true,
+    })
   })
 
   it('should feature a product', async () => {

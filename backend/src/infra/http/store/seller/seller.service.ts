@@ -15,38 +15,47 @@ export class SellerService {
     private userStorage: UserStorage,
   ) {}
 
-  generateSlug = (owner: string, title: string): string =>
-    `${owner}-${title
+  generateSlug(owner: string, title: string): string {
+    const randomSuffix = Math.random().toString(36).substring(2, 6)
+    return `${owner}-${title
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
-      .replace(/\s+/g, '_')
-      .replace(/[^\w-]/g, '')}`
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')}-${randomSuffix}`
+  }
 
   async uploadProduct(
-    owner: string,
+    nickname: string,
     body: Partial<Product>,
     file: Express.Multer.File,
-  ): Promise<Product | ProductError | null> {
+  ): Promise<Product | ProductError> {
     if (!body || !file) return { error: true, badUserBody: true }
 
-    const user = await this.userStorage.findById(owner)
-    if (!user) return null
+    const user = await this.userStorage.findByNick(nickname)
+    if (!user) return { error: true, badNickname: true }
 
     const { title, description, price } = body
+    if (!title) return { error: true, badUserBody: true }
+
+    const priceNumber = Number(price)
+    if (isNaN(priceNumber) || priceNumber <= 0)
+      return { error: true, badUserBody: true }
+
     const { originalname: fileName, mimetype: fileType, buffer } = file
     const { url: image } = await this.s3.upload({
       fileName,
       fileType,
       body: buffer,
     })
-    const slug = this.generateSlug(owner, title!)
+
+    const slug = this.generateSlug(nickname, title)
 
     const product = await this.product.uploadProduct(
-      owner,
-      title!,
-      description!,
-      Number(price),
+      nickname,
+      title,
+      description || '',
+      priceNumber,
       slug,
       image,
     )

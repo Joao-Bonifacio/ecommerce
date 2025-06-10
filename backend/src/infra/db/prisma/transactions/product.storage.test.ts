@@ -1,94 +1,128 @@
-import { describe, it, beforeAll, afterAll, expect } from 'vitest'
+import { describe, it, beforeAll, afterAll, beforeEach, expect } from 'vitest'
 import { PrismaServiceMongo } from '../prisma.service'
 import { ProductStorage } from './product.storage'
 
 describe('ProductStorage Integration Tests', () => {
   let prisma: PrismaServiceMongo
   let productStorage: ProductStorage
-  let createdProductId: string
 
   beforeAll(async () => {
     prisma = new PrismaServiceMongo()
     await prisma.$connect()
-
     productStorage = new ProductStorage(prisma)
+  })
 
+  beforeEach(async () => {
     await prisma.product.deleteMany()
   })
 
   afterAll(async () => {
-    await prisma.product.deleteMany()
     await prisma.$disconnect()
   })
 
-  it('should upload a new product', async () => {
+  const generateUniqueSlug = () =>
+    `test-product-${crypto.randomUUID().slice(0, 8)}`
+
+  const createTestProduct = async (slug?: string) => {
+    const productSlug = slug || generateUniqueSlug()
+
     const product = await productStorage.uploadProduct(
       'owner-123',
       'Test Product',
       'Description of product',
       100,
-      'test-product-slug',
+      productSlug,
       'http://image.url/img.jpg',
     )
 
-    createdProductId = product.id
+    if ('error' in product) {
+      throw new Error(
+        `Failed to create test product: ${JSON.stringify(product)}`,
+      )
+    }
 
+    return product
+  }
+
+  it('should upload a new product', async () => {
+    const product = await createTestProduct()
     expect(product).toHaveProperty('id')
     expect(product.title).toBe('Test Product')
   })
 
   it('should not allow duplicate slug', async () => {
-    await expect(
-      productStorage.uploadProduct(
-        'owner-123',
-        'Another Product',
-        'Desc',
-        200,
-        'test-product-slug',
-        'http://image.url/img2.jpg',
-      ),
-    ).rejects.toThrow('Slug already exists')
+    const uniqueSlug = generateUniqueSlug()
+    await createTestProduct(uniqueSlug)
+
+    const duplicateProduct = await productStorage.uploadProduct(
+      'owner-123',
+      'Another Product',
+      'Desc',
+      200,
+      uniqueSlug,
+      'http://image.url/img2.jpg',
+    )
+
+    expect(duplicateProduct).toEqual({ error: true, badSlug: true })
   })
 
   it('should list all products', async () => {
-    const products = await productStorage.listProduct()
-    expect(products).toBeInstanceOf(Array)
-    expect(products?.length).toBeGreaterThan(0)
+    await createTestProduct()
+    const products = await productStorage.listProducts()
+    expect(products).toHaveLength(1)
+    expect(products?.[0].title).toBe('Test Product')
   })
 
   it('should find product by owner', async () => {
+    await createTestProduct()
     const products = await productStorage.findProductsByOwner('owner-123')
-    expect(products).not.toBeNull()
-    expect(products?.length).toBeGreaterThan(0)
-    expect(products && products[0].owner).toBe('owner-123')
+    expect(products).toHaveLength(1)
+    expect(products?.[0].owner).toBe('owner-123')
   })
 
   it('should find product by id', async () => {
-    const product = await productStorage.findProductById(createdProductId)
-    expect(product).not.toBeNull()
-    expect(product?.id).toBe(createdProductId)
+    const product = await createTestProduct()
+    const foundProduct = await productStorage.findProductById(product.id)
+
+    if (foundProduct && 'id' in foundProduct) {
+      expect(foundProduct.id).toBe(product.id)
+    } else {
+      throw new Error('Product not found')
+    }
   })
 
   it('should find product by slug', async () => {
-    const product = await productStorage.findProductBySlug('test-product-slug')
-    expect(product).not.toBeNull()
-    expect(product?.slug).toBe('test-product-slug')
+    const uniqueSlug = generateUniqueSlug()
+    await createTestProduct(uniqueSlug)
+    const product = await productStorage.findProductBySlug(uniqueSlug)
+    expect(product?.slug).toBe(uniqueSlug)
   })
 
   it('should feature a product', async () => {
-    await productStorage.featureProduct(createdProductId)
-    const product = await productStorage.findProductById(createdProductId)
-    expect(product?.featured).toBe(true)
+    const product = await createTestProduct()
+    const featuredProduct = await productStorage.featureProduct(
+      product.id,
+      'owner-123',
+    )
+
+    if (featuredProduct && 'featured' in featuredProduct) {
+      expect(featuredProduct.featured).toBe(true)
+    } else {
+      throw new Error('Feature operation failed')
+    }
   })
 
   it('should search products', async () => {
-    const products = await productStorage.searchproducts('Test')
-    expect(products?.length).toBeGreaterThan(0)
+    await createTestProduct()
+    const products = await productStorage.searchProducts('Test')
+    expect(products).toHaveLength(1)
+    expect(products?.[0].title).toContain('Test')
   })
 
   it('should remove a product', async () => {
-    await productStorage.removeProduct(createdProductId)
-    const product = await productStorage.findProductById(createdProductId)
-    expect(product).toBeNull()
+    const product = await createTestProduct()
+    await productStorage.removeProduct(product.id)
+    const foundProduct = await productStorage.findProductById(product.id)
+    expect(foundProduct).toEqual({ error: true, badProduct: true })
   })
 })

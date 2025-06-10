@@ -12,7 +12,7 @@ import {
   Patch,
   Post,
   UploadedFile,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common'
 import { SellerService } from './seller.service'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -34,14 +34,19 @@ export class SellerController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 * 10 }), // 20mb
-          new FileTypeValidator({ fileType: '.(png|jpg|jpeg)' })
-        ]
-      })
+          new FileTypeValidator({ fileType: '.(png|jpg|jpeg)' }),
+        ],
+      }),
     )
-    file: Express.Multer.File
+    file: Express.Multer.File,
   ): Promise<Product> {
     const product = await this.seller.uploadProduct(user.nickname, body, file)
-    if (typeof product === 'object' && 'error' in product && product.error) {
+    if (
+      product &&
+      typeof product === 'object' &&
+      'error' in product &&
+      product.error
+    ) {
       throw new HttpException(product, HttpStatus.BAD_REQUEST)
     }
     return product as Product
@@ -59,19 +64,20 @@ export class SellerController {
         fileIsRequired: false,
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 20 }), // 20MB
-          new FileTypeValidator({ fileType: /^(image\/png|image\/jpeg)$/ })
-        ]
-      })
+          new FileTypeValidator({ fileType: /^(image\/png|image\/jpeg)$/ }),
+        ],
+      }),
     )
-    file?: Express.Multer.File
+    file?: Express.Multer.File,
   ): Promise<Product> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { owner, createdAt, ratings, sales, ...safeBody } = body
 
     const result = await this.seller.editProduct(
       id,
       user.nickname,
       safeBody,
-      file
+      file,
     )
 
     if ('error' in result) {
@@ -85,7 +91,7 @@ export class SellerController {
   @HttpCode(204)
   async featureProduct(
     @CurrentUser() user: { sub: string; nickname: string },
-    @Param('id') id: string
+    @Param('id') id: string,
   ): Promise<Product | null> {
     const product = this.seller.featureProduct(id, user.nickname)
 

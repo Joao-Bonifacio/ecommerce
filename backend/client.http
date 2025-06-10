@@ -34,7 +34,7 @@ GET {{baseUrl}}/products
 ###
 
 # @name upload_product
-POST {{baseUrl}}/products
+POST {{baseUrl}}/seller/upload
 Authorization: Bearer {{access_token}}
 Content-Type: multipart/form-data; boundary=BOUNDARY
 
@@ -64,7 +64,7 @@ Content-Type: image/jpeg
 ###
 
 # @name feature_product
-PATCH {{baseUrl}}/products/featured/{{lastProductId}}
+PATCH {{baseUrl}}/seller/feature/{{lastProductId}}
 Authorization: Bearer {{access_token}}
 
 ###
@@ -85,7 +85,7 @@ GET {{baseUrl}}/products/search?q={{lastProductTitle}}
 ###
 
 # @name remove_product
-DELETE {{baseUrl}}/products/remove/{{lastProductTitle}}
+DELETE {{baseUrl}}/seller/remove/{{lastProductId}}
 Authorization: Bearer {{access_token}}
 
 # @name remove_user

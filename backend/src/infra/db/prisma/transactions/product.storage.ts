@@ -66,7 +66,7 @@ export class ProductStorage {
   }
 
   async uploadProduct(
-    owner: string,
+    nickname: string,
     title: string,
     description: string,
     price: number,
@@ -80,7 +80,7 @@ export class ProductStorage {
 
     const product = await this.prisma.product.create({
       data: {
-        owner,
+        owner: nickname,
         title,
         description,
         price,
@@ -99,30 +99,28 @@ export class ProductStorage {
     id: string,
     data: Partial<Product>,
   ): Promise<Product | ProductError> {
-    const { owner, ratings, sales, ...safeData } = data // eslint-disable-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { owner, createdAt, ratings, sales, ...safeData } = data
 
     if (safeData.slug) {
-      const existingSlug = await this.prisma.product.findUnique({
+      const existing = await this.prisma.product.findFirst({
         where: {
           slug: safeData.slug,
           NOT: { id },
         },
       })
-      if (existingSlug) return { error: true, badSlug: true }
-    }
 
-    const currentProduct = await this.prisma.product.findUnique({
-      where: { id },
-    })
-    const mergedData = {
-      ...currentProduct,
-      ...safeData,
-      updatedAt: new Date(),
+      if (existing) {
+        return { error: true, badSlug: true }
+      }
     }
 
     return this.prisma.product.update({
       where: { id },
-      data: mergedData,
+      data: {
+        ...safeData,
+        updatedAt: new Date(),
+      },
     })
   }
 

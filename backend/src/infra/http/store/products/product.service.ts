@@ -10,9 +10,8 @@ export class ProductService {
     private cache: CacheStorage,
   ) {}
 
-  async productList(): Promise<Product[] | []> {
+  async productList(): Promise<Product[] | null> {
     const products = await this.product.listProducts()
-    if (products === null) return []
     return products
   }
 
