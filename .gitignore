@@ -102,6 +102,7 @@ tmp/
 *storybook.log
 notes.md
 storybook-static
+sonar-project.properties
 
 memory-bank/
 .clinerules

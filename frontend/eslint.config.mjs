@@ -1,7 +1,6 @@
-import storybook from 'eslint-plugin-storybook'
-
 import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
+import storybook from 'eslint-plugin-storybook'
 
 const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
