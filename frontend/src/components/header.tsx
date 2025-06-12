@@ -28,14 +28,14 @@ export default async function Header() {
         <ThemeToggle />
 
         {token && (
-          <Link href="/" className="flex items-center gap-2 hover:underline">
+          <Link href="/settings" className="flex items-center gap-2 hover:underline">
             <span className="text-md">Account</span>
             <Image
-              src="https://github.com/Joao-Bonifacio.png"
+              src="https://i.pravatar.cc/101"
               className="h-7 w-7 rounded-full"
               width={24}
               height={24}
-              alt=""
+              alt="avatar"
             />
           </Link>
         )}

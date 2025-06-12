@@ -58,6 +58,11 @@ export class SessionController {
     return { access_token, user: { ...user, password: undefined } }
   }
 
+  @Get('current')
+  async getCurrentUser(@CurrentUser() user: { sub: string }) {
+    return await this.user.findById(user.sub)
+  }
+
   @Delete()
   @HttpCode(204)
   async removeUser(@CurrentUser() user: { sub: string }) {

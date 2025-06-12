@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       new URL('https://github.com/*'),
       new URL('http://localhost:9000/ecommerce/*'),
+      new URL('https://i.pravatar.cc/*'),
     ],
   },
 }

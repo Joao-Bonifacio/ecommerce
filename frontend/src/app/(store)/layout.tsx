@@ -9,7 +9,7 @@ export default function StoreLayout({ children }: { children: ReactNode }) {
 
   return (
     <CartProvider>
-      <div className="grid h-screen w-full grid-rows-app gap-10">
+      <div className="h-screen w-full">
         <Header />
         <main>{children}</main>
       </div>

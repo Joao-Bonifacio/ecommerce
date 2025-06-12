@@ -3,7 +3,7 @@ import { create } from 'zustand'
 
 interface UserStore {
   user: User | null
-  setUser: (user: User) => void
+  setUser: (user: User | null) => void
   clearUser: () => void
 }
 
