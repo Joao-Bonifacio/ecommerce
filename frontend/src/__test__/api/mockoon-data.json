@@ -79,7 +79,7 @@
       "responses": [
         {
           "uuid": "3f0ed480-46df-45b9-a307-bea724770e11",
-          "body": "[\n  {{# repeat 5 }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"image\": \"/image/sample.jpeg\",\n    \"featured\": true,\n    \"ratings\": [\n      {{# repeat 3 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\"\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
+          "body": "[\n  {{# repeat 10 }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"image\": \"/image/sample.jpeg\",\n    \"featured\": true,\n    \"ratings\": [\n      {{# repeat 4 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\"\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -255,9 +255,242 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "769f3fcf-a909-4e49-bffe-947b763990c9",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "products",
+      "responses": [
+        {
+          "uuid": "02e6c3a9-d612-4ac9-8681-c1d91ebd0281",
+          "body": "[\n  {{# repeat 10 }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"image\": \"/image/sample.jpeg\",\n    \"featured\": true,\n    \"ratings\": [\n      {{# repeat 4 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\"\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "1026cadf-82c6-4ad9-8b07-fabe2a7588f4",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "seller/upload",
+      "responses": [
+        {
+          "uuid": "2ea1df7c-de57-4cda-8a1d-474c63351867",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "88063f9b-0956-48ef-b2e7-f76e3d16c9dd",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "seller/edit/:id",
+      "responses": [
+        {
+          "uuid": "8c2b6140-643c-4fc3-922a-82b20d5dde5d",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "339b12cc-dd5f-49ee-8d1b-06622886cef9",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "seller/feature/:id",
+      "responses": [
+        {
+          "uuid": "1ba17c10-3610-4fa7-86b8-1862e85d6e34",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "13f8af39-d88a-4db0-901d-51ff5917c0e8",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "products/rate/:id",
+      "responses": [
+        {
+          "uuid": "2d64d497-aa7f-4b8c-af58-2de823b71972",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "2c48a72b-dfc9-4ad6-8b9f-94472dc9c72f",
+      "type": "http",
+      "documentation": "",
+      "method": "delete",
+      "endpoint": "seller/remove/:id",
+      "responses": [
+        {
+          "uuid": "055d5ad4-340b-4b6d-b7a1-7967e33055f3",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "6db71979-fd84-411e-b543-68ac123f39a8",
+      "type": "http",
+      "documentation": "",
+      "method": "delete",
+      "endpoint": "session",
+      "responses": [
+        {
+          "uuid": "3581eee2-0d1e-4406-b16b-093cbaa72a68",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "9ede8f22-02cd-4707-bc33-62434c07f267"
+    },
+    {
+      "type": "route",
+      "uuid": "9f65b51c-49eb-4438-b92c-7ca0b8e455d5"
+    },
+    {
+      "type": "route",
+      "uuid": "c5f280e2-6d76-46dd-8605-ef80d54e12b9"
+    },
+    {
+      "type": "route",
+      "uuid": "769f3fcf-a909-4e49-bffe-947b763990c9"
+    },
     {
       "type": "route",
       "uuid": "a4601fbd-1fbf-45a7-b540-a50a00327863"
@@ -272,15 +505,7 @@
     },
     {
       "type": "route",
-      "uuid": "c5f280e2-6d76-46dd-8605-ef80d54e12b9"
-    },
-    {
-      "type": "route",
-      "uuid": "9ede8f22-02cd-4707-bc33-62434c07f267"
-    },
-    {
-      "type": "route",
-      "uuid": "9f65b51c-49eb-4438-b92c-7ca0b8e455d5"
+      "uuid": "13f8af39-d88a-4db0-901d-51ff5917c0e8"
     },
     {
       "type": "route",
@@ -289,6 +514,26 @@
     {
       "type": "route",
       "uuid": "0f068cd3-fefb-4bbe-b8c4-d777fb95849f"
+    },
+    {
+      "type": "route",
+      "uuid": "1026cadf-82c6-4ad9-8b07-fabe2a7588f4"
+    },
+    {
+      "type": "route",
+      "uuid": "88063f9b-0956-48ef-b2e7-f76e3d16c9dd"
+    },
+    {
+      "type": "route",
+      "uuid": "339b12cc-dd5f-49ee-8d1b-06622886cef9"
+    },
+    {
+      "type": "route",
+      "uuid": "2c48a72b-dfc9-4ad6-8b9f-94472dc9c72f"
+    },
+    {
+      "type": "route",
+      "uuid": "6db71979-fd84-411e-b543-68ac123f39a8"
     }
   ],
   "proxyMode": false,

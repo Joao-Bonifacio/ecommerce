@@ -94,9 +94,13 @@ export const getCurrentUser = async (): Promise<User> => {
   return user
 }
 
-export const updateAvatar = async (file: File): Promise<unknown> => {
+export const updateAvatar = async (
+  fileName: string,
+  file: File,
+): Promise<unknown> => {
   const formData = new FormData()
   formData.append('avatar', file)
+  formData.append('fileName', fileName)
 
   const token = (await cookies()).get('access_token')
   if (!token) throw new Error('Unauthorized')
@@ -136,4 +140,21 @@ export const updatePassword = async (data: FormData): Promise<unknown> => {
   if (!response.ok) throw new Error('Failed to update password')
 
   return redirect('/settings')
+}
+
+export const deleteAccount = async (): Promise<void> => {
+  const token = (await cookies()).get('access_token')
+  if (!token) throw new Error('Unauthorized')
+
+  const response = await api('/settings/delete-account', {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) throw new Error('Failed to delete account')
+
+  useUserStore.getState().setUser(null)
+  return redirect('/')
 }
