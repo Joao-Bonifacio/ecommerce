@@ -31,12 +31,12 @@ export default async function Home() {
               />
             </div>
 
-            <CardContent className="flex-1 !p-6 text-center sm:text-left">
-              <h2 className="!text-4xl font-semibold !p-2">
+            <CardContent className="flex-1 p-2 text-center sm:text-left">
+              <h2 className="text-4xl font-semibold p-2">
                 {highlightedProduct.title}
               </h2>
 
-              <p className="text-sm text-muted-foreground line-clamp-3 !px-2 !py-4">
+              <p className="text-sm text-muted-foreground line-clamp-3 px-2 py-4">
                 {highlightedProduct.description}
               </p>
 
@@ -52,7 +52,7 @@ export default async function Home() {
         </Card>
       </Link>
 
-      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+      <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
         {otherProducts.map((product) => (
           <Link
             key={product.id}
@@ -68,12 +68,12 @@ export default async function Home() {
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <CardContent className="p-4 flex flex-col gap-2">
+              <CardContent className="p-4 flex flex-col">
                 <div className="flex justify-between">
-                  <h4 className="text-base truncate !p-2 !m-1.5 font-bold">
+                  <h4 className="text-base truncate p-2 m-1.5 font-bold">
                     {product.title}
                   </h4>
-                  <span className="bg-violet-500 text-white !p-4.5 !mx-4 !mb-5 rounded-full text-sm font-semibold">
+                  <span className="bg-violet-500 text-white p-4.5 rounded-full text-sm font-semibold">
                     {product.price.toLocaleString('en-US', {
                       style: 'currency',
                       currency: 'USD',

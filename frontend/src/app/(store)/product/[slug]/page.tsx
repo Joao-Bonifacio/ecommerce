@@ -1,4 +1,5 @@
 import { getProduct, getFeaturedProducts } from '@/api/product'
+import type { Rate } from '@/api/validation/types/product'
 import AddToCartButton from '@/components/add-to-cart-button'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -22,6 +23,15 @@ export async function generateStaticParams() {
   }))
 }
 
+const getStarsAverage = (ratings: Rate[]): number | null => {
+  if (!Array.isArray(ratings) || ratings.length === 0) return null
+
+  const totalStars = ratings.reduce((sum, rate) => sum + rate.stars, 0)
+  const average = totalStars / ratings.length
+
+  return average
+}
+
 export default async function ProductPage({
   params,
 }: {
@@ -30,6 +40,7 @@ export default async function ProductPage({
   const { slug } = await params
   const product = await getProduct(slug)
   if (!product) return null
+  const starsAverage = getStarsAverage(product.ratings)
 
   return (
     <div className="relative grid max-h-[860px] grid-cols-3">
@@ -78,16 +89,22 @@ export default async function ProductPage({
 
       <div className="h-5 w-full" />
       <div>
-        <h4>Ratings - {/* average stars */}</h4>
+        <h4 className="flex justify-between gap-2 mb-3 text-2xl">
+          <span className="">Ratings</span>
+          <span className="text-yellow-400 text-right">{starsAverage}</span>
+        </h4>
+        <hr />
         {product.ratings &&
           product.ratings.length > 0 &&
-          product.ratings.map((rate) => (
+          product.ratings.map((rate: Rate) => (
             <div key={rate.id}>
               <div className="flex justify-between gap-2">
-                <span className="text-zinc-400">({rate.title})</span>
+                <div>
+                  <p>{rate.title}</p>
+                  <p className="text-zinc-400">({rate.description})</p>
+                </div>
                 <span className="text-yellow-400 text-right">{rate.stars}</span>
               </div>
-              <p>{rate.description}</p>
             </div>
           ))}
       </div>

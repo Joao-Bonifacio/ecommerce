@@ -25,3 +25,23 @@ export const productFormSchema = z.object({
   fileName: z.string(),
   image: z.instanceof(File),
 })
+export const editProductFormSchema = z
+  .object({
+    title: z.string().optional(),
+    price: z.number().optional(),
+    description: z.string().optional(),
+    fileName: z.string().optional(),
+    image: z.instanceof(File).optional(),
+  })
+  .refine(
+    (data) =>
+      data.title !== undefined ||
+      data.price !== undefined ||
+      data.description !== undefined ||
+      data.fileName !== undefined ||
+      data.image !== undefined,
+    {
+      message: 'At least one field must be provided for update',
+      path: [],
+    },
+  )
