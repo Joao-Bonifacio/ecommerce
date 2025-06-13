@@ -22,7 +22,9 @@ export default async function Header() {
       </div>
 
       <div className="flex items-center gap-4">
-        <CartWidget />
+        <Link href="/cart">
+          <CartWidget />
+        </Link>
 
         <div className="w-px h-4 bg-zinc-700" />
         <ThemeToggle />

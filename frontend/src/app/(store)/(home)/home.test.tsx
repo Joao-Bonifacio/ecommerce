@@ -21,6 +21,7 @@ describe('Home - Integration', () => {
       sales: 0,
       featured: false,
       ratings: [],
+      stock: 0,
     },
     {
       id: crypto.randomUUID(),
@@ -33,6 +34,7 @@ describe('Home - Integration', () => {
       sales: 0,
       featured: false,
       ratings: [],
+      stock: 0,
     },
     {
       id: crypto.randomUUID(),
@@ -45,6 +47,7 @@ describe('Home - Integration', () => {
       sales: 0,
       featured: false,
       ratings: [],
+      stock: 0,
     },
   ]
 

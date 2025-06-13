@@ -4,7 +4,15 @@ import { useCart } from '@/context/cart-context'
 import { Check, ShoppingCart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export default function AddToCartButton({ productId }: { productId: string }) {
+export default function AddToCartButton({
+  id,
+  title,
+  price,
+}: {
+  id: string
+  title: string
+  price: number
+}) {
   const { addToCart } = useCart()
   const [isLoading, setIsLoading] = useState(false)
   const [isAdded, setIsAdded] = useState(false)
@@ -12,7 +20,7 @@ export default function AddToCartButton({ productId }: { productId: string }) {
   const handleAddToCart = async () => {
     setIsLoading(true)
     try {
-      await addToCart(productId)
+      await addToCart(id, title, price)
       setIsAdded(true)
       setTimeout(() => setIsAdded(false), 2000)
     } catch (error) {

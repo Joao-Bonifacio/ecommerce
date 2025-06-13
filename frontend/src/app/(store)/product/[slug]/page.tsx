@@ -84,7 +84,11 @@ export default async function ProductPage({
           </span>
         </div>
 
-        <AddToCartButton productId={product.id} />
+        <AddToCartButton
+          id={product.id}
+          title={product.title}
+          price={product.price}
+        />
       </div>
 
       <div className="h-5 w-full" />
