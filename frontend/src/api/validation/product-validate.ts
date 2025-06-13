@@ -16,6 +16,7 @@ export const productSchema = z.object({
   image: z.string(),
   description: z.string(),
   featured: z.boolean(),
+  stock: z.number(),
   ratings: z.array(ratingSchema),
 })
 export const productFormSchema = z.object({
@@ -24,6 +25,7 @@ export const productFormSchema = z.object({
   description: z.string(),
   fileName: z.string(),
   image: z.instanceof(File),
+  stock: z.number(),
 })
 export const editProductFormSchema = z
   .object({
@@ -32,6 +34,7 @@ export const editProductFormSchema = z
     description: z.string().optional(),
     fileName: z.string().optional(),
     image: z.instanceof(File).optional(),
+    stock: z.number().optional(),
   })
   .refine(
     (data) =>
@@ -39,7 +42,8 @@ export const editProductFormSchema = z
       data.price !== undefined ||
       data.description !== undefined ||
       data.fileName !== undefined ||
-      data.image !== undefined,
+      data.image !== undefined ||
+      data.stock !== undefined,
     {
       message: 'At least one field must be provided for update',
       path: [],

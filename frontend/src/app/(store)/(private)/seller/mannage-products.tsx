@@ -44,6 +44,10 @@ export function AddProduct() {
                 <Input id="price" name="price" type="number" />
               </div>
               <div className="grid gap-3">
+                <Label htmlFor="stock">Stock</Label>
+                <Input id="stock" name="stock" type="number" />
+              </div>
+              <div className="grid gap-3">
                 <Label htmlFor="fileName">Image Name</Label>
                 <Input id="fileName" name="fileName" />
               </div>
@@ -95,6 +99,10 @@ export function MannageProducts({ id }: { id: string }) {
               <div className="grid gap-3">
                 <Label htmlFor="price">Price</Label>
                 <Input id="price" name="price" type="number" />
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="stock">Stock</Label>
+                <Input id="stock" name="stock" type="number" />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="fileName">Image Name</Label>

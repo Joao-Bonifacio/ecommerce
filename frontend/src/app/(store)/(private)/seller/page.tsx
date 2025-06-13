@@ -47,7 +47,7 @@ export default async function SellerPannel() {
                         />
                         <div className="ml-2">
                           <h5 className="text-sm font-semibold">
-                            {product.title} ({/* add stock quantity */})
+                            {product.title} - ({product.stock})
                           </h5>
                           <p className="text-xs text-gray-500">
                             {product.description}

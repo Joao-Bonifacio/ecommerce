@@ -73,6 +73,7 @@ export const createProduct = async (data: FormData): Promise<void> => {
     price: data.get('price'),
     fileName: data.get('fileName'),
     image: data.get('image'),
+    stock: data.get('stock'),
   }
   const validation = validate(upload, productFormSchema)
   if (!token || !validation) throw new Error('Unauthorized')
@@ -106,6 +107,7 @@ export const editProduct = async (
     price: data.get('price'),
     fileName: data.get('fileName'),
     image: data.get('image'),
+    stock: data.get('stock'),
   }
   const validation = validate(upload, editProductFormSchema)
   if (!token || !validation) throw new Error('Unauthorized')
@@ -152,7 +154,7 @@ export const removeProduct = async (id: string): Promise<void> => {
   if (!token) throw new Error('Unauthorized')
 
   const response = await api(`/seller/remove/${id}`, {
-    method: 'PATCH',
+    method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
     },

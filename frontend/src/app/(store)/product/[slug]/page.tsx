@@ -29,7 +29,7 @@ const getStarsAverage = (ratings: Rate[]): number | null => {
   const totalStars = ratings.reduce((sum, rate) => sum + rate.stars, 0)
   const average = totalStars / ratings.length
 
-  return average
+  return Number(average.toFixed(1))
 }
 
 export default async function ProductPage({
