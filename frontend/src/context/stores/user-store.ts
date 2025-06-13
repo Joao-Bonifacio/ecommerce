@@ -1,4 +1,4 @@
-import { User } from '@/app/api/validation/types/user'
+import { User } from '@/api/validation/types/user'
 import { create } from 'zustand'
 
 interface UserStore {

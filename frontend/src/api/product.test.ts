@@ -3,7 +3,7 @@ import {
   getFeaturedProducts,
   getProduct,
   searchProducts,
-} from '@/app/api/product'
+} from '@/api/product'
 
 describe('Product API Integration', () => {
   it('should return product by slug', async () => {

@@ -17,7 +17,7 @@
       "responses": [
         {
           "uuid": "5a8d321b-4647-43eb-a816-7634918b5dff",
-          "body": "{\n  \"id\": \"{{ faker 'string.uuid' }}\",\n  \"slug\": \"{{ urlParam 'slug' }}\",\n  \"title\": \"{{ faker 'commerce.productName' }}\",\n  \"description\": \"{{ faker 'commerce.productDescription' }}\",\n  \"price\": {{ faker 'commerce.price' }},\n  \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n  \"featured\": {{ faker 'datatype.boolean' }},\n  \"image\": \"/image/sample.jpeg\",\n  \"ratings\": [\n    {{# repeat 3 }}\n    {\n      \"id\": \"{{ faker 'string.uuid' }}\",\n      \"title\": \"{{ faker 'lorem.words' 3 }}\",\n      \"description\": \"{{ faker 'lorem.sentence' }}\"\n    }{{# unless @last }},{{/unless}}\n    {{/ repeat }}\n  ]\n}\n",
+          "body": "{\n  \"id\": \"{{ faker 'string.uuid' }}\",\n  \"owner\": \"{{ urlParam 'owner' }}\",\n  \"slug\": \"{{ urlParam 'slug' }}\",\n  \"title\": \"{{ faker 'commerce.productName' }}\",\n  \"description\": \"{{ faker 'commerce.productDescription' }}\",\n  \"price\": {{ faker 'commerce.price' }},\n  \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n  \"featured\": {{ faker 'datatype.boolean' }},\n  \"image\": \"/image/sample.jpeg\",\n  \"ratings\": [\n    {{# repeat 3 }}\n    {\n      \"id\": \"{{ faker 'string.uuid' }}\",\n      \"title\": \"{{ faker 'lorem.words' 3 }}\",\n      \"description\": \"{{ faker 'lorem.sentence' }}\",\n      \"stars\": {{ faker 'number.int' min=0 max=5 }}\n    }{{# unless @last }},{{/unless}}\n    {{/ repeat }}\n  ]\n}\n",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -48,7 +48,7 @@
       "responses": [
         {
           "uuid": "ee94f73e-9f90-4171-a6a4-e7f71e574389",
-          "body": "[\n  {{# repeat (queryParam 'total' '5') }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"featured\": {{ faker 'datatype.boolean' }},\n    \"image\": \"/image/sample.jpeg\",\n    \"ratings\": [\n      {{# repeat 3 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\"\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
+          "body": "[\n  {{# repeat (queryParam 'total' '5') }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"owner\": \"{{ faker 'internet.username' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"featured\": {{ faker 'datatype.boolean' }},\n    \"image\": \"/image/sample.jpeg\",\n    \"ratings\": [\n      {{# repeat 3 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\",\n        \"stars\": {{ faker 'number.int' min=0 max=5 }},\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -79,7 +79,7 @@
       "responses": [
         {
           "uuid": "3f0ed480-46df-45b9-a307-bea724770e11",
-          "body": "[\n  {{# repeat 10 }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"image\": \"/image/sample.jpeg\",\n    \"featured\": true,\n    \"ratings\": [\n      {{# repeat 4 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\"\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
+          "body": "[\n  {{# repeat 10 }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"owner\": \"{{ faker 'internet.username' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"image\": \"/image/sample.jpeg\",\n    \"featured\": true,\n    \"ratings\": [\n      {{# repeat 4 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\",\n        \"stars\": {{ faker 'number.int' min=0 max=5 }},\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -234,7 +234,7 @@
       "responses": [
         {
           "uuid": "908e00d6-efa1-4d7f-92ee-859e8e2bdcad",
-          "body": "{}",
+          "body": "",
           "latency": 0,
           "statusCode": 204,
           "label": "",
@@ -265,7 +265,7 @@
       "responses": [
         {
           "uuid": "02e6c3a9-d612-4ac9-8681-c1d91ebd0281",
-          "body": "[\n  {{# repeat 10 }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"image\": \"/image/sample.jpeg\",\n    \"featured\": true,\n    \"ratings\": [\n      {{# repeat 4 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\"\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
+          "body": "[\n  {{# repeat 10 }}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"owner\": \"{{ faker 'internet.username' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"image\": \"/image/sample.jpeg\",\n    \"featured\": true,\n    \"ratings\": [\n      {{# repeat 4 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\",\n        \"stars\": {{ faker 'number.int' min=0 max=5 }}\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/ repeat }}\n]\n",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -298,7 +298,7 @@
           "uuid": "2ea1df7c-de57-4cda-8a1d-474c63351867",
           "body": "{}",
           "latency": 0,
-          "statusCode": 200,
+          "statusCode": 204,
           "label": "",
           "headers": [],
           "bodyType": "INLINE",
@@ -329,7 +329,7 @@
           "uuid": "8c2b6140-643c-4fc3-922a-82b20d5dde5d",
           "body": "{}",
           "latency": 0,
-          "statusCode": 200,
+          "statusCode": 204,
           "label": "",
           "headers": [],
           "bodyType": "INLINE",
@@ -360,7 +360,7 @@
           "uuid": "1ba17c10-3610-4fa7-86b8-1862e85d6e34",
           "body": "{}",
           "latency": 0,
-          "statusCode": 200,
+          "statusCode": 204,
           "label": "",
           "headers": [],
           "bodyType": "INLINE",
@@ -391,7 +391,7 @@
           "uuid": "2d64d497-aa7f-4b8c-af58-2de823b71972",
           "body": "{}",
           "latency": 0,
-          "statusCode": 200,
+          "statusCode": 204,
           "label": "",
           "headers": [],
           "bodyType": "INLINE",
@@ -422,7 +422,7 @@
           "uuid": "055d5ad4-340b-4b6d-b7a1-7967e33055f3",
           "body": "{}",
           "latency": 0,
-          "statusCode": 200,
+          "statusCode": 204,
           "label": "",
           "headers": [],
           "bodyType": "INLINE",
@@ -452,6 +452,68 @@
         {
           "uuid": "3581eee2-0d1e-4406-b16b-093cbaa72a68",
           "body": "{}",
+          "latency": 0,
+          "statusCode": 204,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "a1e13a63-864a-4344-bc21-bcfa55d1d6b1",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "products/owner/:nickname",
+      "responses": [
+        {
+          "uuid": "29dc9e01-ddc7-467e-8cee-c80b08218296",
+          "body": "[\n  {{#repeat 5}}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"owner\": \"{{ urlParam 'owner' }}\",\n    \"slug\": \"{{ faker 'commerce.product' }}-{{ faker 'number.int' min=1000 max=9999 }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"featured\": {{ faker 'datatype.boolean' }},\n    \"image\": \"/image/sample.jpeg\",\n    \"ratings\": [\n      {{# repeat 3 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\",\n        \"stars\": {{ faker 'number.int' min=0 max=5 }}\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/repeat}}\n]\n",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "cd3c3add-5a4a-4307-88a2-eb8a2bb9faf6",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "seller/my-products",
+      "responses": [
+        {
+          "uuid": "557cb50c-78e4-4d79-830e-514141a10acf",
+          "body": "[\n  {{#repeat 5}}\n  {\n    \"id\": \"{{ faker 'string.uuid' }}\",\n    \"owner\": \"{{ header 'x-user-nickname' }}\",\n    \"slug\": \"{{ faker 'commerce.productAdjective' }}-{{ faker 'commerce.product' }}\",\n    \"title\": \"{{ faker 'commerce.productName' }}\",\n    \"description\": \"{{ faker 'commerce.productDescription' }}\",\n    \"price\": {{ faker 'commerce.price' }},\n    \"sales\": {{ faker 'number.int' min=0 max=1000 }},\n    \"featured\": {{ faker 'datatype.boolean' }},\n    \"image\": \"/image/sample.jpeg\",\n    \"ratings\": [\n      {{# repeat 2 }}\n      {\n        \"id\": \"{{ faker 'string.uuid' }}\",\n        \"title\": \"{{ faker 'lorem.words' 3 }}\",\n        \"description\": \"{{ faker 'lorem.sentence' }}\",\n        \"stars\": {{ faker 'number.int' min=0 max=5 }}\n      }{{# unless @last }},{{/unless}}\n      {{/ repeat }}\n    ]\n  }{{# unless @last }},{{/unless}}\n  {{/repeat}}\n]\n",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -502,6 +564,14 @@
     {
       "type": "route",
       "uuid": "c0b351be-5b4d-4322-9bed-fc5f6b05a011"
+    },
+    {
+      "type": "route",
+      "uuid": "a1e13a63-864a-4344-bc21-bcfa55d1d6b1"
+    },
+    {
+      "type": "route",
+      "uuid": "cd3c3add-5a4a-4307-88a2-eb8a2bb9faf6"
     },
     {
       "type": "route",

@@ -1,4 +1,4 @@
-import { getProduct, getFeaturedProducts } from '@/app/api/product'
+import { getProduct, getFeaturedProducts } from '@/api/product'
 import AddToCartButton from '@/components/add-to-cart-button'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -77,6 +77,23 @@ export default async function ProductPage({
       </div>
 
       <div className="h-5 w-full" />
+      <div>
+        <h4>Ratings - {/* average stars */}</h4>
+        {product.ratings &&
+          product.ratings.length > 0 &&
+          product.ratings.map((rate) => (
+            <div key={rate.id}>
+              <div className="flex justify-between gap-2">
+                <span className="text-zinc-400">({rate.title})</span>
+                <span className="text-yellow-400 text-right">{rate.stars}</span>
+              </div>
+              <p>{rate.description}</p>
+            </div>
+          ))}
+      </div>
     </div>
   )
 }
+/*
+★★★★★
+*/

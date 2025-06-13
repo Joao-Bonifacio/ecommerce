@@ -1,7 +1,7 @@
 import { expect, vi, Mock, MockInstance } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import Search from './page'
-import * as productsAPI from '@/app/api/product'
+import * as productsAPI from '@/api/product'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 const mockPush = vi.fn()

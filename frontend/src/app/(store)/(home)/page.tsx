@@ -1,4 +1,4 @@
-import { getFeaturedProducts } from '@/app/api/product'
+import { getFeaturedProducts } from '@/api/product'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'

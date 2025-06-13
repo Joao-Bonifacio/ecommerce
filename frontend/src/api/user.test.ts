@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, Mock } from 'vitest'
-import { signIn, signUp } from '@/app/api/user'
+import { signIn, signUp } from '@/api/user'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { mockUser } from '@/__test__/mocks/user.mock'

@@ -9,10 +9,8 @@ export default function StoreLayout({ children }: { children: ReactNode }) {
 
   return (
     <CartProvider>
-      <div className="h-screen w-full">
-        <Header />
-        <main>{children}</main>
-      </div>
+      <Header />
+      {children}
     </CartProvider>
   )
 }

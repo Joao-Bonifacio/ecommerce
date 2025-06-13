@@ -25,6 +25,14 @@ export class SellerService {
       .replace(/[^a-z0-9-]/g, '')}-${randomSuffix}`
   }
 
+  async findMyProducts(nickname: string): Promise<Product[] | null> {
+    const user = await this.userStorage.findByNick(nickname)
+    if (!user) return null
+
+    const products = await this.product.findProductsByOwner(nickname)
+    return products
+  }
+
   async uploadProduct(
     nickname: string,
     body: Partial<Product>,

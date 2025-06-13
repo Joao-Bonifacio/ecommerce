@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   FileTypeValidator,
+  Get,
   HttpCode,
   HttpException,
   HttpStatus,
@@ -12,7 +13,7 @@ import {
   Patch,
   Post,
   UploadedFile,
-  UseInterceptors,
+  UseInterceptors
 } from '@nestjs/common'
 import { SellerService } from './seller.service'
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -24,6 +25,13 @@ import type { Product } from '@/prisma/generated/mongo'
 export class SellerController {
   constructor(private seller: SellerService) {}
 
+  @Get('my-products')
+  findProductsByOwner(
+    @CurrentUser() user: { sub: string; nickname: string }
+  ): Promise<Product[] | null> {
+    return this.seller.findMyProducts(user.nickname)
+  }
+
   @Post('upload')
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
@@ -34,11 +42,11 @@ export class SellerController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 * 10 }), // 20mb
-          new FileTypeValidator({ fileType: '.(png|jpg|jpeg)' }),
-        ],
-      }),
+          new FileTypeValidator({ fileType: '.(png|jpg|jpeg)' })
+        ]
+      })
     )
-    file: Express.Multer.File,
+    file: Express.Multer.File
   ): Promise<Product> {
     const product = await this.seller.uploadProduct(user.nickname, body, file)
     if (
@@ -64,11 +72,11 @@ export class SellerController {
         fileIsRequired: false,
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 20 }), // 20MB
-          new FileTypeValidator({ fileType: /^(image\/png|image\/jpeg)$/ }),
-        ],
-      }),
+          new FileTypeValidator({ fileType: /^(image\/png|image\/jpeg)$/ })
+        ]
+      })
     )
-    file?: Express.Multer.File,
+    file?: Express.Multer.File
   ): Promise<Product> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { owner, createdAt, ratings, sales, ...safeBody } = body
@@ -77,7 +85,7 @@ export class SellerController {
       id,
       user.nickname,
       safeBody,
-      file,
+      file
     )
 
     if ('error' in result) {
@@ -91,7 +99,7 @@ export class SellerController {
   @HttpCode(204)
   async featureProduct(
     @CurrentUser() user: { sub: string; nickname: string },
-    @Param('id') id: string,
+    @Param('id') id: string
   ): Promise<Product | null> {
     const product = this.seller.featureProduct(id, user.nickname)
 

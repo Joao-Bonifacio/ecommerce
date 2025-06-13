@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 'use server'
-import { api } from '@/app/api/api-wrapper'
+import { api } from '@/api/api-wrapper'
 import { validate } from './validation/zod-validate'
 import { signInSchema, signUpSchema } from './validation/session-validate'
 import { cookies } from 'next/headers'

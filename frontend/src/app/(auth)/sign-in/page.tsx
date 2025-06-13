@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { signIn } from '@/app/api/user'
+import { signIn } from '@/api/user'
 import Link from 'next/link'
 
 export default function SignInPage() {

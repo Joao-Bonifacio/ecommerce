@@ -1,4 +1,4 @@
-import { getCurrentUser, updateAvatar, updatePassword } from '@/app/api/user'
+import { getCurrentUser, updateAvatar, updatePassword } from '@/api/user'
 import { Pencil } from 'lucide-react'
 import Image from 'next/image'
 import { ButtonDeleteAccount } from '../../../../components/button-delete-account'

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import * as productApi from '@/app/api/product'
+import * as productApi from '@/api/product'
 import ProductPage, { generateMetadata, generateStaticParams } from './page'
 import { mockProduct } from '@/__test__/mocks/product.mock'
 

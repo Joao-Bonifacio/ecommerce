@@ -1,5 +1,5 @@
 'use client'
-import { deleteAccount } from '@/app/api/user'
+import { deleteAccount } from '@/api/user'
 import {
   AlertDialog,
   AlertDialogAction,

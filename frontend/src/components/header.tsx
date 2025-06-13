@@ -28,7 +28,10 @@ export default async function Header() {
         <ThemeToggle />
 
         {token && (
-          <Link href="/settings" className="flex items-center gap-2 hover:underline">
+          <Link
+            href="/settings"
+            className="flex items-center gap-2 hover:underline"
+          >
             <span className="text-md">Account</span>
             <Image
               src="https://i.pravatar.cc/101"
