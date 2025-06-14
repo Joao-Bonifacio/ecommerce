@@ -1,5 +1,10 @@
 'use client'
-import { editProduct, featureProduct, removeProduct } from '@/api/product'
+import {
+  createProduct,
+  editProduct,
+  featureProduct,
+  removeProduct,
+} from '@/api/product'
 import {
   AlertDialogFooter,
   AlertDialogHeader,
@@ -20,7 +25,11 @@ export function AddProduct() {
   return (
     <div className="p-4 m4">
       <Dialog>
-        <form>
+        <form
+          action={async (data: FormData) => {
+            await createProduct(data)
+          }}
+        >
           <DialogTrigger asChild>
             <Button className="bg-green-500 hover:bg-green-600 cursor-pointer p-4 rounded-md">
               <Plus /> Add Product
@@ -37,23 +46,23 @@ export function AddProduct() {
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="description">Description</Label>
-                <Input id="description" name="description" />
+                <Input id="description" name="description" required />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="price">Price</Label>
-                <Input id="price" name="price" type="number" />
+                <Input id="price" name="price" type="number" required />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="stock">Stock</Label>
-                <Input id="stock" name="stock" type="number" />
+                <Input id="stock" name="stock" type="number" required />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="fileName">Image Name</Label>
-                <Input id="fileName" name="fileName" />
+                <Input id="fileName" name="fileName" required />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="file">Upload Image</Label>
-                <Input id="file" name="file" type="file" />
+                <Input id="file" name="file" type="file" required />
               </div>
             </div>
             <AlertDialogFooter>

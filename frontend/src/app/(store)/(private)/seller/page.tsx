@@ -26,7 +26,7 @@ export default async function SellerPannel() {
   const { totalSales, totalEarnings } = getSales(products)
 
   return (
-    <div className="w-full mx-auto p-5">
+    <div className="w-full mx-auto p-5 h-[84vh]">
       <div className="flex w-full">
         <div className="flex-1/2 p-4 w-full">
           <h4 className="text-2xl mb-4">List - ({products.length})</h4>

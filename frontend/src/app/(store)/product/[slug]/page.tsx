@@ -1,6 +1,7 @@
 import { getProduct, getFeaturedProducts } from '@/api/product'
 import type { Rate } from '@/api/validation/types/product'
 import AddToCartButton from '@/components/add-to-cart-button'
+import RateProductButton from '@/components/rate-product-button'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 
@@ -43,7 +44,7 @@ export default async function ProductPage({
   const starsAverage = getStarsAverage(product.ratings)
 
   return (
-    <div className="relative grid max-h-[860px] grid-cols-3">
+    <div className="relative grid max-h-[100%] grid-cols-4 mb-7">
       <div className="col-span-2 overflow-hidden">
         <Image
           className="rounded-r-xl"
@@ -55,8 +56,8 @@ export default async function ProductPage({
         />
       </div>
 
-      <div className="flex flex-col justify-center px-12">
-        <h1 className="!text-4xl font-bold leading-tight !py-2 !mb-5">
+      <div className="flex flex-col justify-center px-50 col-span-2">
+        <h1 className="text-4xl font-bold leading-tight py-2 mb-5">
           {product.title}
         </h1>
         <p className="mt-2 leading-relaxed text-zinc-400 !text-lg !p-y2 !mb-5">
@@ -89,28 +90,32 @@ export default async function ProductPage({
           title={product.title}
           price={product.price}
         />
-      </div>
-
-      <div className="h-5 w-full" />
-      <div>
-        <h4 className="flex justify-between gap-2 mb-3 text-2xl">
-          <span className="">Ratings</span>
-          <span className="text-yellow-400 text-right">{starsAverage}</span>
-        </h4>
-        <hr />
-        {product.ratings &&
-          product.ratings.length > 0 &&
-          product.ratings.map((rate: Rate) => (
-            <div key={rate.id}>
-              <div className="flex justify-between gap-2">
-                <div>
-                  <p>{rate.title}</p>
-                  <p className="text-zinc-400">({rate.description})</p>
+        <div className="h-5 w-full mb-10" />
+        <div>
+          <h4 className="flex justify-between gap-2 mb-3 text-2xl">
+            <span className="">Ratings</span>
+            <span className="text-yellow-400 text-right">{starsAverage}</span>
+          </h4>
+          <hr />
+          {product.ratings &&
+            product.ratings.length > 0 &&
+            product.ratings.map((rate: Rate) => (
+              <div key={rate.id}>
+                <div className="flex justify-between gap-2">
+                  <div>
+                    <p>{rate.title}</p>
+                    <p className="text-zinc-400">({rate.description})</p>
+                  </div>
+                  <span className="text-yellow-400 text-right">
+                    {rate.stars}
+                  </span>
                 </div>
-                <span className="text-yellow-400 text-right">{rate.stars}</span>
               </div>
-            </div>
-          ))}
+            ))}
+          <div className="mt-5 text-center">
+            <RateProductButton id={product.id} />
+          </div>
+        </div>
       </div>
     </div>
   )

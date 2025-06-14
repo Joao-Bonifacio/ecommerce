@@ -7,6 +7,7 @@ import { validate } from './validation/zod-validate'
 import {
   editProductFormSchema,
   productFormSchema,
+  rateProductFormSchema,
 } from './validation/product-validate'
 
 export const getAllProducts = async (): Promise<Product[] | null> => {
@@ -55,6 +56,31 @@ export const searchProducts = async (
   if (!Array.isArray(products)) return null
 
   return products
+}
+
+export const rateProduct = async (
+  id: string,
+  data: FormData,
+): Promise<void> => {
+  const token = (await cookies()).get('access_token')
+  const validation = validate(data, rateProductFormSchema)
+  if (!token || !validation) throw new Error('Unauthorized')
+
+  const response = await api(`/products/rate/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    next: {
+      tags: ['ratings'],
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to rate this product')
+  }
+
+  revalidateTag('ratings')
 }
 
 // seller

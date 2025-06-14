@@ -5,29 +5,30 @@ import {
 } from 'next/server'
 import { env } from './env'
 
-const publicRoutes = [
-  { path: '/sign-in', whenAuthenticated: 'redirect' },
-  { path: '/sign-up', whenAuthenticated: 'redirect' },
-  { path: '/settings', whenAuthenticated: 'redirect' },
-  { path: '/seller', whenAuthenticated: 'redirect' },
-  { path: '/', whenAuthenticated: 'next' },
-  { path: '/product', whenAuthenticated: 'next' },
-  { path: '/search', whenAuthenticated: 'next' },
-] as const
 const baseUrl = env.APP_URL
 
+const protectedRoutes = ['/seller', '/settings']
+const authRoutes = ['/sign-in', '/sign-up']
+
 export function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname
-  const publicRoute = publicRoutes.find((route) => route.path === path)
-  const authToken = request.cookies.get('access_token')
+  const { pathname } = request.nextUrl
+  const token = request.cookies.get('access_token')?.value
 
-  if (!authToken && publicRoute) return NextResponse.next()
-  if (!authToken && !publicRoute)
-    return NextResponse.redirect(`${baseUrl}/sign-in`)
-  if (!authToken && publicRoute && publicRoute.whenAuthenticated === 'redirect')
-    return NextResponse.redirect(`${baseUrl}/`)
+  const isProtected = protectedRoutes.some((route) =>
+    pathname.startsWith(route),
+  )
 
-  // if (authToken && !publicRoute) //verify token valid time
+  const isAuthPage = authRoutes.includes(pathname)
+
+  if (isProtected && !token) {
+    return NextResponse.redirect(new URL('/sign-in', baseUrl))
+  }
+
+  if (token && isAuthPage) {
+    return NextResponse.redirect(new URL('/', baseUrl))
+  }
+
+  return NextResponse.next()
 }
 
 export const config: MiddlewareConfig = {

@@ -8,15 +8,15 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="max-w-4xl mx-auto p-4">
+      <div className="max-w-4xl mx-auto p-4 h-[84vh]">
         <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
         <p>Add some products to start shopping!</p>
-      </main>
+      </div>
     )
   }
 
   return (
-    <main className="max-w-4xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto p-4 h-[84vh] overflow-auto">
       <h1 className="text-3xl font-bold mb-6">Cart</h1>
 
       <ul className="divide-y divide-gray-300 mb-6">
@@ -28,7 +28,7 @@ export default function CartPage() {
             </div>
             <div className="flex items-center gap-2">
               <label htmlFor={`quantity-${id}`} className="sr-only">
-                Quantidade de {title}
+                Ammount of {title}
               </label>
               <input
                 id={`quantity-${id}`}
@@ -44,9 +44,9 @@ export default function CartPage() {
               <button
                 onClick={() => removeFromCart(id)}
                 className="text-red-600 hover:text-red-800"
-                aria-label={`Remover ${title} do carrinho`}
+                aria-label={`Remove ${title} from cart`}
               >
-                Remover
+                Remove
               </button>
             </div>
           </li>
@@ -70,15 +70,15 @@ export default function CartPage() {
           onClick={clearCart}
           className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
         >
-          Limpar Carrinho
+          Clear cart
         </button>
         <button
-          onClick={() => alert('Checkout não implementado')}
+          onClick={() => alert('Checkout not implemented yet')}
           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Finalize purchase
         </button>
       </div>
-    </main>
+    </div>
   )
 }

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const products = await getFeaturedProducts()
-  if (!products) return <div>Not products yet</div>
+  if (!products) return null
 
   const [highlightedProduct, ...otherProducts] = products
 

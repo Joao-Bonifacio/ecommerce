@@ -6,6 +6,11 @@ export const ratingSchema = z.object({
   description: z.string(),
   stars: z.number().min(1).max(5),
 })
+export const rateProductFormSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  stars: z.number().min(1).max(5),
+})
 export const productSchema = z.object({
   id: z.string().uuid(),
   owner: z.string(),

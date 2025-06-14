@@ -2,10 +2,11 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
-import React, { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { CartProvider } from '@/context/cart-context'
 import Header from '@/components/header'
 import { ThemeProvider } from '@/components/theme-provider'
+import Footer from '@/components/footer'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,7 +34,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CartProvider>
             <Header />
-            {children}
+            <div className="relative">
+              <div className="pb-20">{children}</div>
+              <div className="absolute bottom-0 w-full pt-5">
+                <Footer />
+              </div>
+            </div>
           </CartProvider>
         </ThemeProvider>
       </body>

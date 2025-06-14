@@ -19,16 +19,16 @@ export default async function SettingsPage() {
   const { nickname, avatar, level } = await getCurrentUser()
 
   return (
-    <>
+    <div className="h-[79vh]">
       {level !== 'PLATINUM' && (
-        <div className="m-4! text-right bg-blue-950 p-4! rounded-md mb-10!">
+        <div className="m-4 text-right bg-blue-950 p-4 rounded-md mt-10">
           <button className="bg-green-400! p-2! rounded-md! text-gray-800! text-right">
             Upgrade plan
           </button>
         </div>
       )}
 
-      <div className="w-[1200px]! sm:w-[600px]! mx-auto! text-center bg-blue-950 rounded-md p-5!">
+      <div className="w-[1200px] sm:w-[600px] mx-auto text-center bg-blue-950 rounded-md p-5 pb-[-500px]">
         <Dialog>
           <form
             action={async (data: FormData) => {
@@ -65,6 +65,7 @@ export default async function SettingsPage() {
                     name="fileName"
                     defaultValue="avatar"
                     className="bg-zinc-600! rounded-md! px-3!"
+                    required
                   />
                 </div>
                 <div className="grid gap-3">
@@ -74,6 +75,7 @@ export default async function SettingsPage() {
                     name="file"
                     type="file"
                     className="bg-zinc-600! rounded-md! cursor-pointer! p-1! px-3!"
+                    required
                   />
                 </div>
               </div>
@@ -125,6 +127,6 @@ export default async function SettingsPage() {
           </div>
         </form>
       </div>
-    </>
+    </div>
   )
 }

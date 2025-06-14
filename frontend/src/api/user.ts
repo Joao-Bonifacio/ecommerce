@@ -158,3 +158,12 @@ export const deleteAccount = async (): Promise<void> => {
   useUserStore.getState().setUser(null)
   return redirect('/')
 }
+
+export const logout = async (): Promise<unknown> => {
+  ;(await cookies()).set('access_token', '', {
+    path: '/',
+    maxAge: -1,
+  })
+
+  return redirect('/')
+}
