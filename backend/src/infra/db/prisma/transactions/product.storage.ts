@@ -65,6 +65,29 @@ export class ProductStorage {
     return products
   }
 
+  // seller
+
+  async rateProduct(
+    id: string,
+    nickname: string,
+    data: Omit<Rating, 'id'>,
+  ): Promise<Rating | null> {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+    })
+    if (!product || product.owner !== nickname) return null
+
+    const { ratings } = await this.prisma.product.update({
+      where: { id },
+      data: {
+        ratings: {
+          push: { ...data, id: crypto.randomUUID() },
+        },
+      },
+    })
+    return ratings[ratings.length - 1]
+  }
+
   async uploadProduct(
     nickname: string,
     title: string,
@@ -72,6 +95,7 @@ export class ProductStorage {
     price: number,
     slug: string,
     image: string,
+    stock: number,
   ): Promise<Product | ProductError> {
     const slugAlreadyExists = await this.prisma.product.findUnique({
       where: { slug },
@@ -86,6 +110,7 @@ export class ProductStorage {
         price,
         slug,
         image,
+        stock,
         featured: false,
         sales: 0,
         ratings: [],
@@ -99,7 +124,6 @@ export class ProductStorage {
     id: string,
     data: Partial<Product>,
   ): Promise<Product | ProductError> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { owner, createdAt, ratings, sales, ...safeData } = data
 
     if (safeData.slug) {
@@ -133,27 +157,6 @@ export class ProductStorage {
       where: { id },
       data: { featured: true },
     })
-  }
-
-  async rateProduct(
-    id: string,
-    nickname: string,
-    data: Omit<Rating, 'id'>,
-  ): Promise<Rating | null> {
-    const product = await this.prisma.product.findUnique({
-      where: { id },
-    })
-    if (!product || product.owner !== nickname) return null
-
-    const { ratings } = await this.prisma.product.update({
-      where: { id },
-      data: {
-        ratings: {
-          push: { ...data, id: crypto.randomUUID() },
-        },
-      },
-    })
-    return ratings[ratings.length - 1]
   }
 
   async removeProduct(id: string): Promise<void> {

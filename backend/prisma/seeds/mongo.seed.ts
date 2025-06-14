@@ -83,6 +83,7 @@ export async function seed() {
         image: url,
         description: faker.commerce.productDescription(),
         featured: faker.datatype.boolean(),
+        stock: faker.number.int({ min: 1, max: 100 }),
         ratings: [],
       },
     })
@@ -91,5 +92,4 @@ export async function seed() {
   }
 
   await prisma.$disconnect()
-  console.log('Seed finished!')
 }

@@ -12,7 +12,7 @@ export async function createProduct(app: INestApplication, token: string) {
     .field('title', await faker.book.title())
     .field('description', await faker.lorem.text())
     .field('price', 99.99)
-    .field('slug', await faker.lorem.slug())
+    .field('slug', `john_dee-${await faker.lorem.slug()}`)
     .attach('file', imagePath)
   return response
 }

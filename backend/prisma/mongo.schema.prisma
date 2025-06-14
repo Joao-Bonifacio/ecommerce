@@ -18,6 +18,7 @@ model Product {
   image       String
   description String
   featured    Boolean
+  stock       Int
   ratings     Rating[]
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")

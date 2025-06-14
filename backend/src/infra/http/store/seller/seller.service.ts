@@ -43,7 +43,7 @@ export class SellerService {
     const user = await this.userStorage.findByNick(nickname)
     if (!user) return { error: true, badNickname: true }
 
-    const { title, description, price } = body
+    const { title, description, price, stock } = body
     if (!title) return { error: true, badUserBody: true }
 
     const priceNumber = Number(price)
@@ -66,6 +66,7 @@ export class SellerService {
       priceNumber,
       slug,
       image,
+      stock || 1,
     )
 
     return product

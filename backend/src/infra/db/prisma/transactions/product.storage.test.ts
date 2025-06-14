@@ -33,6 +33,7 @@ describe('ProductStorage Integration Tests', () => {
       100,
       productSlug,
       'http://image.url/img.jpg',
+      1,
     )
 
     if ('error' in product) {
@@ -61,6 +62,7 @@ describe('ProductStorage Integration Tests', () => {
       200,
       uniqueSlug,
       'http://image.url/img2.jpg',
+      1,
     )
 
     expect(duplicateProduct).toEqual({ error: true, badSlug: true })
