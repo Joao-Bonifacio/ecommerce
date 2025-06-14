@@ -9,6 +9,17 @@ import {
   productFormSchema,
 } from './validation/product-validate'
 
+export const getAllProducts = async (): Promise<Product[] | null> => {
+  const products = await api('/products', {
+    method: 'GET',
+    next: {
+      revalidate: 60 * 60, // 1 hour
+    },
+  }).then((data) => data.json())
+  if (!products) return null
+  return products
+}
+
 export const getProduct = async (slug: string): Promise<Product | null> => {
   const product = await api(`/products/slug/${slug}`, {
     method: 'GET',

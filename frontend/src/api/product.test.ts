@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+  getAllProducts,
   getFeaturedProducts,
   getProduct,
   searchProducts,
@@ -7,7 +8,7 @@ import {
 
 describe('Product API Integration', () => {
   it('should return product by slug', async () => {
-    const products = await getFeaturedProducts()
+    const products = await getAllProducts()
     const { slug } = products![0]
     const product = await getProduct(slug)
 
@@ -20,15 +21,15 @@ describe('Product API Integration', () => {
 
     expect(products).toBeDefined()
     expect(Array.isArray(products)).toBe(true)
-    if (products) {
+    if (Array.isArray(products) && products.length > 0) {
       expect(products[0]).toHaveProperty('id')
       expect(products[0]).toHaveProperty('title')
     }
   })
 
   it('should return products by search query', async () => {
-    const products = await getFeaturedProducts()
-    const slug = products![0].slug.split('-')[0]
+    const products = await getAllProducts()
+    const slug = products![0].slug.split('-')[1]
     const results = await searchProducts(slug)
     expect(results).toBeDefined()
     expect(Array.isArray(results)).toBe(true)

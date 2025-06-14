@@ -19,7 +19,7 @@ describe('Home - Integration', () => {
       image: '/highlighted.jpg',
       owner: '',
       sales: 0,
-      featured: false,
+      featured: true,
       ratings: [],
       stock: 0,
     },
