@@ -6,7 +6,6 @@ import { APP_GUARD } from '@nestjs/core'
 import { JwtAuthGuard } from './jwt-auth.guard'
 import { EnvService } from '../../core/env/env.service'
 import { EnvModule } from '../../core/env/env.module'
-import { AuthGateway } from './auth.gateway'
 
 @Module({
   imports: [
@@ -29,7 +28,6 @@ import { AuthGateway } from './auth.gateway'
   providers: [
     JwtStrategy,
     EnvService,
-    AuthGateway,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
