@@ -67,7 +67,7 @@ export const rateProduct = async (
   if (!token || !validation) throw new Error('Unauthorized')
 
   const response = await api(`/products/rate/${id}`, {
-    method: 'GET',
+    method: 'PATCH',
     headers: {
       Authorization: `Bearer ${token}`,
     },

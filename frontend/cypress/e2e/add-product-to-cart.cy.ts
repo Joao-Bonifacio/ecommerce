@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 describe('add product to cart', () => {
   beforeEach(() => {
-    // cy.setCookie('access_token', 'mocked-token-value')
     cy.visit('/')
     cy.get('a[href^="/product"]').first().as('firstProductLink')
     cy.contains(/^Cart \(\d+\)$/).as('cartCounter')

@@ -41,6 +41,15 @@ export default function SignUpPage() {
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="nickname">Nickname</Label>
+              <Input
+                name="nickname"
+                type="nickname"
+                required
+                placeholder="your_nick"
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 name="password"

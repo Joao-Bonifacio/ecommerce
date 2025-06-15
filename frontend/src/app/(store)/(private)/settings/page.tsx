@@ -42,8 +42,9 @@ export default async function SettingsPage() {
             <DialogTrigger asChild>
               <div className="mx-auto! rounded-full w-30 h-30 bg-background flex items-center justify-center relative cursor-pointer">
                 <Image
+                  id="editAvatar"
                   className="rounded-full"
-                  src={avatar || '/image/avatar-placeholder.png'}
+                  src={avatar || '/image/sample.jpeg'}
                   alt="avatar"
                   width={160}
                   height={160}
@@ -59,7 +60,7 @@ export default async function SettingsPage() {
               </DialogHeader>
               <div className="grid gap-4">
                 <div className="grid gap-3">
-                  <Label htmlFor="name-1">File name</Label>
+                  <Label htmlFor="fileName">File name</Label>
                   <Input
                     id="fileName"
                     name="fileName"

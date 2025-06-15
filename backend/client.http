@@ -108,7 +108,7 @@ Content-Type: application/json
 
 ###
 # @name rate_product
-POST {{baseUrl}}/products/rate/{{lastProductId}}
+PATCH {{baseUrl}}/products/rate/{{lastProductId}}
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 

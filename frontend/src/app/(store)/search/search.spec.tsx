@@ -1,17 +1,18 @@
-import { expect, vi, Mock, MockInstance } from 'vitest'
+import { expect, vi, it, describe, beforeEach, MockInstance } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import Search from './page'
 import * as productsAPI from '@/api/product'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, redirect } from 'next/navigation'
 
 const mockPush = vi.fn()
 
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
   useSearchParams: vi.fn(),
+  redirect: vi.fn(),
 }))
 
-vi.mock('@/app/api/product', () => ({
+vi.mock('@/api/product', () => ({
   searchProducts: vi.fn(),
 }))
 
@@ -25,22 +26,25 @@ describe('Search Page', () => {
       push: mockPush,
     })
     ;(useSearchParams as unknown as MockInstance).mockReturnValue({
-      get: () => null,
+      get: () => redirect('/'),
     })
 
-    render(await Search({ searchParams: Promise.resolve({ q: 'produto' }) }))
+    render(await Search({ searchParams: Promise.resolve({ q: '' }) }))
 
-    expect(true).toBe(true)
+    expect(redirect).toHaveBeenCalledWith('/')
   })
 
-  it('should render the fetched products returned from searchProducts', async () => {
-    ;(useRouter as Mock).mockReturnValue({
+  it('should render products when query is provided', async () => {
+    ;(useRouter as unknown as MockInstance).mockReturnValue({
       push: mockPush,
     })
     ;(useSearchParams as unknown as MockInstance).mockReturnValue({
       get: () => 'celular',
     })
-    ;(productsAPI.searchProducts as Mock).mockResolvedValueOnce([
+
+    const mockedProductsAPI = vi.mocked(productsAPI)
+
+    mockedProductsAPI.searchProducts.mockResolvedValueOnce([
       {
         id: crypto.randomUUID(),
         owner: 'owner1',
@@ -50,8 +54,9 @@ describe('Search Page', () => {
         sales: 10,
         image: '/image/sample.jpeg',
         description: 'Descrição do Produto 1',
-        featured: false,
+        featured: true,
         ratings: [],
+        stock: 0,
       },
       {
         id: crypto.randomUUID(),
@@ -62,14 +67,15 @@ describe('Search Page', () => {
         sales: 5,
         image: '/image/sample.jpeg',
         description: 'Descrição do Produto 2',
-        featured: false,
+        featured: true,
         ratings: [],
+        stock: 0,
       },
     ])
 
     render(await Search({ searchParams: Promise.resolve({ q: 'produto' }) }))
 
-    expect(screen.getByText('Produto 1')).toBeInTheDocument()
+    expect(await screen.findByText('Produto 1')).toBeInTheDocument()
     expect(screen.getByText('Produto 2')).toBeInTheDocument()
   })
 })

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, Mock } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { signIn, signUp } from '@/api/user'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -20,18 +20,19 @@ vi.mock('@/context/stores/user-store', () => ({
     }),
   },
 }))
+
 describe('User API Integration', () => {
-  let mockSet: ReturnType<typeof vi.fn>
+  let mockSetCookie: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
     vi.clearAllMocks()
 
-    mockSet = vi.fn()
-    ;(cookies as unknown as Mock).mockReturnValue({
-      set: mockSet,
+    mockSetCookie = vi.fn()
+    ;(cookies as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      set: mockSetCookie,
     })
 
-    vi.spyOn(global, 'fetch').mockResolvedValue({
+    global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ access_token: 'mock-token' }),
     } as Response)
@@ -52,7 +53,7 @@ describe('User API Integration', () => {
 
     await expect(signUp(form)).resolves.toBeUndefined()
 
-    expect(mockSet).toHaveBeenCalledWith('access_token', 'mock-token')
+    expect(mockSetCookie).toHaveBeenCalledWith('access_token', 'mock-token')
     expect(mockSetUser).toHaveBeenCalledWith(mockUser)
     expect(redirect).toHaveBeenCalledWith('/')
   })
@@ -75,7 +76,7 @@ describe('User API Integration', () => {
     form.set('email', 'test@test.com')
     form.set('password', '@Passw0rd')
 
-    const mockUser = {
+    const mockUserData = {
       id: '123',
       name: 'John Doe',
       nickname: 'john_doe',
@@ -86,13 +87,13 @@ describe('User API Integration', () => {
 
     global.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ access_token: 'mock-token', user: mockUser }),
+      json: async () => ({ access_token: 'mock-token', user: mockUserData }),
     } as Response)
 
     await expect(signIn(form)).resolves.toBeUndefined()
 
-    expect(mockSet).toHaveBeenCalledWith('access_token', 'mock-token')
-    expect(mockSetUser).toHaveBeenCalledWith(mockUser)
+    expect(mockSetCookie).toHaveBeenCalledWith('access_token', 'mock-token')
+    expect(mockSetUser).toHaveBeenCalledWith(mockUserData)
     expect(redirect).toHaveBeenCalledWith('/')
   })
 
@@ -101,7 +102,7 @@ describe('User API Integration', () => {
     form.set('nickname', 'john_doe')
     form.set('password', '@Passw0rd')
 
-    const mockUser = {
+    const mockUserData = {
       id: '123',
       name: 'John Doe',
       nickname: 'john_doe',
@@ -112,13 +113,13 @@ describe('User API Integration', () => {
 
     global.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ access_token: 'mock-token', user: mockUser }),
+      json: async () => ({ access_token: 'mock-token', user: mockUserData }),
     } as Response)
 
     await expect(signIn(form)).resolves.toBeUndefined()
 
-    expect(mockSet).toHaveBeenCalledWith('access_token', 'mock-token')
-    expect(mockSetUser).toHaveBeenCalledWith(mockUser)
+    expect(mockSetCookie).toHaveBeenCalledWith('access_token', 'mock-token')
+    expect(mockSetUser).toHaveBeenCalledWith(mockUserData)
     expect(redirect).toHaveBeenCalledWith('/')
   })
 })

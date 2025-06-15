@@ -3,7 +3,7 @@
 exports[`ProductPage > ProductPage component > renders product details when product found 1`] = `
 <div>
   <div
-    class="relative grid max-h-[860px] grid-cols-3"
+    class="relative grid max-h-[100%] grid-cols-4 mb-7"
   >
     <div
       class="col-span-2 overflow-hidden"
@@ -22,10 +22,10 @@ exports[`ProductPage > ProductPage component > renders product details when prod
       />
     </div>
     <div
-      class="flex flex-col justify-center px-12"
+      class="flex flex-col justify-center px-50 col-span-2"
     >
       <h1
-        class="!text-4xl font-bold leading-tight !py-2 !mb-5"
+        class="text-4xl font-bold leading-tight py-2 mb-5"
       >
         Mock Product
       </h1>
@@ -53,10 +53,44 @@ exports[`ProductPage > ProductPage component > renders product details when prod
       <button>
         Add to cart mock
       </button>
+      <div
+        class="h-5 w-full mb-10"
+      />
+      <div>
+        <h4
+          class="flex justify-between gap-2 mb-3 text-2xl"
+        >
+          <span
+            class=""
+          >
+            Ratings
+          </span>
+          <span
+            class="text-yellow-400 text-right"
+          />
+        </h4>
+        <hr />
+        <div
+          class="mt-5 text-center"
+        >
+          <form
+            action="javascript:throw new Error('A React form was unexpectedly submitted. If you called form.submit() manually, consider using form.requestSubmit() instead. If you\\'re trying to use event.stopPropagation() in a submit event handler, consider also calling event.preventDefault().')"
+          >
+            <button
+              aria-controls="radix-«r0»"
+              aria-expanded="false"
+              aria-haspopup="dialog"
+              class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 py-2 has-[>svg]:px-3 text-center bg-indigo-400 mx-auto"
+              data-slot="dialog-trigger"
+              data-state="closed"
+              type="button"
+            >
+              Rate this product
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
-    <div
-      class="h-5 w-full"
-    />
   </div>
 </div>
 `;

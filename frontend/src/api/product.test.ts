@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import {
   getAllProducts,
   getFeaturedProducts,
@@ -7,8 +7,16 @@ import {
 } from '@/api/product'
 
 describe('Product API Integration', () => {
-  it('should return product by slug', async () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('should return a product by slug', async () => {
     const products = await getAllProducts()
+    expect(products).toBeDefined()
+    expect(Array.isArray(products)).toBe(true)
+    expect(products?.length).toBeGreaterThan(0)
+
     const { slug } = products![0]
     const product = await getProduct(slug)
 
@@ -16,21 +24,28 @@ describe('Product API Integration', () => {
     expect(product).toHaveProperty('slug', slug)
     expect(product).toHaveProperty('title')
   })
-  it('should return featured products list', async () => {
+
+  it('should return a list of featured products', async () => {
     const products = await getFeaturedProducts()
 
     expect(products).toBeDefined()
     expect(Array.isArray(products)).toBe(true)
-    if (Array.isArray(products) && products.length > 0) {
+
+    if (products && products.length > 0) {
       expect(products[0]).toHaveProperty('id')
       expect(products[0]).toHaveProperty('title')
     }
   })
 
-  it('should return products by search query', async () => {
+  it('should return products matching search query', async () => {
     const products = await getAllProducts()
-    const slug = products![0].slug.split('-')[1]
-    const results = await searchProducts(slug)
+    expect(products).toBeDefined()
+    expect(Array.isArray(products)).toBe(true)
+    expect(products?.length).toBeGreaterThan(0)
+
+    const slugPart = products![0].slug.split('-')[1]
+    const results = await searchProducts(slugPart)
+
     expect(results).toBeDefined()
     expect(Array.isArray(results)).toBe(true)
     expect(results?.length).toBeGreaterThan(0)
