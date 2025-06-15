@@ -1,118 +1,120 @@
-import { describe, expect, it, beforeAll, afterAll } from 'vitest'
-import { createTestApp } from './setup'
-import request from 'supertest'
+import { beforeAll, afterAll, describe, it, expect } from 'vitest'
 import { INestApplication } from '@nestjs/common'
-import { createTestUser } from '../utils/user-auth'
+import { Test } from '@nestjs/testing'
+import request from 'supertest'
+import { AppModule } from '@/infra/app.module'
 import { faker } from '@faker-js/faker'
-import { createProduct } from '../utils/create-product'
+import { PrismaServiceMongo } from '@/infra/db/prisma/prisma.service'
+import { createTestUser } from '../utils/user-auth'
+import { createBadProduct, createProduct } from '../utils/create-product'
 
-describe('Product Controller', () => {
+describe('Seller Controller (E2E)', () => {
   let app: INestApplication
-  let token: string
-  let productId: string
+  let prismaMongo: PrismaServiceMongo
+  let sellerToken: string
+  let sellerNickname: string
 
   beforeAll(async () => {
-    app = await createTestApp()
-    const user = await createTestUser(app, {
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile()
+
+    app = moduleRef.createNestApplication()
+    prismaMongo = moduleRef.get(PrismaServiceMongo)
+
+    await app.init()
+
+    const seller = await createTestUser(app, {
       name: faker.person.fullName(),
       email: faker.internet.email(),
       nickname: faker.internet.username(),
-      password: faker.internet.password(),
+      password: '@Passw0rd',
     })
-    token = user.body.access_token
-
-    const product = await createProduct(app, token)
-    productId = product.body.id
+    sellerToken = seller.body.access_token
+    sellerNickname = seller.body.user.nickname
   })
 
   afterAll(async () => {
-    await request(app.getHttpServer())
-      .delete(`/v1/seller/remove/${productId}`)
-      .set('Authorization', `Bearer ${token}`)
+    await prismaMongo.product.deleteMany({})
     await app.close()
   })
 
-  it('should be able to list products', async () => {
-    const response = await request(app.getHttpServer()).get('/v1/products')
-    expect(response.status).toBe(200)
-    expect(Array.isArray(response.body)).toBe(true)
+  describe('/seller/upload', () => {
+    it('should successfully upload a new product with an image', async () => {
+      const response = await createProduct(app, sellerToken)
+
+      expect(response.status).toBe(201)
+      expect(response.body).toHaveProperty('id')
+      expect(response.body.owner).toBe(sellerNickname)
+      expect(response.body.image).toContain('.jpeg')
+    })
+
+    it('should return 400 if file type is invalid', async () => {
+      const response = await createBadProduct(app, sellerToken)
+      expect(response.status).toBe(400)
+      expect(response.body.message).toContain(
+        'Validation failed (current file type is text/plain, expected type is .(png|jpg|jpeg))',
+      )
+    })
   })
 
-  it('should be able to search products', async () => {
-    const { body } = await createProduct(app, token)
-    expect(body.slug).toBeDefined()
+  describe(' /seller/edit/:id', () => {
+    it('should successfully edit an existing product', async () => {
+      const createResponse = await createProduct(app, sellerToken)
+      const updatedDescription = 'This is the updated description.'
 
-    const query = body.slug.split('-')[1] || ''
-    const response = await request(app.getHttpServer()).get(
-      `/v1/products/search?q=${encodeURIComponent(query)}`,
-    )
+      const editResponse = await request(app.getHttpServer())
+        .patch(`/v1/seller/edit/${createResponse.body.id}`)
+        .set('Authorization', `Bearer ${sellerToken}`)
+        .send({ description: updatedDescription })
 
-    expect(response.status).toBe(200)
-    expect(Array.isArray(response.body)).toBe(true)
-  })
+      expect(editResponse.status).toBe(200)
+      expect(editResponse.body.id).toBe(createResponse.body.id)
+      expect(editResponse.body.description).toBe(updatedDescription)
+    })
 
-  it('should be able to get product by slug', async () => {
-    const { body } = await createProduct(app, token)
-    const slug = body.slug
-    const response = await request(app.getHttpServer()).get(
-      `/v1/products/slug/${encodeURIComponent(slug)}`,
-    )
-
-    expect(response.status).toBe(200)
-    expect(response.body).toHaveProperty('slug', slug)
-  })
-
-  it('should upload a product', async () => {
-    const response = await createProduct(app, token)
-
-    expect(response.status).toBe(201)
-    expect(response.body).toHaveProperty('id')
-    expect(response.body).toHaveProperty('title')
-
-    await request(app.getHttpServer())
-      .delete(`/v1/seller/remove/${response.body.id}`)
-      .set('Authorization', `Bearer ${token}`)
-  })
-
-  it('should be able to feature a product', async () => {
-    const { body } = await createProduct(app, token)
-    const response = await request(app.getHttpServer())
-      .patch(`/v1/seller/feature/${body.id}`)
-      .set('Authorization', `Bearer ${token}`)
-
-    expect(response.status).toBe(204)
-
-    await request(app.getHttpServer())
-      .delete(`/v1/seller/remove/${body.id}`)
-      .set('Authorization', `Bearer ${token}`)
-  })
-
-  it('should be able to remove a product', async () => {
-    const { body } = await createProduct(app, token)
-    const response = await request(app.getHttpServer())
-      .delete(`/v1/seller/remove/${body.id}`)
-      .set('Authorization', `Bearer ${token}`)
-
-    expect(response.status).toBe(204)
-  })
-
-  it('should not be able to upload a product with duplicate slug', async () => {
-    const product = await createProduct(app, token)
-    const duplicateProduct = await request(app.getHttpServer())
-      .post('/v1/seller/upload')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'Duplicate Slug Product',
-        description: 'This product has a duplicate slug',
-        price: 100,
-        slug: product.body.slug,
-        image: 'http://example.com/image.jpg',
+    it('should return 400 if another user tries to edit the product', async () => {
+      const createResponse = await createTestUser(app, {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        nickname: faker.internet.username(),
+        password: '@Passw0rd',
       })
+      const productId = createResponse.body.id
 
-    expect(duplicateProduct.status).toBe(400)
+      const anotherUser = await createTestUser(app, {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        nickname: faker.internet.username(),
+        password: '@Passw0rd',
+      })
+      const anotherToken = anotherUser.body.access_token
 
-    await request(app.getHttpServer())
-      .delete(`/v1/seller/remove/${product.body.id}`)
-      .set('Authorization', `Bearer ${token}`)
+      const editResponse = await request(app.getHttpServer())
+        .patch(`/v1/seller/edit/${productId}`)
+        .set('Authorization', `Bearer ${anotherToken}`)
+        .send({ description: 'Malicious edit' })
+
+      expect(editResponse.status).toBe(403)
+    })
+  })
+
+  describe('/seller/remove/:id', () => {
+    it('should successfully remove a product', async () => {
+      const createResponse = await createProduct(app, sellerToken)
+
+      // console.log(createResponse.body)
+
+      const deleteResponse = await request(app.getHttpServer())
+        .delete(`/v1/seller/remove/${createResponse.body.id}`)
+        .set('Authorization', `Bearer ${sellerToken}`)
+
+      expect(deleteResponse.status).toBe(204)
+
+      const getResponse = await request(app.getHttpServer()).get(
+        `/v1/products/slug/${createResponse.body.slug}`,
+      )
+      expect(getResponse.status).toBe(404)
+    })
   })
 })

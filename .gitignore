@@ -94,6 +94,7 @@ stories/
 
 # Infra
 *-configmap.yaml
+istio-1.26.1/
 
 # Misc
 *.pem

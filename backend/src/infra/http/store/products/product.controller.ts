@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Query,
+} from '@nestjs/common'
 import { ProductService } from './product.service'
 import type { Product, Rating } from '@/prisma/generated/mongo'
 import { Public } from '@/infra/auth/public'
@@ -22,8 +31,10 @@ export class ProductController {
   }
 
   @Get('slug/:slug')
-  findProductBySlug(@Param('slug') slug: string): Promise<Product | null> {
-    return this.product.findProductBySlug(slug)
+  async findProductBySlug(@Param('slug') slug: string): Promise<Product> {
+    const product = await this.product.findProductBySlug(slug)
+    if (!product) throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+    return product
   }
 
   @Get('featured')

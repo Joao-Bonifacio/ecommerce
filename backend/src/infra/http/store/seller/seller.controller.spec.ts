@@ -1,50 +1,86 @@
-import { mockProducts } from '@/test/mocks/product.mock'
 import { SellerController } from './seller.controller'
 import { SellerService } from './seller.service'
+import {
+  createMockSellerService,
+  MockedService,
+} from '@/test/mocks/services.mock'
+import { HttpException, HttpStatus } from '@nestjs/common'
+import { Product } from '@/prisma/generated/mongo'
 
-describe('Seller ', () => {
+describe('SellerController', () => {
   let controller: SellerController
-  let service: SellerService
+  let sellerService: MockedService<SellerService>
+
+  const mockUserContext = { sub: 'user-id-123', nickname: 'seller_nick' }
+  const mockProduct = { id: 'prod-123', title: 'Test Product' } as Product
 
   beforeEach(() => {
-    service = {
-      uploadProduct: vi.fn().mockResolvedValue(mockProducts[0]),
-      featureProduct: vi.fn().mockResolvedValue(undefined),
-      removeProduct: vi.fn().mockResolvedValue(undefined),
-    } as any
-    controller = new SellerController(service)
+    sellerService = createMockSellerService()
+    controller = new SellerController(sellerService as unknown as SellerService)
   })
 
-  it('should upload product', async () => {
-    const file = {
-      originalname: 'img.jpg',
-      mimetype: 'image/jpeg',
-      buffer: Buffer.from(''),
-    } as any
-    const body = {
+  describe('uploadProduct', () => {
+    const uploadBody = {
       title: 'New Product',
-      description: 'desc',
-      price: 10,
-      fileName: 'img.jpg',
+      description: 'A great product',
+      price: 100,
+      fileName: 'product.png',
     }
-    const result = await controller.uploadProduct(
-      { sub: '123', nickname: 'jown_dee' },
-      body,
-      file,
-    )
-    expect(result).toEqual(mockProducts[0])
-    expect(service.uploadProduct).toHaveBeenCalled()
+    const mockFile: Express.Multer.File = {
+      originalname: 'product.png',
+      mimetype: 'image/png',
+      buffer: Buffer.from('fake-image-data'),
+    } as Express.Multer.File
+
+    it('should call the service to upload a product and return the created product', async () => {
+      sellerService.uploadProduct.mockResolvedValue(mockProduct)
+
+      const result = await controller.uploadProduct(
+        mockUserContext,
+        uploadBody,
+        mockFile,
+      )
+
+      expect(sellerService.uploadProduct).toHaveBeenCalledWith(
+        mockUserContext.nickname,
+        uploadBody,
+        mockFile,
+      )
+      expect(result).toEqual(mockProduct)
+    })
+
+    it('should throw HttpException if the service returns an error', async () => {
+      const serviceError = { error: true as const, badNickname: true as const }
+      sellerService.uploadProduct.mockResolvedValue(serviceError)
+
+      await expect(
+        controller.uploadProduct(mockUserContext, uploadBody, mockFile),
+      ).rejects.toThrow(new HttpException(serviceError, HttpStatus.BAD_REQUEST))
+    })
   })
 
-  it('should edit product', async () => {})
+  describe('featureProduct', () => {
+    it('should call the service to feature a product with the correct parameters', async () => {
+      const productId = 'prod-to-feature'
+      sellerService.featureProduct.mockResolvedValue(mockProduct)
 
-  it('should feature a product', async () => {
-    await controller.featureProduct({ sub: '123', nickname: 'jown_dee' }, '1')
-    expect(service.featureProduct).toHaveBeenCalledWith('1', 'jown_dee')
+      await controller.featureProduct(mockUserContext, productId)
+
+      expect(sellerService.featureProduct).toHaveBeenCalledWith(
+        productId,
+        mockUserContext.nickname,
+      )
+    })
   })
 
-  it('should remove a product', async () => {
-    await controller.removeProduct('1')
-    expect(service.removeProduct).toHaveBeenCalledWith('1')
+  describe('removeProduct', () => {
+    it('should call the service to remove a product with the correct ID', async () => {
+      const productId = 'prod-to-remove'
+      sellerService.removeProduct.mockResolvedValue(undefined)
+
+      await controller.removeProduct(productId)
+
+      expect(sellerService.removeProduct).toHaveBeenCalledWith(productId)
+    })
   })
 })
