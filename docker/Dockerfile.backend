@@ -4,7 +4,7 @@ WORKDIR /usr/src/api
 
 COPY package*.json ./
 RUN npm install
-COPY . .
+COPY ../backend .
 RUN npm run db:mongo; \
     npm run db:postgres-prod; \
     npm run build 

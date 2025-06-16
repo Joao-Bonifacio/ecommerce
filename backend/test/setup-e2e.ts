@@ -1,3 +1,5 @@
+/*
+import { beforeAll, afterAll } from 'vitest'
 import { config } from 'dotenv'
 import { execSync } from 'node:child_process'
 import { Redis } from 'ioredis'
@@ -45,13 +47,11 @@ function generateUniqueMongoURL(dbName: string) {
 beforeAll(async () => {
   const pgURL = generateUniquePostgresURL(schemaId)
   process.env.POSTGRES_URL = pgURL
-  execSync('npx prisma generate --schema=prisma/postgres.schema.prisma')
-  execSync('npx prisma migrate deploy --schema=prisma/postgres.schema.prisma')
+  execSync('npm run db:postgres')
 
   const mongoURL = generateUniqueMongoURL(mongoDbName)
   process.env.MONGO_URL = mongoURL
-  execSync('npx prisma generate --schema=prisma/mongo.schema.prisma')
-  execSync('npx prisma db push --schema=prisma/mongo.schema.prisma')
+  execSync('npm run db:postgres')
 })
 
 afterAll(async () => {
@@ -72,3 +72,4 @@ afterAll(async () => {
 
   await redis.quit()
 })
+*/

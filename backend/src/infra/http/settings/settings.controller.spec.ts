@@ -1,51 +1,62 @@
 import { SettingsController } from './settings.controller'
 import { UserStorage } from '@/infra/db/prisma/transactions/user.storage'
-import type { Mocked } from 'vitest'
+import {
+  createMockUserStorage,
+  MockedService,
+} from '@/test/mocks/services.mock'
 
 describe('SettingsController', () => {
   let controller: SettingsController
-  let userStorageMock: ReturnType<typeof createUserStorageMock>
+  let userStorage: MockedService<UserStorage>
 
-  const mockUser = { sub: 'user-id-123' }
+  const mockUserContext = { sub: 'user-id-123' }
 
   beforeEach(() => {
-    userStorageMock = createUserStorageMock()
-    controller = new SettingsController(userStorageMock)
+    userStorage = createMockUserStorage()
+    controller = new SettingsController(userStorage as unknown as UserStorage)
   })
 
-  it('should call updatePassword with correct arguments', async () => {
-    const password = 'newSecurePassword123'
-    await controller.updatePassword(mockUser, { password })
+  describe('updatePassword', () => {
+    it('should call userStorage.updatePassword with the correct user ID and new password', async () => {
+      const newPassword = 'new-super-secret-password'
 
-    expect(userStorageMock.updatePassword).toHaveBeenCalledWith(
-      mockUser.sub,
-      password,
-    )
-    expect(userStorageMock.updatePassword).toHaveBeenCalledTimes(1)
+      await controller.updatePassword(mockUserContext, {
+        password: newPassword,
+      })
+
+      expect(userStorage.updatePassword).toHaveBeenCalledWith(
+        mockUserContext.sub,
+        newPassword,
+      )
+      expect(userStorage.updatePassword).toHaveBeenCalledTimes(1)
+    })
   })
 
-  it('should call updateAvatar with correct arguments', async () => {
-    const mockFile = {
-      filename: 'avatar.png',
-      mimetype: 'image/png',
-      buffer: Buffer.from('image-content'),
-    } as Express.Multer.File
+  describe('updateAvatar', () => {
+    it('should call userStorage.updateAvatar with correct user and file details', async () => {
+      const mockFile: Express.Multer.File = {
+        fieldname: 'file',
+        originalname: 'avatar.png',
+        encoding: '7bit',
+        mimetype: 'image/png',
+        size: 1024,
+        buffer: Buffer.from('fake-image-data'),
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        stream: require('stream').Readable.from(Buffer.from('fake-image-data')),
+        destination: '',
+        filename: 'generated-filename.png',
+        path: '',
+      }
 
-    await controller.updateAvatar(mockUser, mockFile)
+      await controller.updateAvatar(mockUserContext, mockFile)
 
-    expect(userStorageMock.updateAvatar).toHaveBeenCalledWith(
-      mockUser.sub,
-      mockFile.filename,
-      mockFile.mimetype,
-      mockFile.buffer,
-    )
-    expect(userStorageMock.updateAvatar).toHaveBeenCalledTimes(1)
+      expect(userStorage.updateAvatar).toHaveBeenCalledWith(
+        mockUserContext.sub,
+        mockFile.filename,
+        mockFile.mimetype,
+        mockFile.buffer,
+      )
+      expect(userStorage.updateAvatar).toHaveBeenCalledTimes(1)
+    })
   })
 })
-
-function createUserStorageMock() {
-  return {
-    updatePassword: vi.fn().mockResolvedValue(undefined),
-    updateAvatar: vi.fn().mockResolvedValue(undefined),
-  } as unknown as Mocked<UserStorage>
-}

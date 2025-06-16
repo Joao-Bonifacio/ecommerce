@@ -2,14 +2,15 @@ import { vi } from 'vitest'
 
 export const mockUserStorage = {
   findById: vi.fn(),
+  findByNick: vi.fn(),
 }
 
 export const mockProductStorage = {
-  listProduct: vi.fn(),
+  listProducts: vi.fn(),
   findProductsByOwner: vi.fn(),
   findProductBySlug: vi.fn(),
   findFeaturedProducts: vi.fn(),
-  searchproducts: vi.fn(),
+  searchProducts: vi.fn(),
   uploadProduct: vi.fn(),
   featureProduct: vi.fn(),
   findProductById: vi.fn(),

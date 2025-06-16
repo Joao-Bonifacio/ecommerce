@@ -1,9 +1,9 @@
-import { User } from '@/app/api/validation/types/user'
+import { User } from '@/api/validation/types/user'
 import { create } from 'zustand'
 
 interface UserStore {
   user: User | null
-  setUser: (user: User) => void
+  setUser: (user: User | null) => void
   clearUser: () => void
 }
 

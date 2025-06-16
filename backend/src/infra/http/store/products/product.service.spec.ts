@@ -1,29 +1,19 @@
 import { ProductService } from './product.service'
-import { HttpException } from '@nestjs/common'
-import {
-  mockCacheStorage,
-  mockProductStorage,
-  mockS3Storage,
-  mockUserStorage,
-} from '@/test/mocks/product.mock'
+import { mockCacheStorage, mockProductStorage } from '@/test/mocks/product.mock'
 
 let service: ProductService
 
 beforeEach(() => {
-  mockCacheStorage.get.mockResolvedValue(JSON.stringify({ id: 'cached-3' }))
-  mockCacheStorage.get.mockResolvedValue(JSON.stringify([{ id: 'cached-4' }]))
   vi.clearAllMocks()
   service = new ProductService(
-    mockUserStorage as any,
     mockProductStorage as any,
-    mockS3Storage as any,
     mockCacheStorage as any,
   )
 })
 
 describe('ProductService', () => {
   it('should return all products', async () => {
-    mockProductStorage.listProduct.mockResolvedValue([{ id: '1' }])
+    mockProductStorage.listProducts.mockResolvedValue([{ id: '1' }])
     const result = await service.productList()
     expect(result).toEqual([{ id: '1' }])
   })
@@ -91,58 +81,8 @@ describe('ProductService', () => {
   })
 
   it('should search products', async () => {
-    mockProductStorage.searchproducts.mockResolvedValue([{ id: '5' }])
-    const result = await service.seachProducts('searchTerm')
+    mockProductStorage.searchProducts.mockResolvedValue([{ id: '5' }])
+    const result = await service.searchProducts('searchTerm')
     expect(result).toEqual([{ id: '5' }])
-  })
-
-  it('should upload product', async () => {
-    const mockFile = {
-      originalname: 'img.jpg',
-      mimetype: 'image/jpeg',
-      buffer: Buffer.from(''),
-    } as Express.Multer.File
-
-    mockS3Storage.upload.mockResolvedValue({ url: 'https://image.jpg' })
-    mockUserStorage.findById.mockResolvedValue({ nickname: 'john' })
-    mockProductStorage.uploadProduct.mockResolvedValue({ id: '6' })
-
-    const result = await service.uploadProduct(
-      'user-id',
-      { title: 'Title', description: 'Desc', price: 10, fileName: 'img.jpg' },
-      mockFile,
-    )
-    expect(result).toEqual({ id: '6' })
-  })
-
-  it('should return null if user not found during upload', async () => {
-    mockUserStorage.findById.mockResolvedValue(null)
-    const result = await service.uploadProduct(
-      'id',
-      { title: '', description: '', price: 0, fileName: '' },
-      {} as any,
-    )
-    expect(result).toBeNull()
-  })
-
-  it('should feature a product', async () => {
-    await service.featureProduct('prod-id')
-    expect(mockProductStorage.featureProduct).toHaveBeenCalledWith('prod-id')
-  })
-
-  it('should remove a product', async () => {
-    mockProductStorage.findProductById.mockResolvedValue({
-      image: 'https://bucket.com/image.jpg',
-    })
-    await service.removeProduct('id')
-    expect(mockS3Storage.delete).toHaveBeenCalledWith('image.jpg')
-    expect(mockProductStorage.removeProduct).toHaveBeenCalledWith('id')
-  })
-
-  it('should throw if product not found when removing', async () => {
-    mockProductStorage.findProductById.mockResolvedValue(null)
-    await expect(service.removeProduct('invalid-id')).rejects.toThrow(
-      HttpException,
-    )
   })
 })

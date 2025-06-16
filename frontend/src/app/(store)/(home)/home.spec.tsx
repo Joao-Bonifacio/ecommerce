@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import * as productApi from '@/app/api/product'
+import * as productApi from '@/api/product'
 import Home from './page'
 import { vi, describe, it, beforeEach, expect } from 'vitest'
-import type { Product } from '@/app/api/validation/types/product'
+import type { Product } from '@/api/validation/types/product'
 
 vi.mock('@/app/api/product', () => ({
   getFeaturedProducts: vi.fn(),
@@ -19,8 +19,9 @@ describe('Home - Integration', () => {
       image: '/highlighted.jpg',
       owner: '',
       sales: 0,
-      featured: false,
+      featured: true,
       ratings: [],
+      stock: 0,
     },
     {
       id: crypto.randomUUID(),
@@ -33,6 +34,7 @@ describe('Home - Integration', () => {
       sales: 0,
       featured: false,
       ratings: [],
+      stock: 0,
     },
     {
       id: crypto.randomUUID(),
@@ -45,6 +47,7 @@ describe('Home - Integration', () => {
       sales: 0,
       featured: false,
       ratings: [],
+      stock: 0,
     },
   ]
 

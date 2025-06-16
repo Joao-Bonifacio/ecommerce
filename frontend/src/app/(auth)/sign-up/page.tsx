@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { signUp } from '@/app/api/user'
+import { signUp } from '@/api/user'
 import Link from 'next/link'
 
 export default function SignUpPage() {
@@ -38,6 +38,15 @@ export default function SignUpPage() {
                 type="email"
                 required
                 placeholder="your@email.com"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="nickname">Nickname</Label>
+              <Input
+                name="nickname"
+                type="nickname"
+                required
+                placeholder="your_nick"
               />
             </div>
             <div className="space-y-2">

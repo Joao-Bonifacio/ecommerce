@@ -1,27 +1,17 @@
 import {
   Body,
   Controller,
-  Delete,
-  FileTypeValidator,
   Get,
-  HttpCode,
   HttpException,
   HttpStatus,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   Patch,
-  Post,
   Query,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common'
 import { ProductService } from './product.service'
-import type { UploadProductBody } from './product.dto'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import type { Product } from '@/prisma/generated/mongo'
+import type { Product, Rating } from '@/prisma/generated/mongo'
 import { Public } from '@/infra/auth/public'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
 
 @Controller('products')
 export class ProductController {
@@ -33,6 +23,7 @@ export class ProductController {
     return this.product.productList()
   }
 
+  @Public()
   @Get('owner/:nickname')
   findProductsByOwner(
     @Param('nickname') nickname: string,
@@ -42,8 +33,10 @@ export class ProductController {
 
   @Public()
   @Get('slug/:slug')
-  findProductBySlug(@Param('slug') slug: string): Promise<Product | null> {
-    return this.product.findProductBySlug(slug)
+  async findProductBySlug(@Param('slug') slug: string): Promise<Product> {
+    const product = await this.product.findProductBySlug(slug)
+    if (!product) throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+    return product
   }
 
   @Public()
@@ -54,41 +47,18 @@ export class ProductController {
 
   @Public()
   @Get('search')
-  seachProducts(@Query('q') query: string): Promise<Product[] | null> {
-    if (!query) {
-      throw new HttpException('Missing query', HttpStatus.BAD_REQUEST)
-    }
-    return this.product.seachProducts(query)
+  async seachProducts(@Query('q') query: string): Promise<Product[] | null> {
+    const products = await this.product.searchProducts(query)
+    return products
   }
 
-  @Post()
-  @HttpCode(201)
-  @UseInterceptors(FileInterceptor('file'))
-  uploadProduct(
-    @CurrentUser() user: { sub: string },
-    @Body() body: UploadProductBody,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 * 10 }), // 20mb
-          new FileTypeValidator({ fileType: '.(png|jpg|jpeg)' }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
-  ): Promise<Product | null> {
-    return this.product.uploadProduct(user.sub, body, file)
-  }
-
-  @Patch('featured/:id')
-  @HttpCode(204)
-  featureProduct(@Param('id') id: string): Promise<void> {
-    return this.product.featureProduct(id)
-  }
-
-  @Delete('remove/:id')
-  @HttpCode(204)
-  removeProduct(@Param('id') id: string): Promise<void> {
-    return this.product.removeProduct(id)
+  @Patch('rate/:id')
+  async ratingProduct(
+    @CurrentUser() user: { sub: string; nickname: string },
+    @Param('id') id: string,
+    @Body() body: Omit<Rating, 'id'>,
+  ) {
+    console.log(user)
+    return this.product.ratingProduct(id, user.nickname, body)
   }
 }

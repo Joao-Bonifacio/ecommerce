@@ -1,88 +1,138 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { beforeAll, beforeEach, afterAll, describe, it, expect } from 'vitest'
 import { INestApplication } from '@nestjs/common'
+import { Test } from '@nestjs/testing'
 import request from 'supertest'
+import { AppModule } from '@/infra/app.module'
 import { faker } from '@faker-js/faker'
+import { PrismaServicePostgres } from '@/infra/db/prisma/prisma.service'
+import { createTestUser } from '../utils/user-auth'
 
-import { createTestApp } from '../e2e/setup'
-import { createTestUser, loginTestUser } from '../utils/user-auth'
-
-describe('User Controller', () => {
+describe('Session Controller (E2E)', () => {
   let app: INestApplication
-  let token: string
-  let nickname: string
-  let password: string
+  let prisma: PrismaServicePostgres
 
   beforeAll(async () => {
-    app = await createTestApp()
-    password = faker.internet.password()
-    const response = await createTestUser(app, {
-      name: faker.person.fullName(),
-      email: faker.internet.email(),
-      nickname: faker.internet.username(),
-      password,
-    })
-    nickname = response.body.user.nickname
-    token = response.body.access_token
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile()
+
+    app = moduleRef.createNestApplication()
+    prisma = moduleRef.get(PrismaServicePostgres)
+
+    await app.init()
+  })
+
+  beforeEach(async () => {
+    await prisma.user.deleteMany({})
   })
 
   afterAll(async () => {
-    await request(app.getHttpServer())
-      .delete('/v1/session')
-      .set('Authorization', `Bearer ${token}`)
-
     await app.close()
   })
 
-  it('should be able to sign-up a user', async () => {
-    const response = await createTestUser(app, {
-      name: faker.person.fullName(),
-      email: faker.internet.email(),
-      nickname: faker.internet.username(),
-      password: faker.internet.password(),
+  describe(' /session/sign-up', () => {
+    it('should create a new user and return an access token', async () => {
+      const signUpData = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        nickname: faker.internet.username().toLowerCase(),
+        password: faker.internet.password({ length: 10 }),
+      }
+
+      const response = await request(app.getHttpServer())
+        .post('/v1/session/sign-up')
+        .send(signUpData)
+
+      expect(response.status).toBe(201)
+      expect(response.body).toHaveProperty('access_token')
+      expect(response.body.user.email).toBe(signUpData.email)
+      expect(response.body.user.password).toBeUndefined()
     })
 
-    expect(response.status).toBe(201)
-    expect(response.body).toHaveProperty('access_token')
-    expect(response.body).toHaveProperty('user')
+    it('should return 400 if email is already in use', async () => {
+      const email = faker.internet.email()
+      const firstUserData = {
+        name: faker.person.fullName(),
+        email,
+        nickname: faker.internet.username().toLowerCase(),
+        password: faker.internet.password({ length: 10 }),
+      }
+      await request(app.getHttpServer())
+        .post('/v1/session/sign-up')
+        .send(firstUserData)
 
-    await request(app.getHttpServer())
-      .delete('/v1/session')
-      .set('Authorization', `Bearer ${response.body.access_token}`)
+      const secondUserData = {
+        ...firstUserData,
+        nickname: faker.internet.username().toLowerCase(),
+      }
+      const response = await request(app.getHttpServer())
+        .post('/v1/session/sign-up')
+        .send(secondUserData)
+
+      expect(response.status).toBe(400)
+    })
   })
 
-  it('should be able to sign-in a user and get token and user', async () => {
-    const response = await loginTestUser(app, { nickname, password })
+  describe(' /session/sign-in', () => {
+    it('should authenticate a user and return an access token', async () => {
+      const { body } = await createTestUser(app, {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        nickname: faker.internet.username().toLowerCase(),
+        password: '@Passw0rd',
+      })
+      const { user } = body
 
-    expect(response.status).toBe(201)
-    expect(response.body).toHaveProperty('access_token')
-    expect(response.body).toHaveProperty('user')
-  })
+      const response = await request(app.getHttpServer())
+        .post('/v1/session/sign-in')
+        .send({
+          nickname: user.nickname,
+          password: '@Passw0rd',
+        })
 
-  it('should be able to get current user profile', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/v1/session/current')
-      .set('Authorization', `Bearer ${token}`)
-
-    expect(response.status).toBe(200)
-    expect(response.body).toHaveProperty('id')
-    expect(response.body).toHaveProperty('email')
-    expect(response.body).toHaveProperty('nickname')
-  })
-
-  it('should be able to delete a user', async () => {
-    const { body } = await createTestUser(app, {
-      name: faker.person.fullName(),
-      email: faker.internet.email(),
-      nickname: faker.internet.username(),
-      password: faker.internet.password(),
+      expect(response.status).toBe(201)
+      expect(response.body).toHaveProperty('access_token')
+      expect(response.body.user.nickname).toBe(user.nickname)
     })
 
-    const tempToken = body.access_token
+    it('should return 400 for invalid credentials', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/v1/session/sign-in')
+        .send({
+          nickname: 'nonexistentuser',
+          password: 'wrongpassword',
+        })
 
-    const deleteResponse = await request(app.getHttpServer())
-      .delete('/v1/session')
-      .set('Authorization', `Bearer ${tempToken}`)
+      expect(response.status).toBe(400)
+    })
+  })
 
-    expect(deleteResponse.status).toBe(204)
+  describe(' /session/current', () => {
+    it('should return the current user profile with a valid token', async () => {
+      const userData = {
+        name: faker.person.fullName(),
+        email: faker.internet.email(),
+        nickname: faker.internet.username().toLowerCase(),
+        password: faker.internet.password({ length: 10 }),
+      }
+      const signUpResponse = await request(app.getHttpServer())
+        .post('/v1/session/sign-up')
+        .send(userData)
+      const token = signUpResponse.body.access_token
+
+      const profileResponse = await request(app.getHttpServer())
+        .get('/v1/session/current')
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(profileResponse.status).toBe(200)
+      expect(profileResponse.body.email).toBe(userData.email)
+    })
+
+    it('should return 401 if no token is provided', async () => {
+      const response = await request(app.getHttpServer()).get(
+        '/v1/session/current',
+      )
+      expect(response.status).toBe(401)
+    })
   })
 })

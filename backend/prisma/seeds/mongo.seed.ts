@@ -48,7 +48,7 @@ class S3Storage {
     )
 
     return {
-      url: `http://${this.env.get('S3_ENDPOINT')}/${this.env.get('S3_BUCKET_NAME')}/${uniqueFileName}`,
+      url: `${this.env.get('S3_ENDPOINT')}/${this.env.get('S3_BUCKET_NAME')}/${uniqueFileName}`,
     }
   }
 }
@@ -82,7 +82,8 @@ export async function seed() {
         sales: faker.number.int({ min: 0, max: 1000 }),
         image: url,
         description: faker.commerce.productDescription(),
-        featured: faker.datatype.boolean(),
+        featured: true,//faker.datatype.boolean(),
+        stock: faker.number.int({ min: 1, max: 100 }),
         ratings: [],
       },
     })
@@ -91,5 +92,4 @@ export async function seed() {
   }
 
   await prisma.$disconnect()
-  console.log('Seed finished!')
 }

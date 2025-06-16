@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import CurrentSearch from './current-search'
-import { searchProducts } from '@/app/api/product'
+import { searchProducts } from '@/api/product'
 
 interface SearchProps {
   searchParams: Promise<{
@@ -40,11 +40,11 @@ export default async function Search({ searchParams }: SearchProps) {
                 alt=""
               />
 
-              <div className="absolute bottom-28 right-28 h-12 flex items-center gap-2 max-w-[300px] max-h-[300px] rounded-full border-2 border-zinc-500 bg-black/60">
-                <h4 className="text-white text-md truncate !p-2 !pl-3">
+              <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between rounded-xl border border-zinc-500 bg-black/60 px-4 py-3 backdrop-blur-sm">
+                <h4 className="text-blue-500 text-base font-medium truncate max-w-[70%]">
                   {product.title}
                 </h4>
-                <span className="flex h-full items-center justify-center rounded-full bg-violet-500 !p-2 font-semibold">
+                <span className="rounded-full bg-violet-500 text-white px-4 py-1 text-sm font-semibold whitespace-nowrap">
                   {product.price.toLocaleString('en-US', {
                     style: 'currency',
                     currency: 'USD',

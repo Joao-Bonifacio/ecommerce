@@ -1,5 +1,6 @@
 @baseUrl = http://localhost:8080/v1
 @access_token = {{signin.response.body.access_token}}
+@nickname = {{signin.response.body.nickname}}
 @lastProductId = {{upload_product.response.body.id}}
 @lastProductTitle = {{upload_product.response.body.title}}
 @lastProductSlug = {{upload_product.response.body.slug}}
@@ -16,7 +17,6 @@ Content-Type: application/json
 }
 
 ###
-
 # @name signin
 POST {{baseUrl}}/session/sign-in
 Content-Type: application/json
@@ -27,14 +27,43 @@ Content-Type: application/json
 }
 
 ###
+# @name update_avatar
+PATCH {{baseUrl}}/settings/avatar
+Authorization: Bearer {{access_token}}
+Content-Type: multipart/form-data; boundary=BOUNDARY
 
-# @name get_all_products
-GET {{baseUrl}}/products
+--BOUNDARY
+Content-Disposition: form-data; name="name"
+
+testing
+--BOUNDARY
+Content-Disposition: form-data; name="file"; filename="sample.jpeg"
+Content-Type: image/jpeg
+
+< ./test/image/sample.jpeg
+--BOUNDARY--
 
 ###
+# @name update_password
+PATCH {{baseUrl}}/settings/password
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
 
+{
+  "currentPassword": "@Passw0rd",
+  "newPassword": "@NewPassw0rd"
+}
+
+###
+# @name get_all_products
+GET {{baseUrl}}/products
+###
+# @name get_my_products
+GET {{baseUrl}}/seller/my-products
+Authorization: Bearer {{access_token}}
+###
 # @name upload_product
-POST {{baseUrl}}/products
+POST {{baseUrl}}/seller/upload
 Authorization: Bearer {{access_token}}
 Content-Type: multipart/form-data; boundary=BOUNDARY
 
@@ -62,32 +91,53 @@ Content-Type: image/jpeg
 --BOUNDARY--
 
 ###
-
 # @name feature_product
-PATCH {{baseUrl}}/products/featured/{{lastProductId}}
+PATCH {{baseUrl}}/seller/feature/{{lastProductId}}
 Authorization: Bearer {{access_token}}
 
 ###
+# @name edit_product
+PATCH {{baseUrl}}/seller/edit/{{lastProductId}}
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
 
+{
+  "description": "Updated product description.",
+  "price": 199.99,
+}
+
+###
+# @name rate_product
+PATCH {{baseUrl}}/products/rate/{{lastProductId}}
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "stars": 5,
+  "title": "Great product!",
+  "description": "I really loved this product. It exceeded my expectations!"
+}
+
+###
 # @name get_product_by_slug
 GET {{baseUrl}}/products/slug/{{lastProductSlug}}
 
 ###
-
 # @name get_featured_products
 GET {{baseUrl}}/products/featured
 
 ###
-
 # @name search_products
 GET {{baseUrl}}/products/search?q={{lastProductTitle}}
 
 ###
-
 # @name remove_product
-DELETE {{baseUrl}}/products/remove/{{lastProductTitle}}
+DELETE {{baseUrl}}/seller/remove/{{lastProductId}}
 Authorization: Bearer {{access_token}}
 
+###
 # @name remove_user
 DELETE {{baseUrl}}/session
 Authorization: Bearer {{access_token}}
+
+###
