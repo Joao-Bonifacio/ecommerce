@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: konga-db
+  namespace: kong
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: konga-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: konga-db
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: konga-db
+  template:
+    metadata:
+      labels:
+        app: konga-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:13
+        env:
+        - name: POSTGRES_USER
+          value: konga
+        - name: POSTGRES_PASSWORD
+          value: konga
+        - name: POSTGRES_DB
+          value: konga
+        ports:
+        - containerPort: 5432
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: konga-service
+  namespace: kong
+spec:
+  ports:
+  - port: 1337
+    targetPort: 1337
+  selector:
+    app: konga
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: konga
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: konga
+  template:
+    metadata:
+      labels:
+        app: konga
+    spec:
+      containers:
+      - name: konga
+        image: pantsel/konga
+        ports:
+        - containerPort: 1337
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        - name: DB_ADAPTER
+          value: postgres
+        - name: DB_HOST
+          value: konga-db
+        - name: DB_USER
+          value: konga
+        - name: DB_PASSWORD
+          value: konga
+        - name: DB_DATABASE
+          value: konga
+        - name: NODE_ENV
+          value: production

@@ -1,0 +1,30 @@
+image:
+  repository: otel/opentelemetry-collector
+  tag: 0.99.0
+
+mode: deployment
+
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+        http:
+
+  processors:
+    batch: {}
+
+  exporters:
+    jaeger:
+      endpoint: "jaeger-collector.istio-system.svc.cluster.local:14250"
+      tls:
+        insecure: true
+    logging:
+      loglevel: debug
+
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [jaeger, logging]
