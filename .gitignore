@@ -93,8 +93,8 @@ documentation/
 stories/
 
 # Infra
-*-configmap.yaml
 addons/
+.config/
 
 # Misc
 *.pem

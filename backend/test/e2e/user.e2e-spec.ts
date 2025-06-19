@@ -113,7 +113,7 @@ describe('Session Controller (E2E)', () => {
         name: faker.person.fullName(),
         email: faker.internet.email(),
         nickname: faker.internet.username().toLowerCase(),
-        password: faker.internet.password({ length: 10 }),
+        password: '@Passw0rd',
       }
       const signUpResponse = await request(app.getHttpServer())
         .post('/v1/session/sign-up')
