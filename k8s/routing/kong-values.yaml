@@ -1,7 +1,0 @@
-proxy:
-  type: LoadBalancer
-ingressController:
-  enabled: true
-  installCRDs: false
-env:
-  database: "off"
