@@ -5,23 +5,40 @@ import RateProductButton from '@/components/rate-product-button'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 
+const isSafeToFetch =
+  process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_API_URL
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
+  if (!isSafeToFetch) return {}
+
   const { slug } = await params
-  const product = await getProduct(slug)
-  if (!product) return {}
-  return { title: product.title }
+  try {
+    const product = await getProduct(slug)
+    if (!product) return {}
+    return { title: product.title }
+  } catch (error) {
+    console.error('generateMetadata failed:', error)
+    return {}
+  }
 }
 
 export async function generateStaticParams() {
-  const products = await getFeaturedProducts()
-  if (!products) return []
-  return products.map((product) => ({
-    slug: product.slug,
-  }))
+  if (!isSafeToFetch) return []
+
+  try {
+    const products = await getFeaturedProducts()
+    if (!products) return []
+    return products.map((product) => ({
+      slug: product.slug,
+    }))
+  } catch (error) {
+    console.error('generateStaticParams failed:', error)
+    return []
+  }
 }
 
 const getStarsAverage = (ratings: Rate[]): number | null => {
@@ -39,7 +56,15 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const product = await getProduct(slug)
+  let product
+
+  try {
+    product = await getProduct(slug)
+  } catch (err) {
+    console.error('Failed to fetch product:', err)
+    return null
+  }
+
   if (!product) return null
   const starsAverage = getStarsAverage(product.ratings)
 
@@ -93,8 +118,10 @@ export default async function ProductPage({
         <div className="h-5 w-full mb-10" />
         <div>
           <h4 className="flex justify-between gap-2 mb-3 text-2xl">
-            <span className="">Ratings</span>
-            <span className="text-yellow-400 text-right">{starsAverage}</span>
+            <span>Ratings</span>
+            <span className="text-yellow-400 text-right">
+              {starsAverage ?? '–'}
+            </span>
           </h4>
           <hr />
           {product.ratings &&
@@ -120,6 +147,3 @@ export default async function ProductPage({
     </div>
   )
 }
-/*
-★★★★★
-*/

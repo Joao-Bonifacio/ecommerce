@@ -1,6 +1,8 @@
 'use client'
 import React from 'react'
 import { useCart } from '@/context/cart-context'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 
 export default function CartPage() {
   const { items, removeFromCart, clearCart, updateQuantity } = useCart()
@@ -9,6 +11,10 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-4xl mx-auto p-4 h-[84vh]">
+        <Link href="/" className="text-md">
+          <ArrowLeft />
+          <span className="text-md underline pl-4">Come back</span>
+        </Link>
         <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
         <p>Add some products to start shopping!</p>
       </div>
@@ -17,6 +23,10 @@ export default function CartPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 h-[84vh] overflow-auto">
+      <Link href="/" className="text-md">
+        <ArrowLeft />
+        <span className="text-md underline pl-4">Come back</span>
+      </Link>
       <h1 className="text-3xl font-bold mb-6">Cart</h1>
 
       <ul className="divide-y divide-gray-300 mb-6">

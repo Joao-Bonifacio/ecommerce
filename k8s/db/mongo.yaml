@@ -1,50 +1,53 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-service
+  name: mongo-service
 spec:
+  selector:
+    app: mongo
   ports:
   - port: 27017
-  selector:
-    app: mongodb
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-headless
+  name: mongo-headless
 spec:
   clusterIP: None
+  selector:
+    app: mongo
   ports:
   - port: 27017
-  selector:
-    app: mongodb
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-statefulset
+  name: mongo-statefulset
 spec:
-  serviceName: "mongodb-headless"
+  serviceName: "mongo-headless"
   replicas: 1
   selector:
     matchLabels:
-      app: mongodb
+      app: mongo
   template:
     metadata:
       labels:
-        app: mongodb
+        app: mongo
     spec:
       containers:
-      - name: mongodb
+      - name: mongo
         image: mongo:7.0
         ports:
         - containerPort: 27017
+        envFrom:
+        - secretRef:
+            name: mongo-secret
         volumeMounts:
-        - name: mongodb-storage
+        - name: mongo-storage
           mountPath: /data/db
   volumeClaimTemplates:
   - metadata:
-      name: mongodb-storage
+      name: mongo-storage
     spec:
       accessModes:
         - ReadWriteOnce

@@ -3,15 +3,15 @@ kind: Service
 metadata:
   name: minio-service
 spec:
-  ports:
-    - name: api
-      port: 9000
-      targetPort: 9000
-    - name: console
-      port: 9001
-      targetPort: 9001
   selector:
     app: minio
+  ports:
+  - name: api
+    port: 9000
+    targetPort: 9000
+  - name: console
+    port: 9001
+    targetPort: 9001
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -40,17 +40,15 @@ spec:
     spec:
       containers:
       - name: minio
-        image: quay.io/minio/minio:RELEASE.2024-05-16T19-49-33Z
+        image: minio/minio:latest
         args:
         - server
         - /data
         - --console-address
         - ":9001"
-        env:
-        - name: MINIO_ROOT_USER
-          value: "minioadmin"
-        - name: MINIO_ROOT_PASSWORD
-          value: "minioadmin"
+        envFrom:
+        - secretRef:
+            name: minio-secret
         ports:
         - containerPort: 9000
         - containerPort: 9001
@@ -63,7 +61,7 @@ spec:
             cpu: "500m"
         volumeMounts:
         - name: minio-storage
-          mountPath: "/data"
+          mountPath: /data
       volumes:
       - name: minio-storage
         persistentVolumeClaim:

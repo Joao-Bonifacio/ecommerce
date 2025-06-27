@@ -47,7 +47,7 @@ export class S3Storage {
     )
 
     return {
-      url: `http://localhost:9000/${this.env.get('S3_BUCKET_NAME')}/${uniqueFileName}`,
+      url: `${this.env.get('S3_ENDPOINT')}/${this.env.get('S3_BUCKET_NAME')}/${uniqueFileName}`,
     }
   }
 

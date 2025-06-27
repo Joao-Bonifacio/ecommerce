@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: postgres-service
 spec:
-  ports:
-  - port: 5432
   selector:
     app: postgres
+  ports:
+  - port: 5432
 ---
 apiVersion: v1
 kind: Service
@@ -14,10 +14,10 @@ metadata:
   name: postgres-headless
 spec:
   clusterIP: None
-  ports:
-  - port: 5432
   selector:
     app: postgres
+  ports:
+  - port: 5432
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -36,16 +36,12 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:16.2
+        image: postgres:16-bullseye
         ports:
         - containerPort: 5432
-        env:
-        - name: POSTGRES_DB
-          value: "appdb"
-        - name: POSTGRES_USER
-          value: "user"
-        - name: POSTGRES_PASSWORD
-          value: "password"
+        envFrom:
+        - secretRef:
+            name: postgres-secret
         volumeMounts:
         - name: postgres-storage
           mountPath: /var/lib/postgresql/data

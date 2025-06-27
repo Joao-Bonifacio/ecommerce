@@ -100,6 +100,7 @@ addons/
 *.pem
 setup.sh
 tmp/
+misc/
 *storybook.log
 notes.md
 storybook-static

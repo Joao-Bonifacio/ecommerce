@@ -1,48 +1,34 @@
 apiVersion: networking.k8s.io/v1
-kind: IngressClass
-metadata:
-  name: kong
-  annotations:
-    ingressclass.kubernetes.io/is-default-class: "true"
-spec:
-  controller: ingress-controllers.konghq.com/kong
----
-apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: app-ingress
-  namespace: my-apps
   annotations:
-    kubernetes.io/ingress.class: kong
-    konghq.com/strip-path: "true"
-    konghq.com/protocols: "https"
-    #konghq.com/https-redirect-status-code: "301"
-    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod-cloudflare"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 spec:
-  ingressClassName: kong
-  rules:
-    - host: tradelife.com.br
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-service
-                port:
-                  number: 80
-    - host: api.tradelife.com.br
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: backend-service
-                port:
-                  number: 80
   tls:
   - hosts:
     - tradelife.com.br
     - api.tradelife.com.br
     secretName: tradelife-tls
+  rules:
+  - host: tradelife.com.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+  - host: api.tradelife.com.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 80
