@@ -1,8 +1,30 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: mongodb
+  name: mongodb-service
 spec:
+  ports:
+  - port: 27017
+  selector:
+    app: mongodb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-headless
+spec:
+  clusterIP: None
+  ports:
+  - port: 27017
+  selector:
+    app: mongodb
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-statefulset
+spec:
+  serviceName: "mongodb-headless"
   replicas: 1
   selector:
     matchLabels:
@@ -14,46 +36,18 @@ spec:
     spec:
       containers:
       - name: mongodb
-        image: mongo:6.0
-        envFrom:
-        - configMapRef:
-            name: mongodb-config
+        image: mongo:7.0
         ports:
         - containerPort: 27017
         volumeMounts:
-        - name: mongodb-data
+        - name: mongodb-storage
           mountPath: /data/db
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1"
-      volumes:
-      - name: mongodb-data
-        persistentVolumeClaim:
-          claimName: mongodb-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mongodb-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb
-spec:
-  selector:
-    app: mongodb
-  ports:
-  - port: 27017
-    targetPort: 27017
-  type: ClusterIP
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-storage
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi

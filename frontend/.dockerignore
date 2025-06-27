@@ -1,0 +1,51 @@
+# Pastas de build e output
+/dist
+/build
+/.next
+/out
+/.nyc_output
+/coverage
+
+# Cache e logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+report.*.json
+
+# Arquivos temporários
+.temp
+.tmp
+*.pid
+*.pid.lock
+*.seed
+
+# Configurações de IDEs/editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Sistema operacional
+.DS_Store
+
+# Misc
+*.pem
+*.tsbuildinfo
+
+# DB
+generated/
+migrations/
+.db

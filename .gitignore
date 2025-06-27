@@ -93,18 +93,19 @@ documentation/
 stories/
 
 # Infra
-*-configmap.yaml
-istio-1.26.1/
+addons/
+.config/
 
 # Misc
 *.pem
 setup.sh
 tmp/
+misc/
 *storybook.log
 notes.md
 storybook-static
 sonar-project.properties
-
+.dist/
 memory-bank/
 .clinerules
 .scannerwork/

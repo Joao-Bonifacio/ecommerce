@@ -32,6 +32,7 @@ export class SessionController {
   @Public()
   @UsePipes(new ZodValidatorPipe(zSignupDTO))
   @Post('sign-up')
+  @HttpCode(201)
   async create(@Body() body: SignupBody) {
     const signup = await this.user.create(body)
     if (typeof signup === 'object' && 'error' in signup && signup.error) {
@@ -45,6 +46,7 @@ export class SessionController {
   @Public()
   @UsePipes(new ZodValidatorPipe(zSigninDTO))
   @Post('sign-in')
+  @HttpCode(201)
   async match(@Body() body: LoginBody) {
     const signin = await this.user.find(body)
     if (typeof signin === 'object' && 'error' in signin && signin.error) {

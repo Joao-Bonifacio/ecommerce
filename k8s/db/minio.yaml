@@ -1,7 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-service
+spec:
+  ports:
+    - name: api
+      port: 9000
+      targetPort: 9000
+    - name: console
+      port: 9001
+      targetPort: 9001
+  selector:
+    app: minio
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: minio
+  name: minio-deployment
 spec:
   replicas: 1
   selector:
@@ -14,15 +40,17 @@ spec:
     spec:
       containers:
       - name: minio
-        image: minio/minio:latest
-        envFrom:
-        - configMapRef:
-            name: minio-config
+        image: quay.io/minio/minio:RELEASE.2024-05-16T19-49-33Z
         args:
         - server
         - /data
         - --console-address
         - ":9001"
+        env:
+        - name: MINIO_ROOT_USER
+          value: "minioadmin"
+        - name: MINIO_ROOT_PASSWORD
+          value: "minioadmin"
         ports:
         - containerPort: 9000
         - containerPort: 9001
@@ -34,32 +62,9 @@ spec:
             memory: "512Mi"
             cpu: "500m"
         volumeMounts:
-        - name: minio-data
-          mountPath: /data
+        - name: minio-storage
+          mountPath: "/data"
       volumes:
-      - name: minio-data
+      - name: minio-storage
         persistentVolumeClaim:
           claimName: minio-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: minio-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1G
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: minio-s3
-spec:
-  selector:
-    app: minio
-  ports:
-  - port: 9000
-    targetPort: 9000
-  type: ClusterIP

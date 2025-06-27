@@ -1,8 +1,30 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: postgres
+  name: postgres-service
 spec:
+  ports:
+  - port: 5432
+  selector:
+    app: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless
+spec:
+  clusterIP: None
+  ports:
+  - port: 5432
+  selector:
+    app: postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-statefulset
+spec:
+  serviceName: "postgres-headless"
   replicas: 1
   selector:
     matchLabels:
@@ -14,46 +36,25 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:14
-        envFrom:
-        - configMapRef:
-            name: postgres-config
+        image: postgres:16.2
         ports:
         - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: "appdb"
+        - name: POSTGRES_USER
+          value: "user"
+        - name: POSTGRES_PASSWORD
+          value: "password"
         volumeMounts:
-        - name: postgres-data
+        - name: postgres-storage
           mountPath: /var/lib/postgresql/data
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1"
-      volumes:
-      - name: postgres-data
-        persistentVolumeClaim:
-          claimName: postgres-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres
-spec:
-  selector:
-    app: postgres
-  ports:
-  - port: 5432
-    targetPort: 5432
-  type: ClusterIP
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
