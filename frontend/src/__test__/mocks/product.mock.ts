@@ -31,6 +31,14 @@ export const mockProduct = {
   image: '/mock.jpg',
   owner: 'user-1',
   sales: 0,
+  stock: 1,
   featured: false,
-  ratings: [],
+  ratings: [
+    {
+      id: 'rating-1',
+      title: 'Amazing!',
+      description: 'Loved the product',
+      stars: 5,
+    },
+  ],
 }

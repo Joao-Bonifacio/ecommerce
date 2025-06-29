@@ -5,8 +5,11 @@ import RateProductButton from '@/components/rate-product-button'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 
+const isTest = process.env.VITEST === 'true'
 const isSafeToFetch =
-  process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_API_URL
+  isTest ||
+  ((process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') &&
+    process.env.NEXT_PUBLIC_API_URL)
 
 export async function generateMetadata({
   params,

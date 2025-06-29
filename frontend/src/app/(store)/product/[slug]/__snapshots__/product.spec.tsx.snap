@@ -60,16 +60,39 @@ exports[`ProductPage > ProductPage component > renders product details when prod
         <h4
           class="flex justify-between gap-2 mb-3 text-2xl"
         >
-          <span
-            class=""
-          >
+          <span>
             Ratings
           </span>
           <span
             class="text-yellow-400 text-right"
-          />
+          >
+            5
+          </span>
         </h4>
         <hr />
+        <div>
+          <div
+            class="flex justify-between gap-2"
+          >
+            <div>
+              <p>
+                Amazing!
+              </p>
+              <p
+                class="text-zinc-400"
+              >
+                (
+                Loved the product
+                )
+              </p>
+            </div>
+            <span
+              class="text-yellow-400 text-right"
+            >
+              5
+            </span>
+          </div>
+        </div>
         <div
           class="mt-5 text-center"
         >
