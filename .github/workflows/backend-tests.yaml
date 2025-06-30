@@ -30,7 +30,6 @@ jobs:
           MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
           MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
         options: >-
-          jhowlord/minio-ci /data
           --health-cmd "curl -f http://localhost:9000/minio/health/ready || exit 1"
           --health-interval 10s
           --health-timeout 5s
@@ -54,13 +53,6 @@ jobs:
         image: mongo:7
         ports:
           - 27017:27017
-        options: >-
-          --replSet rs0
-          --bind_ip_all
-          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
 
     defaults:
       run:
@@ -68,15 +60,15 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '22.16.0'
 
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: backend/node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('backend/package-lock.json') }}
@@ -85,23 +77,50 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
-    
-    - name: Wait for MongoDB
+
+    - name: Wait for services to be ready
       run: |
-        for i in {1..10}; do
-          nc -z localhost 27017 && echo "MongoDB is up" && break
-          echo "Waiting for MongoDB..."
-          sleep 3
-        done
-    
+        # Wait for MongoDB to be ready
+        timeout 60 bash -c 'until mongosh --host localhost:27017 --eval "db.adminCommand(\"ping\")" > /dev/null 2>&1; do sleep 2; done'
+        
+        # Wait for PostgreSQL to be ready
+        timeout 60 bash -c 'until pg_isready -h localhost -p 5432 -U postgres > /dev/null 2>&1; do sleep 2; done'
+        
+        # Wait for Redis to be ready
+        timeout 60 bash -c 'until redis-cli -h localhost -p 6379 ping > /dev/null 2>&1; do sleep 2; done'
+
     - name: Initialize MongoDB replica set
       run: |
-        mongosh --eval "rs.initiate()"
+        # Wait a bit more for MongoDB to fully start
+        sleep 5
+        
+        # Initialize replica set
+        mongosh --host localhost:27017 --eval "
+          try {
+            var status = rs.status();
+            print('Replica set already initialized');
+          } catch (e) {
+            if (e.message.includes('no replset config has been received')) {
+              rs.initiate({
+                _id: 'rs0',
+                members: [{ _id: 0, host: 'localhost:27017' }]
+              });
+              print('Replica set initialized');
+              
+              // Wait for replica set to be ready
+              while (rs.status().myState != 1) {
+                sleep(1000);
+              }
+            } else {
+              throw e;
+            }
+          }
+        "
 
     - name: Setup databases
       env:
-        MONGODB_URL: ${{ secrets.MONGODB_URL }}
-        POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+        MONGODB_URL: ${{ secrets.MONGODB_URL || 'mongodb://localhost:27017/ecommerce?replicaSet=rs0' }}
+        POSTGRES_URL: ${{ secrets.POSTGRES_URL || 'postgresql://postgres:postgres@localhost:5432/ecommerce' }}
         S3_BUCKET_NAME: ecommerce
         S3_ENDPOINT: http://localhost:9000
         S3_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
@@ -114,34 +133,17 @@ jobs:
     - name: Build backend
       run: npm run build
 
-    - name: Run Dev Server
+    - name: Run tests
       env:
         APP_ENDPOINT: '*'
-        SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'test-session-secret-for-ci' }}
         JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
         JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
         REDIS_HOST: localhost
         REDIS_DB: 0
         REDIS_PORT: 6379
-        MONGODB_URL: ${{ secrets.MONGODB_URL }}
-        POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-        S3_BUCKET_NAME: ecommerce
-        S3_ENDPOINT: http://localhost:9000
-        S3_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
-        S3_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
-      run: npm run dev &
-
-    - name: Run all tests
-      env:
-        APP_ENDPOINT: '*'
-        SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-        JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
-        JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-        REDIS_HOST: localhost
-        REDIS_DB: 0
-        REDIS_PORT: 6379
-        MONGODB_URL: ${{ secrets.MONGODB_URL }}
-        POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+        MONGODB_URL: ${{ secrets.MONGODB_URL || 'mongodb://localhost:27017/ecommerce?replicaSet=rs0' }}
+        POSTGRES_URL: ${{ secrets.POSTGRES_URL || 'postgresql://postgres:postgres@localhost:5432/ecommerce' }}
         S3_BUCKET_NAME: ecommerce
         S3_ENDPOINT: http://localhost:9000
         S3_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
