@@ -78,17 +78,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Wait for services to be ready
-      run: |
-        # Wait for MongoDB to be ready
-        timeout 60 bash -c 'until mongosh --host localhost:27017 --eval "db.adminCommand(\"ping\")" > /dev/null 2>&1; do sleep 2; done'
-        
-        # Wait for PostgreSQL to be ready
-        timeout 60 bash -c 'until pg_isready -h localhost -p 5432 -U postgres > /dev/null 2>&1; do sleep 2; done'
-        
-        # Wait for Redis to be ready
-        timeout 60 bash -c 'until redis-cli -h localhost -p 6379 ping > /dev/null 2>&1; do sleep 2; done'
-
     - name: Initialize MongoDB replica set
       run: |
         # Wait a bit more for MongoDB to fully start
