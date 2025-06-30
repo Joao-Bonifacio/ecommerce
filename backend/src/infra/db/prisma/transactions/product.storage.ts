@@ -124,6 +124,7 @@ export class ProductStorage {
     id: string,
     data: Partial<Product>,
   ): Promise<Product | ProductError> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { owner, createdAt, ratings, sales, ...safeData } = data
 
     if (safeData.slug) {

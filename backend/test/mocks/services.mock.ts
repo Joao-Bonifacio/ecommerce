@@ -64,4 +64,4 @@ export const createMockCacheStorage = (): MockedService<CacheStorage> =>
     set: vi.fn(),
     setex: vi.fn(),
     del: vi.fn(),
-  } as Partial<MockedService<CacheStorage>> as MockedService<CacheStorage>)
+  }) as Partial<MockedService<CacheStorage>> as MockedService<CacheStorage>
