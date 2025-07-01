@@ -78,34 +78,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Initialize MongoDB replica set
-      run: |
-        # Wait a bit more for MongoDB to fully start
-        sleep 5
-        
-        # Initialize replica set
-        mongosh --host localhost:27017 --eval "
-          try {
-            var status = rs.status();
-            print('Replica set already initialized');
-          } catch (e) {
-            if (e.message.includes('no replset config has been received')) {
-              rs.initiate({
-                _id: 'rs0',
-                members: [{ _id: 0, host: 'localhost:27017' }]
-              });
-              print('Replica set initialized');
-              
-              // Wait for replica set to be ready
-              while (rs.status().myState != 1) {
-                sleep(1000);
-              }
-            } else {
-              throw e;
-            }
-          }
-        "
-
     - name: Setup databases
       env:
         MONGODB_URL: ${{ secrets.MONGODB_URL || 'mongodb://localhost:27017/ecommerce?replicaSet=rs0' }}
