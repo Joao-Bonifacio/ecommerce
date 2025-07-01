@@ -1,6 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+/* eslint-disable @typescript-eslint/no-require-imports */
 const Sentry = require('@sentry/nestjs')
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { nodeProfilingIntegration } = require('@sentry/profiling-node')
 
 Sentry.init({
