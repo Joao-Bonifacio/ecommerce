@@ -82,7 +82,7 @@ export async function seed() {
         sales: faker.number.int({ min: 0, max: 1000 }),
         image: url,
         description: faker.commerce.productDescription(),
-        featured: true,//faker.datatype.boolean(),
+        featured: true,
         stock: faker.number.int({ min: 1, max: 100 }),
         ratings: [],
       },

@@ -27,8 +27,8 @@ jobs:
         ports:
           - 9000:9000
         env:
-          MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
-          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+          MINIO_ROOT_USER: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_SECRET_KEY }}
         options: >-
           --health-cmd "curl -f http://localhost:9000/minio/health/ready || exit 1"
           --health-interval 10s
@@ -48,11 +48,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
-      mongo:
-        image: mongo:7
-        ports:
-          - 27017:27017
 
     defaults:
       run:
@@ -97,7 +92,7 @@ jobs:
     - name: Run tests
       env:
         APP_ENDPOINT: '*'
-        SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'test-session-secret-for-ci' }}
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
         JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
         JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
         REDIS_HOST: localhost
