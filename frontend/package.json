@@ -43,7 +43,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^4.0.0",
     "@eslint/eslintrc": "^3",
-    "@mockoon/cli": "^9.2.0",
+    "@mockoon/cli": "^9.3.0",
     "@next/eslint-plugin-next": "^15.3.3",
     "@rocketseat/eslint-config": "^2.2.2",
     "@storybook/addon-a11y": "^9.0.8",
