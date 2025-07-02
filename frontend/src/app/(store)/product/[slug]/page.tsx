@@ -2,8 +2,10 @@ import { getProduct, getFeaturedProducts } from '@/api/product'
 import type { Rate } from '@/api/validation/types/product'
 import AddToCartButton from '@/components/add-to-cart-button'
 import RateProductButton from '@/components/rate-product-button'
+import { ArrowLeft } from 'lucide-react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const isTest = process.env.VITEST === 'true'
 const isSafeToFetch =
@@ -73,6 +75,10 @@ export default async function ProductPage({
 
   return (
     <div className="relative grid max-h-[100%] grid-cols-4 mb-7">
+      <Link href="/" className="text-md flex absolute left-3 top-3">
+        <ArrowLeft />
+        <span className="text-md underline pl-4">Come back</span>
+      </Link>
       <div className="col-span-2 overflow-hidden">
         <Image
           className="rounded-r-xl"

@@ -5,6 +5,7 @@
 /out
 /.nyc_output
 /coverage
+/node_modules
 
 # Cache e logs
 logs
@@ -44,8 +45,13 @@ report.*.json
 # Misc
 *.pem
 *.tsbuildinfo
+/stories
+/.storybook
+/.scannerwork
 
-# DB
-generated/
-migrations/
-.db
+# Tests
+/__test__
+/cypress
+*.spec.ts
+*.test.ts
+*.e2e-spec.ts

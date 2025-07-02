@@ -11,7 +11,7 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-4xl mx-auto p-4 h-[84vh]">
-        <Link href="/" className="text-md">
+        <Link href="/" className="text-md flex mb-8">
           <ArrowLeft />
           <span className="text-md underline pl-4">Come back</span>
         </Link>
@@ -23,7 +23,7 @@ export default function CartPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 h-[84vh] overflow-auto">
-      <Link href="/" className="text-md">
+      <Link href="/" className="text-md flex mb-8">
         <ArrowLeft />
         <span className="text-md underline pl-4">Come back</span>
       </Link>
@@ -34,7 +34,7 @@ export default function CartPage() {
           <li key={id} className="flex justify-between items-center py-4">
             <div>
               <h2 className="font-semibold">{title}</h2>
-              <p>R$ {price.toFixed(2)}</p>
+              <p>${price.toFixed(2)}</p>
             </div>
             <div className="flex items-center gap-2">
               <label htmlFor={`quantity-${id}`} className="sr-only">
@@ -66,7 +66,7 @@ export default function CartPage() {
       <div className="flex justify-between items-center font-bold text-lg mb-6">
         <span>Total:</span>
         <span>
-          R${' '}
+          {' '}
           {total.toLocaleString('en-US', {
             style: 'currency',
             currency: 'USD',
@@ -78,14 +78,14 @@ export default function CartPage() {
       <div className="flex gap-4">
         <button
           onClick={clearCart}
-          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 cursor-pointer"
         >
           Clear cart
         </button>
         <button
           name="purchase"
           onClick={() => alert('Checkout not implemented yet')}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
         >
           Finalize purchase
         </button>
