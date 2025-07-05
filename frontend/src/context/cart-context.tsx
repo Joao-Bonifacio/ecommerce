@@ -41,9 +41,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   function updateQuantity(id: string, quantity: number) {
     if (quantity < 1) return
     setCartItems((state) =>
-      state.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      )
+      state.map((item) => (item.id === id ? { ...item, quantity } : item)),
     )
   }
 
@@ -57,7 +55,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ items: cartItems, addToCart, updateQuantity, removeFromCart, clearCart }}
+      value={{
+        items: cartItems,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>

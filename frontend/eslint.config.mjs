@@ -20,6 +20,11 @@ const eslintConfig = [
     'eslint:recommended',
   ),
   ...storybook.configs['flat/recommended'],
+  {
+    rules: {
+      '@typescript-eslint/no-unsafe-declaration-merging': 'off',
+    },
+  },
 ]
 
 export default eslintConfig
